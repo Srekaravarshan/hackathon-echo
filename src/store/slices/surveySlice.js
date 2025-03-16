@@ -118,9 +118,9 @@ export const fetchNextQuestion = createAsyncThunk(
     }
 
     // Save the answer for the current question
-    if (answer !== undefined) {
+    // if (answer !== undefined) {
       dispatch(addAnswer(answer));
-    }
+    // }
 
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));

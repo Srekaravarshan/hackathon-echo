@@ -1,17 +1,22 @@
-import { Box, Flex, IconButton, Text, ThemeProvider } from '@sparrowengg/twigs-react';
+import { Box, Flex, IconButton, Text } from '@sparrowengg/twigs-react';
 import { CloseIcon } from '@sparrowengg/twigs-react-icons';
 import { ChatSurveyContainer, QuestionContainer } from '../../components/StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useCallback, Fragment, useEffect } from 'react';
-import { fetchInitialQuestion, fetchNextQuestion } from '../../store/slices/surveySlice';
+import { fetchInitialQuestion, fetchNextQuestion, resetSurvey } from '../../store/slices/surveySlice';
 import Typewriter from 'typewriter-effect';
 import ResponseComponent from '../standalone-survey/ResponseQuestion';
+import QuestionAnswerTypes from '../../components/question-answer-types/QuestionAnswerTypes';
 
 const ChatSurvey = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff' } }));
+
+    return () => {
+      dispatch(resetSurvey());
+    }
   }, [dispatch]);
 
   return (
@@ -88,25 +93,26 @@ const Questions = () => {
       exit={{ opacity: 0 }}
       style={{ backgroundColor: theme?.secondaryColor }}
     >
-      <Box css={{
+      <Flex flexDirection="column" gap="$4" css={{
         minHeight: '350px', width: '100%',
         padding: '30px 8%',
         '[data-testid="typewriter-wrapper"]': {
-          fontSize: '19.2px', lineHeight: '24px', fontWeight: '$5',
+          fontSize: '14px',
+          lineHeight: '18.2px',
+          fontWeight: '$5',
           color: theme?.primaryColor
         },
-        // '@media (max-width: 400px)': {
-        //   minHeight: '300px',
-        // }
       }} className='dm-sans'>
         {answers.map((answer, index) => (
-          <Fragment key={index}>
-            <Text>{answer.question.question}</Text>
-            <Text>{answer.answer}</Text>
-          </Fragment>
+          <Box key={index}>
+            <Box css={{ backgroundColor: '#f2f5f8', width: '100%', padding: '$4', borderRadius: '0 $lg $lg $lg', marginBottom: '$2' }}>
+              <Text css={{ overflowWrap: 'anywhere' }}>{answer.question.question}</Text>
+            </Box>
+            <QuestionAnswerTypes answer={answer} />
+          </Box>
         ))}
         {(loading || loadingNextQuestion) ? (
-          <QuestionContainer>
+          <QuestionContainer style={{ padding: '8px', backgroundColor: '#f2f5f8', width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem' }}>
             <Typewriter
               key={currentQuestion.question}
               options={{
@@ -125,7 +131,8 @@ const Questions = () => {
               '[data-testid="typewriter-wrapper"]': {
                 transition: 'opacity 0.2s ease-in-out',
                 ...(typing && { opacity: '0.5' })
-              }
+              },
+              padding: '$4', backgroundColor: '#f2f5f8', width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem'
             }}>
               <Typewriter
                 key={currentQuestion.question}
@@ -143,7 +150,7 @@ const Questions = () => {
             />
           </Fragment>
         )}
-      </Box>
+      </Flex>
     </ChatSurveyContainer>
   );
 }

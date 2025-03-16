@@ -1,9 +1,13 @@
-import { useState, Fragment, useCallback } from 'react';
-import Typewriter from 'typewriter-effect';
-import { SurveyContainer, QuestionContainer } from '../../components/StyledComponents';
-import { YesOrNo, MultipleChoice, SingleChoice, Message, FileUpload, Audio, TextInput, OpinionScale, EndMessage } from '../../components/QuestionTypes';
 import { Box } from '@sparrowengg/twigs-react';
-import { useSelector, useDispatch } from 'react-redux';
+import YesOrNo from '../../components/question-types/YesOrNo';
+import MultipleChoice from '../../components/question-types/MultipleChoice';
+import SingleChoice from '../../components/question-types/SingleChoice';
+import Message from '../../components/question-types/Message';
+import FileUpload from '../../components/question-types/FileUpload';
+import Audio from '../../components/question-types/Audio';
+import TextInput from '../../components/question-types/TextInput';
+import OpinionScale from '../../components/question-types/OpinionScale';
+import EndMessage from '../../components/question-types/EndMessage';
 
 const ResponseComponent = ({ currentQuestion, handleResponse, animationComplete }) => {
   if (!currentQuestion) return null;
