@@ -2,7 +2,7 @@ import { Text } from '@sparrowengg/twigs-react';
 import { useSelector } from 'react-redux';
 
 const QuestionAnswerTypes = ({ answer = {} }) => {
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   switch (answer.question?.type) {
     // case 'opinionScale':

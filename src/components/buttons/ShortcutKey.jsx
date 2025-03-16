@@ -2,7 +2,7 @@ import { Flex, Text } from '@sparrowengg/twigs-react';
 import { useSelector } from 'react-redux';
 
 const ShortcutKey = ({ children, css }) => {
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   return (
     <Flex css={{ backgroundColor: `${theme?.primaryColor}`, borderRadius: '$round', height: '24px', width: '24px', ...css }} alignItems="center" justifyContent="center">

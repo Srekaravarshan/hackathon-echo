@@ -17,7 +17,7 @@ const Audio = ({ onAnswer }) => {
   const audioRef = useRef(null);
   const progressInterval = useRef(null);
 
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   const startRecording = async () => {
     try {

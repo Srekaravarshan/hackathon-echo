@@ -1,46 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Flex } from '@sparrowengg/twigs-react';
-import { useSelector } from 'react-redux';
-import { OptionsContainer, Option } from '../StyledComponents';
+import { useDispatch, useSelector } from 'react-redux';
+import { OptionsContainer, Option, StyledTextareaInput } from '../StyledComponents';
 import SubmitButton from '../buttons/SubmitButton';
-import ShortcutKey from '../buttons/ShortcutKey';
-import { AlphaNumMapping, NumAlphaMapping } from './constants';
+import { setTyping } from '../../store/slices/surveySlice';
 
 const SingleChoice = ({ choices = [], onAnswer }) => {
   const [selected, setSelected] = useState(null);
+  const dispatch = useDispatch();
+  
+  const inputRef = useRef(null);
+  
+  const [text, setText] = useState('');
 
-  const { theme } = useSelector((state) => state.survey);
+  const typing = useSelector(state => state.survey.typing);
+  const theme = useSelector((state) => state.survey.theme);
 
   const handleSelect = (option) => {
-    setSelected(option === selected ? null : option);
+    setSelected(option);
+    setTimeout(() => {
+      onAnswer(option + (text ? ', ' : '') + text);
+    }, 100);
   };
 
-  const handleSubmit = () => {
-    if (selected) {
-      onAnswer(selected);
+  const handleSubmit = useCallback(() => {
+    if (selected || text.length > 0) {
+      onAnswer(selected + ((selected && text) ? ', ' : '') + text);
     }
-  };
+  }, [selected, text, onAnswer]);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      const num = AlphaNumMapping[e.key.toLowerCase()];
-      if (num >= 1 && num <= choices.length) {
-        const option = choices[num - 1];
-        setSelected(option === selected ? null : option);
-      }
-      if (e.key.toLowerCase() === 'enter') {
-        if (selected) {
-          onAnswer(selected);
-        }
+      if (e.key === 'Enter') {
+        handleSubmit();
       }
     };
 
     window.addEventListener('keypress', handleKeyPress);
-    
+
     return () => {
       window.removeEventListener('keypress', handleKeyPress);
     };
-  }, [choices, selected, onAnswer]);
+  }, [handleSubmit]);
+
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        return; // Allow new line with Shift+Enter
+      }
+      e.preventDefault();
+      handleSubmit();
+    }
+  }
+
+  const onChange = (e) => {
+    setText(e.target.value);
+    if (e.target.value.length === 0) dispatch(setTyping(false));
+    if (e.target.value.length > 0 && !typing) dispatch(setTyping(true));
+  }
 
   return (
     <OptionsContainer>
@@ -55,11 +79,19 @@ const SingleChoice = ({ choices = [], onAnswer }) => {
             primaryColor={theme?.primaryColor}
           >
             {option}
-            <ShortcutKey css={{ marginLeft: '$4', textTransform: 'uppercase' }}>{NumAlphaMapping[index + 1]}</ShortcutKey>
+            {/* <ShortcutKey css={{ marginLeft: '$4', textTransform: 'uppercase' }}>{NumAlphaMapping[index + 1]}</ShortcutKey> */}
           </Option>
         ))}
       </Flex>
-      <SubmitButton css={{ height: 'auto' }} disabled={!selected} handleSubmit={handleSubmit} />
+      <StyledTextareaInput
+        ref={inputRef}
+        placeholder="Type here..." 
+        value={text} 
+        onKeyDown={onKeyDown}
+        onChange={onChange} 
+        style={{ color: theme?.primaryColor }}
+      />
+      <SubmitButton css={{ height: 'auto' }} disabled={!selected && text.length === 0} handleSubmit={handleSubmit} />
     </OptionsContainer>
   );
 };

@@ -11,7 +11,7 @@ const FileUpload = ({ onAnswer }) => {
   const [selected, setSelected] = useState(null);
   const fileInputRef = useRef(null);
 
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];

@@ -2,7 +2,7 @@ import { Button as TwigsButton } from '@sparrowengg/twigs-react';
 import { useSelector } from 'react-redux';
 
 const Button = ({ children, onClick, disabled, css, ...props }) => {
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   return (
     <TwigsButton

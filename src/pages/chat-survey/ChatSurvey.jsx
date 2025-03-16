@@ -134,7 +134,7 @@ const Questions = () => {
 }
 
 const AIPill = forwardRef(({ children, css }, ref) => {
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   return (
     <Box css={{ padding: '$4', position: 'relative', backgroundColor: `${theme?.actionColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem', ...css }} ref={ref}>

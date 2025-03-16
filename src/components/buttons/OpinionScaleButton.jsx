@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import Button from './Button';
 
 const OpinionScaleButton = ({ children, css = {}, selected, ...props }) => {
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   return (
     <Button

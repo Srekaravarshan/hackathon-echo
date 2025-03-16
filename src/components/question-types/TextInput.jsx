@@ -9,7 +9,7 @@ const TextInput = ({ onAnswer }) => {
   const inputRef = useRef(null);
   const dispatch = useDispatch();
 
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   const typing = useSelector(state => state.survey.typing);
 
@@ -18,6 +18,23 @@ const TextInput = ({ onAnswer }) => {
       inputRef.current.focus();
     }
   }, []);
+
+  useEffect(() => {
+
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        if (text.trim().length > 0) {
+          onAnswer(text);
+        }
+      }
+    };
+
+    window.addEventListener('keypress', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keypress', handleKeyPress);
+    };
+  }, [text, onAnswer]);
 
   const onChange = (e) => {
     setText(e.target.value);

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import ShortcutKey from './ShortcutKey';
 
 const YesOrNoOptionButton = ({ onClick, icon, label, shortCutKey, selected }) => {
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   return (
     <TwigsButton

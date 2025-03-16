@@ -2,6 +2,16 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const surveyQuestions = [
   {
+    "question": "What is your budget range for the trip?",
+    "type": "multipleChoice",
+    "choices": ["Budget", "Mid-range", "Luxury"]
+  },
+  {
+    "question": "Hello! Do you need travel recommendations or booking sfasdf?",
+    "type": "singleChoice",
+    "choices": ["Travel recommendations", "Booking assistance"]
+  },
+  {
     "question": "How would you rate your experience with our travel assistance?",
     "type": "opinionScale",
     "scale": {
@@ -26,19 +36,9 @@ const surveyQuestions = [
     "type": "text"
   },
   {
-    "question": "Hello! Do you need travel recommendations or booking sfasdf?",
-    "type": "singleChoice",
-    "choices": ["Travel recommendations", "Booking assistance"]
-  },
-  {
     "question": "Are you going to be traveling alone?",
     "type": "yesOrNo",
     "choices": ["Yes", "No"]
-  },
-  {
-    "question": "What is your budget range for the trip?",
-    "type": "multipleChoice",
-    "choices": ["Budget", "Mid-range", "Luxury"]
   },
   {
     "question": "Do you have any hotel preferences?",

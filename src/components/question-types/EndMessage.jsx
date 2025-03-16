@@ -8,7 +8,7 @@ import ShortcutKey from '../buttons/ShortcutKey';
 
 const EndMessage = ({ onAnswer }) => {
 
-  const { theme } = useSelector((state) => state.survey);
+  const theme = useSelector((state) => state.survey.theme);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
