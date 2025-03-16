@@ -8,7 +8,7 @@ import { StandaloneSurveyIcon, ChatSurveyIcon, VoiceSurveyIcon, IVRSurveyIcon, W
 import ChatSurvey from './pages/chat-survey/ChatSurvey';
 
 function App() {
-  const [surveyType, setSurveyType] = useState('standalone');
+  const [surveyType, setSurveyType] = useState('chat');
   return (
     <ThemeProvider>
       <Box css={{ position: 'relative', height: '100vh', width: '100vw' }}>

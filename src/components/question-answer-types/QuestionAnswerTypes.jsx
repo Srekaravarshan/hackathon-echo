@@ -1,21 +1,21 @@
 import { Text } from '@sparrowengg/twigs-react';
-import OpinionScaleButton from '../buttons/OpinionScaleButton';
+import { useSelector } from 'react-redux';
 
 const QuestionAnswerTypes = ({ answer = {} }) => {
-  console.log(answer);
+  const { theme } = useSelector((state) => state.survey);
 
   switch (answer.question?.type) {
-    case 'opinionScale':
-      console.log(answer.answer);
-      return (
-        <OpinionScaleButton selected size="md" css={{ width: '$8', marginLeft: 'auto' }}>
-          {answer.answer}
-        </OpinionScaleButton>
-      );
+    // case 'opinionScale':
+    //   return (
+    //     <OpinionScaleButton selected size="md" css={{ width: '$8', marginLeft: 'auto' }}>
+    //       {answer.answer}
+    //     </OpinionScaleButton>
+    //   );
     // case 'number':
     //   return <Number>{answer.answer}</Number>;
     default:
-      return <Text>{typeof answer?.answer === 'string' ? answer?.answer : null}</Text>;
+      if (typeof answer?.answer !== 'string' && typeof answer?.answer !== 'number') return null;
+      return <Text css={{ width: 'fit-content', marginLeft: 'auto', padding: '$4', backgroundColor: `${theme?.actionColor}4d`, borderRadius: '0.5rem 0 0.5rem 0.5rem' }}>{answer?.answer}</Text>;
   }
 }
 

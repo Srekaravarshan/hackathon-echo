@@ -1,8 +1,8 @@
 import { Box, Flex, IconButton, Text } from '@sparrowengg/twigs-react';
 import { CloseIcon } from '@sparrowengg/twigs-react-icons';
-import { ChatSurveyContainer, QuestionContainer } from '../../components/StyledComponents';
+import { ChatSurveyContainer } from '../../components/StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useCallback, Fragment, useEffect } from 'react';
+import { useState, useCallback, Fragment, useEffect, useRef, forwardRef } from 'react';
 import { fetchInitialQuestion, fetchNextQuestion, resetSurvey } from '../../store/slices/surveySlice';
 import Typewriter from 'typewriter-effect';
 import ResponseComponent from '../standalone-survey/ResponseQuestion';
@@ -12,7 +12,7 @@ const ChatSurvey = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff' } }));
+    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff', actionColor: '#e3f2fd' } }));
 
     return () => {
       dispatch(resetSurvey());
@@ -77,13 +77,17 @@ export default ChatSurvey;
 const Questions = () => {
  
   const dispatch = useDispatch();
+
   
   const { currentQuestion, loading, loadingNextQuestion, typing, theme, answers } = useSelector((state) => state.survey);
   
   const [animationComplete, setAnimationComplete] = useState(false);
 
   const handleResponse = useCallback(async (answer) => {
-    dispatch(fetchNextQuestion(answer));
+    dispatch(fetchNextQuestion(answer))
+    // .then(() => {
+    //   endOfQuestionsRef.current.scrollIntoView({ behavior: 'smooth' });
+    // });
   }, [dispatch]);
   
   return (
@@ -93,7 +97,7 @@ const Questions = () => {
       exit={{ opacity: 0 }}
       style={{ backgroundColor: theme?.secondaryColor }}
     >
-      <Flex flexDirection="column" gap="$4" css={{
+      <Flex flexDirection="column" gap="$6" css={{
         minHeight: '350px', width: '100%',
         padding: '30px 8%',
         '[data-testid="typewriter-wrapper"]': {
@@ -105,52 +109,84 @@ const Questions = () => {
       }} className='dm-sans'>
         {answers.map((answer, index) => (
           <Box key={index}>
-            <Box css={{ backgroundColor: '#f2f5f8', width: '100%', padding: '$4', borderRadius: '0 $lg $lg $lg', marginBottom: '$2' }}>
-              <Text css={{ overflowWrap: 'anywhere' }}>{answer.question.question}</Text>
-            </Box>
+            <AIPill css={{  marginBottom: '$2', opacity: '1' }}>
+              <Text css={{ overflowWrap: 'anywhere', color: `${theme?.primaryColor}` }}>{answer.question.question}</Text>
+            </AIPill>
             <QuestionAnswerTypes answer={answer} />
           </Box>
         ))}
         {(loading || loadingNextQuestion) ? (
-          <QuestionContainer style={{ padding: '8px', backgroundColor: '#f2f5f8', width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem' }}>
+          <AIPill>
             <Typewriter
               key={currentQuestion.question}
               options={{
                 strings: [''],
               }}
             />
-          </QuestionContainer>
+          </AIPill>
         ) : (
-          <Fragment>
-            <Box css={{
-              marginBottom: '1.2rem',
-              '.Typewriter__cursor': {
-                ...(currentQuestion.question === animationComplete && { display: 'none' }),
-                ...(typing && { display: 'none' })
-              },
-              '[data-testid="typewriter-wrapper"]': {
-                transition: 'opacity 0.2s ease-in-out',
-                ...(typing && { opacity: '0.5' })
-              },
-              padding: '$4', backgroundColor: '#f2f5f8', width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem'
-            }}>
-              <Typewriter
-                key={currentQuestion.question}
-                onInit={(typewriter) => {
-                  typewriter.changeDelay(15).typeString(currentQuestion.question).callFunction(() => {
-                    return setAnimationComplete(currentQuestion.question);
-                  }).start();
-                }}
-              />
-            </Box>
-            <ResponseComponent
-              currentQuestion={currentQuestion} 
-              handleResponse={handleResponse} 
-              animationComplete={animationComplete === currentQuestion.question}
-            />
-          </Fragment>
+          <ChatQuestion handleResponse={handleResponse} animationComplete={animationComplete} typing={typing} setAnimationComplete={setAnimationComplete} />
         )}
+        <Box css={{ height: '50px' }}/>
       </Flex>
     </ChatSurveyContainer>
   );
+}
+
+const AIPill = forwardRef(({ children, css }, ref) => {
+  const { theme } = useSelector((state) => state.survey);
+
+  return (
+    <Box css={{ padding: '$4', position: 'relative', backgroundColor: `${theme?.actionColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem', ...css }} ref={ref}>
+      <Box css={{ position: 'absolute', top: '0', left: 'auto', right: 'calc(100% + $3)', width: '$4', height: '$4', backgroundColor: `${theme?.actionColor}`, borderRadius: '$round', backgroundImage: 'url(https://static.surveysparrow.com/application/production/1742064379689__9086c18ce55cb2ef57d40d3bfb9160f9faa48865d67c4341b5db44e62aca__pngegg.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
+      {children}
+    </Box>
+  )
+});
+
+AIPill.displayName = 'AIPill';
+
+const ChatQuestion = ({ handleResponse, animationComplete, typing, setAnimationComplete }) => {
+  const { currentQuestion } = useSelector((state) => state.survey);
+
+  const questionRef = useRef(null);
+
+  useEffect(() => {
+    questionRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [currentQuestion]);
+
+  return (
+    <Fragment>
+      <AIPill ref={questionRef} css={{
+        '.Typewriter__cursor': {
+          ...(currentQuestion.question === animationComplete && { display: 'none' }),
+          ...(typing && { display: 'none' }),
+        },
+        // backgroundColor: `${theme?.primaryColor}`,
+        '[data-testid="typewriter-wrapper"]': {
+          // color: `${theme?.secondaryColor}`,
+          // transition: 'opacity 0.2s ease-in-out',
+          // fontSize: '14px',
+          // lineHeight: '18.2px',
+          // fontWeight: '$5',
+          // color: theme?.primaryColor,
+          ...(typing && { opacity: '0.9' })
+        },
+      }}>
+        <Typewriter
+          key={currentQuestion.question}
+          onInit={(typewriter) => {
+            typewriter.changeDelay(15).typeString(currentQuestion.question).callFunction(() => {
+              return setAnimationComplete(currentQuestion.question);
+            }).start();
+          }}
+        />
+      </AIPill>
+      <ResponseComponent
+        currentQuestion={currentQuestion} 
+        handleResponse={handleResponse} 
+        animationComplete={animationComplete === currentQuestion.question}
+      />
+    </Fragment>
+  )
 }
