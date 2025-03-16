@@ -1,23 +1,34 @@
 import { useState, useRef, useEffect } from 'react';
 import { Flex } from '@sparrowengg/twigs-react';
 import { ResetIcon } from '@sparrowengg/twigs-react-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { PlayIcon, PauseIcon } from '../../assets/icons';
-import { OptionsContainer } from '../StyledComponents';
+import { OptionsContainer, StyledTextareaInput } from '../StyledComponents';
 import Button from '../buttons/Button';
 import SubmitButton from '../buttons/SubmitButton';
+import { setTyping } from '../../store/slices/surveySlice';
 
 const Audio = ({ onAnswer }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [hasRecording, setHasRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [text, setText] = useState('');
   const mediaRecorder = useRef(null);
   const chunks = useRef([]);
   const audioRef = useRef(null);
+  const inputRef = useRef(null);
   const progressInterval = useRef(null);
+  const dispatch = useDispatch();
 
   const theme = useSelector((state) => state.survey.theme);
+  const typing = useSelector(state => state.survey.typing);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const startRecording = async () => {
     try {
@@ -61,7 +72,7 @@ const Audio = ({ onAnswer }) => {
       progressInterval.current = setInterval(() => {
         const progress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
         setProgress(progress);
-      }, 100);
+      }, 300);
 
       audioRef.current.onended = () => {
         setIsPlaying(false);
@@ -100,9 +111,27 @@ const Audio = ({ onAnswer }) => {
   };
 
   const handleSubmit = () => {
-    const blob = new Blob(chunks.current, { type: 'audio/webm' });
-    onAnswer(blob);
+    if (hasRecording || text.length > 0) {
+      const blob = chunks.current.length > 0 ? new Blob(chunks.current, { type: 'audio/webm' }) : null;
+      onAnswer({ audio: blob, text });
+    }
   };
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        return; // Allow new line with Shift+Enter
+      }
+      e.preventDefault();
+      handleSubmit();
+    }
+  }
+
+  const onChange = (e) => {
+    setText(e.target.value);
+    if (e.target.value.length === 0) dispatch(setTyping(false));
+    if (e.target.value.length > 0 && !typing) dispatch(setTyping(true));
+  }
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -137,7 +166,7 @@ const Audio = ({ onAnswer }) => {
           resetRecording();
         }
         // Enter to submit
-        if (e.code === 'Enter') {
+        if (e.code === 'Enter' && !e.shiftKey) {
           e.preventDefault();
           handleSubmit();
         }
@@ -151,20 +180,30 @@ const Audio = ({ onAnswer }) => {
   return (
     <OptionsContainer>
       {!hasRecording ? (
-        <Button
-          onClick={isRecording ? stopRecording : startRecording}
-          css={{
-            height: 'auto',
-            ...(isRecording && {
-              '&, &:hover, &:focus, &:active, &:focus-visible': {
-                backgroundColor: '#ff4444 !important',
-                color: theme?.primaryColor,
-              }
-            })
-          }}
-        >
-          {isRecording ? '⏹ Stop Recording' : '🎤 Start Recording'}
-        </Button>
+        <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }}>
+          <Button
+            onClick={isRecording ? stopRecording : startRecording}
+            css={{
+              height: 'auto',
+              ...(isRecording && {
+                '&, &:hover, &:focus, &:active, &:focus-visible': {
+                  backgroundColor: '#ff4444 !important',
+                  color: theme?.primaryColor,
+                }
+              })
+            }}
+          >
+            {isRecording ? '⏹ Stop Recording' : '🎤 Start Recording'}
+          </Button>
+          <StyledTextareaInput
+            ref={inputRef}
+            placeholder="Type here..." 
+            value={text} 
+            onKeyDown={onKeyDown}
+            onChange={onChange} 
+            style={{ color: theme?.primaryColor }}
+          />
+        </Flex>
       ) : (
         <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }}>
           <Flex gap="$4" css={{ width: '100%', backgroundColor: `${theme?.primaryColor}1A`, borderRadius: '$pill' }} alignItems="center">
@@ -194,8 +233,17 @@ const Audio = ({ onAnswer }) => {
               <ResetIcon size="24" />
             </Button>
           </Flex>
+          <StyledTextareaInput
+            ref={inputRef}
+            placeholder="Type here..." 
+            value={text} 
+            onKeyDown={onKeyDown}
+            onChange={onChange} 
+            style={{ color: theme?.primaryColor }}
+          />
           <SubmitButton 
             handleSubmit={handleSubmit}
+            disabled={!hasRecording && text.length === 0}
             css={{
               height: 'auto',
               '.twigs-button__content': {

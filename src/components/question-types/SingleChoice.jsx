@@ -19,15 +19,15 @@ const SingleChoice = ({ choices = [], onAnswer }) => {
   const handleSelect = (option) => {
     setSelected(option);
     setTimeout(() => {
-      onAnswer(option + (text ? ', ' : '') + text);
-    }, 100);
+      onAnswer(option);
+    }, 300);
   };
 
   const handleSubmit = useCallback(() => {
-    if (selected || text.length > 0) {
-      onAnswer(selected + ((selected && text) ? ', ' : '') + text);
+    if (text.length > 0) {
+      onAnswer(text);
     }
-  }, [selected, text, onAnswer]);
+  }, [text, onAnswer]);
 
   useEffect(() => {
     if (inputRef.current) {

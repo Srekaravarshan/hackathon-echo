@@ -15,7 +15,7 @@ const EndMessage = ({ onAnswer }) => {
       if (e.key === 'Enter') {
         onAnswer(e.target.value);
       }
-      if (e.key === 'X') {
+      if (e.key === 'X' || e.key === 'x') {
         window.location.href = "https://surveysparrow.com";
       }
     };
