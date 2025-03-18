@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { makeChatQuery } from '../../apis';
 
 const surveyQuestions = [
+  {
+    "question": "Hi, how can I help you today?",
+    "type": "text"
+  },
   {
     "question": "How would you rate your experience with our travel assistance?",
     "type": "opinionScale",
@@ -10,17 +15,9 @@ const surveyQuestions = [
     },
   },
   {
-    "question": "Hello! Welcome to the XYZ Travel Agency. How can I help you today?",
-    "type": "message"
-  },
-  {
     "question": "Provide your aadhar card",
     "type": "fileUpload",
   },
-  // {
-  //   "question": "Hey! How can I help you today? sample audio question",
-  //   "type": "audio"
-  // },
   {
     "question": "What is your travel destination?",
     "type": "text"
@@ -112,20 +109,43 @@ export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
   async (answer, { getState, dispatch }) => {
     const state = getState().survey;
+
+    const currentIndex = state.questionIndex;
+    console.log("📱 ~ currentIndex:", currentIndex)
     
-    if (state.questionIndex >= surveyQuestions.length) {
-      return null;
+    const response = await makeChatQuery("state.userId_2abcdfgki", `User response -> ${answer}`);
+    console.log("📱 ~ response:", response)
+
+
+    const nextQuestion = {
+      question: response.jsonRes.question,
+      type: response.jsonRes.questionType,
+      choices: response.jsonRes.choices || [],
+      closeSurvey: false
     }
+
+    if(response.jsonRes.actionExecutedMessage){
+      nextQuestion.question = response.jsonRes.actionExecutedMessage;
+      nextQuestion.type = "message";
+    }
+
+    console.log("📱 ~ nextQuestion:", nextQuestion)
+
+    // if (state.questionIndex >= surveyQuestions.length) {
+    //   return null;
+    // }
 
     // Save the answer for the current question
     if (answer !== undefined) {
       dispatch(addAnswer(answer));
     }
 
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    return surveyQuestions[state.questionIndex];
+    // Simulate API delay
+    // await new Promise(resolve => setTimeout(resolve, 1000));
+
+    return nextQuestion
+    ;
   }
 );
 

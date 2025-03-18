@@ -16,6 +16,8 @@ const Question = () => {
   const [animationComplete, setAnimationComplete] = useState(false);
 
   const handleResponse = useCallback(async (answer) => {
+    console.log("📱 ~ handleResponse ~ answer:", answer)
+
     dispatch(fetchNextQuestion(answer));
   }, [dispatch]);
   
