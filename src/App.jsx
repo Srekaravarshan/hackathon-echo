@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ThemeProvider, Tooltip, TooltipProvider } from '@sparrowengg/twigs-react';
 import Question from './pages/standalone-survey/Question';
-import { fetchInitialQuestion } from './store/slices/surveySlice';
+import { fetchInitialQuestion, resetSurvey } from './store/slices/surveySlice';
 import { Box, Tabs, TabsList, TabsTrigger } from '@sparrowengg/twigs-react';
 import { StandaloneSurveyIcon, ChatSurveyIcon, VoiceSurveyIcon, IVRSurveyIcon, WhatsAppSurveyIcon } from './assets/icons';
 import ChatSurvey from './pages/chat-survey/ChatSurvey';
@@ -30,6 +30,9 @@ const StandaloneSurvey = () => {
 
   useEffect(() => {
     dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff' } }));
+    return () => {
+      dispatch(resetSurvey());
+    }
   }, [dispatch]);
 
   return (

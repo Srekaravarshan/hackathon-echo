@@ -23,19 +23,9 @@ const surveyQuestions = [
     "type": "text"
   },
   {
-    "question": "Hello! Do you need travel recommendations or booking sfasdf?",
-    "type": "singleChoice",
-    "choices": ["Travel recommendations", "Booking assistance"]
-  },
-  {
     "question": "Are you going to be traveling alone?",
     "type": "yesOrNo",
     "choices": ["Yes", "No"]
-  },
-  {
-    "question": "What is your budget range for the trip?",
-    "type": "multipleChoice",
-    "choices": ["Budget", "Mid-range", "Luxury"]
   },
   {
     "question": "Do you have any hotel preferences?",
@@ -136,9 +126,9 @@ export const fetchNextQuestion = createAsyncThunk(
     // }
 
     // Save the answer for the current question
-    if (answer !== undefined) {
+    // if (answer !== undefined) {
       dispatch(addAnswer(answer));
-    }
+    // }
 
 
     // Simulate API delay
