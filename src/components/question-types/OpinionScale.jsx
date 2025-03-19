@@ -74,14 +74,15 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
   }
 
   return (
-    <OptionsContainer>
-      <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }}>
-        <Flex gap="$4" css={{ flexWrap: 'wrap' }}>
+    <OptionsContainer className="opinion-scale-question">
+      <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }} className="opinion-scale-question-container">
+        <Flex gap="$4" css={{ flexWrap: 'wrap' }} className="opinion-scale-option-container">
           {Array.from({ length: max - min + 1 }, (_, i) => (
             <OpinionScaleButton
               key={i}
               selected={selected === min + i}
               onClick={() => handleSelect(min + i)}
+              className="opinion-scale-option"
             >
               {min + i}
             </OpinionScaleButton>
@@ -94,8 +95,10 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
           onKeyDown={onKeyDown}
           onChange={onChange} 
           style={{ color: theme?.primaryColor }}
+          className="opinion-scale-textarea answer-input"
         />
         <SubmitButton 
+          className="opinion-scale-submit-button submit-button"
           css={{ height: 'auto' }} 
           disabled={!selected && text.length === 0} 
           handleSubmit={handleSubmit} 

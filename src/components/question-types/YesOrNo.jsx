@@ -71,10 +71,10 @@ const YesOrNo = ({ onAnswer }) => {
   }
 
   return (
-    <OptionsContainer>
-      <Flex gap="$8">
-        <YesOrNoOptionButton selected={selected === 'Yes'} onClick={() => handleSelect('Yes')} icon={<YesThumbsUpIcon size="36" />} label="Yes" shortCutKey="Y" />
-        <YesOrNoOptionButton selected={selected === 'No'} onClick={() => handleSelect('No')} icon={<NoThumbsDownIcon size="36" />} label="No" shortCutKey="N" />
+    <OptionsContainer className="yes-or-no-question">
+      <Flex gap="$8" className="yes-or-no-option-container">
+        <YesOrNoOptionButton className="yes-or-no-option-yes" selected={selected === 'Yes'} onClick={() => handleSelect('Yes')} icon={<YesThumbsUpIcon size="36" />} label="Yes" shortCutKey="Y" />
+        <YesOrNoOptionButton className="yes-or-no-option-no" selected={selected === 'No'} onClick={() => handleSelect('No')} icon={<NoThumbsDownIcon size="36" />} label="No" shortCutKey="N" />
       </Flex>
       <StyledTextareaInput
         ref={inputRef}
@@ -83,8 +83,9 @@ const YesOrNo = ({ onAnswer }) => {
         onKeyDown={onKeyDown}
         onChange={onChange} 
         style={{ color: theme?.primaryColor }}
+        className="yes-or-no-textarea answer-input"
       />
-      <SubmitButton css={{ height: 'auto' }} disabled={!selected && text.length === 0} handleSubmit={handleSubmit} />
+      <SubmitButton css={{ height: 'auto' }} disabled={!selected && text.length === 0} handleSubmit={handleSubmit} className="yes-or-no-submit-button submit-button" />
     </OptionsContainer>
   );
 };

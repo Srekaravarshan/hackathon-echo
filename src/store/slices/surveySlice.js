@@ -2,14 +2,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const surveyQuestions = [
   {
-    "question": "What is your budget range for the trip?",
-    "type": "multipleChoice",
-    "choices": ["Budget", "Mid-range", "Luxury"]
-  },
-  {
     "question": "Hello! Do you need travel recommendations or booking sfasdf?",
     "type": "singleChoice",
     "choices": ["Travel recommendations", "Booking assistance"]
+  },
+  {
+    "question": "Are you going to be traveling alone?",
+    "type": "yesOrNo",
+    "choices": ["Yes", "No"]
+  },
+  {
+    "question": "What is your budget range for the trip?",
+    "type": "multipleChoice",
+    "choices": ["Budget", "Mid-range", "Luxury"]
   },
   {
     "question": "How would you rate your experience with our travel assistance?",
@@ -23,10 +28,10 @@ const surveyQuestions = [
     "question": "Hello! Welcome to the XYZ Travel Agency. How can I help you today?",
     "type": "message"
   },
-  {
-    "question": "Provide your aadhar card",
-    "type": "fileUpload",
-  },
+  // {
+  //   "question": "Provide your aadhar card",
+  //   "type": "fileUpload",
+  // },
   // {
   //   "question": "Hey! How can I help you today? sample audio question",
   //   "type": "audio"
@@ -34,11 +39,6 @@ const surveyQuestions = [
   {
     "question": "What is your travel destination?",
     "type": "text"
-  },
-  {
-    "question": "Are you going to be traveling alone?",
-    "type": "yesOrNo",
-    "choices": ["Yes", "No"]
   },
   {
     "question": "Do you have any hotel preferences?",
@@ -54,11 +54,11 @@ const surveyQuestions = [
     "type": "yesOrNo",
     "choices": ["Yes", "No"]
   },
-  {
-    "question": "Would you like us to book a hotel for you?",
-    "type": "multipleChoice",
-    "choices": ["Yes", "No"]
-  },
+  // {
+  //   "question": "Would you like us to book a hotel for you?",
+  //   "type": "multipleChoice",
+  //   "choices": ["Yes", "No"]
+  // },
   {
     "question": "Please provide your email for booking confirmation.",
     "type": "text"
@@ -97,16 +97,26 @@ const initialState = {
 
 export const fetchInitialQuestion = createAsyncThunk(
   'survey/fetchInitialQuestion',
-  async ({ theme }) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async ({ theme } = { theme: initialState.theme }) => {
+    try {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    return {
-      currentQuestion: {...surveyQuestions[0]},
-      theme
-    };
+      if (!surveyQuestions.length) {
+        throw new Error('No survey questions available');
+      }
+
+      return {
+        currentQuestion: {...surveyQuestions[0]},
+        theme
+      };
+    } catch (error) {
+      console.error('Error in fetchInitialQuestion:', error);
+      throw error; // Re-throw to trigger rejected state
+    }
   }
 );
+
 
 export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
@@ -118,9 +128,7 @@ export const fetchNextQuestion = createAsyncThunk(
     }
 
     // Save the answer for the current question
-    // if (answer !== undefined) {
-      dispatch(addAnswer(answer));
-    // }
+    dispatch(addAnswer(answer));
 
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -162,7 +170,12 @@ export const surveySlice = createSlice({
       });
     },
     setTyping: (state, action) => {
+      console.log("🚀 ~ setTyping ~ action:", action)
       state.typing = action.payload;
+    },
+    updateAnswers: (state, action) => {
+      console.log("🚀 ~ setTyping ~ action:", action)
+      state.answers = action.payload;
     },
     resetSurvey: () => {
       return initialState;
@@ -215,6 +228,7 @@ export const {
   addAnswer,
   resetSurvey,
   setTyping,
+  updateAnswers,
 } = surveySlice.actions;
 
 export default surveySlice.reducer; 

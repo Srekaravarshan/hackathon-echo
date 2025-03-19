@@ -67,12 +67,13 @@ const TextInput = ({ onAnswer }) => {
         onKeyDown={onKeyDown}
         onChange={onChange} 
         style={{ color: theme?.primaryColor }}
+        className="text-input-textarea answer-input"
       />
       <SubmitButton css={{ height: 'auto' }} disabled={text.trim().length === 0} handleSubmit={() => {
         if (text.trim().length > 0) {
           onAnswer(text);
         }
-      }} />
+      }} className="text-input-submit-button submit-button" />
     </Fragment>
   );
 }
