@@ -8,18 +8,23 @@ import ChatSurvey, { ChatSurveyPreview } from './pages/chat-survey/ChatSurvey';
 import WhatsAppSurvey from './components/whatsapp/WhatsAppSurvey';
 import VoiceSurvey from './pages/voice-survey/VoiceSurvey';
 import IVRSurvey from './pages/ivr-survey/IVRSurvey.jsx';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Survey />} />
-        <Route path="/standalone" element={<StandaloneSurvey />} />
+        <Route path="/standalone/:triggerToken" element={<StandaloneSurvey />} />
+        <Route path="/chat/:triggerToken" element={<ChatSurvey />} />
+        <Route path="/voice/:triggerToken" element={<VoiceSurvey />} />
+        <Route path="/ivr/:triggerToken" element={<IVRSurvey />} />
+        <Route path="/whatsapp/:triggerToken" element={<WhatsAppSurvey />} />
+        {/* <Route path="/standalone" element={<StandaloneSurvey />} />
         <Route path="/chat" element={<ChatSurvey />} />
         <Route path="/voice" element={<VoiceSurvey />} />
         <Route path="/ivr" element={<IVRSurvey />} />
-        <Route path="/whatsapp" element={<WhatsAppSurvey />} />
+        <Route path="/whatsapp" element={<WhatsAppSurvey />} /> */}
       </Routes>
     </BrowserRouter>
   );
@@ -46,6 +51,8 @@ const Survey = () => {
 
 const StandaloneSurvey = () => {
   const dispatch = useDispatch();
+  const { triggerToken } = useParams();
+  console.log("🚀 ~ StandaloneSurvey ~ triggerToken:", triggerToken)
 
   useEffect(() => {
     dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff' } }));

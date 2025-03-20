@@ -4,9 +4,11 @@ import { useEffect, forwardRef, useState, useRef } from 'react';
 import { fetchInitialQuestion, resetSurvey } from '../../store/slices/surveySlice';
 import './VoiceSurvey.css';
 import { CloseIcon } from '@sparrowengg/twigs-react-icons';
+import { useParams } from 'react-router-dom';
 
 const VoiceSurvey = () => {
   const dispatch = useDispatch();
+  const { triggerToken } = useParams();
 
   const [callingView, setCallingView] = useState(false);
 
