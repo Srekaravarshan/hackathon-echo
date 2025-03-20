@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose, Button, IconButton, FormLabel, Input } from '@sparrowengg/twigs-react';
+import { Box, Flex, Text, Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose, Button, IconButton, FormLabel, Input, ThemeProvider } from '@sparrowengg/twigs-react';
 import { PhoneIcon } from '@sparrowengg/twigs-react-icons';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -7,16 +7,18 @@ const IVRSurvey = () => {
   const { triggerToken } = useParams();
   console.log('IVRSurvey', triggerToken)
   return (
-    <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
-      <Flex
-        flexDirection="column"
-        // css={{ height: '85vh', width: '350px' }}
-        alignItems="end"
-        gap="$4"
-      >
-        <IVRPreview />
+    <ThemeProvider>
+      <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
+        <Flex
+          flexDirection="column"
+          // css={{ height: '85vh', width: '350px' }}
+          alignItems="end"
+          gap="$4"
+        >
+          <IVRPreview />
+        </Flex>
       </Flex>
-    </Flex>
+    </ThemeProvider>
   );
 };
 
