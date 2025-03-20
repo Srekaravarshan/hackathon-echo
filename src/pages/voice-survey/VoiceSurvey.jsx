@@ -1,21 +1,14 @@
-import { Box, Button, Flex, IconButton, Text } from "@sparrowengg/twigs-react";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, forwardRef, useState, useRef } from "react";
-import {
-  fetchInitialQuestion,
-  resetSurvey,
-} from "../../store/slices/surveySlice";
-import "./VoiceSurvey.css";
-import { CloseIcon } from "@sparrowengg/twigs-react-icons";
-import axios from "axios";
-import { makeChatQuery } from "../../apis";
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-
-
-var mediaRecorder;
+import { Box, Button, Flex, IconButton, Text, ThemeProvider } from '@sparrowengg/twigs-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, forwardRef, useState, useRef } from 'react';
+import { fetchInitialQuestion, resetSurvey } from '../../store/slices/surveySlice';
+import './VoiceSurvey.css';
+import { CloseIcon } from '@sparrowengg/twigs-react-icons';
+import { useParams } from 'react-router-dom';
 
 const VoiceSurvey = () => {
   const dispatch = useDispatch();
+  const { triggerToken } = useParams();
 
   const [callingView, setCallingView] = useState(false);
 
@@ -43,80 +36,36 @@ const VoiceSurvey = () => {
   }, [dispatch]);
 
   return (
-    <Flex
-      flexDirection="column"
-      css={{ height: "100vh", width: "100vw", backgroundColor: "#f2f5f8" }}
-      alignItems="center"
-      justifyContent="center"
-      className="dm-sans"
-    >
-      <Flex
-        flexDirection="column"
-        css={{
-          height: "100%",
-          width: "350px",
-          paddingTop: "20px",
-          paddingBottom: "86px",
-        }}
-        alignItems="end"
-        gap="$4"
-        justifyContent="center"
-      >
-        <Flex
-          flexDirection="column"
-          css={{
-            height: "100%",
-            maxHeight: "580px",
-            boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px;",
-            backgroundColor: "white",
-            width: "100%",
-            borderRadius: "$3xl",
-          }}
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Box
-            css={{
-              width: "100px",
-              height: "100px",
+    <ThemeProvider>
+      <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
+        <Flex flexDirection="column" css={{ 
+          height: '100%',
+          width: '350px',
+          paddingTop: '20px',
+          paddingBottom: '86px',
+        }} alignItems="end" gap="$4" justifyContent="center">
+          <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;', backgroundColor: 'white', width: '100%', borderRadius: '$3xl' }} justifyContent="center" alignItems="center">
+            <Box css={{
+              width: '100px',
+              height: '100px',
               backgroundColor: accentColor,
               backgroundImage: `url(${profileImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
               flexShrink: 0,
-              borderRadius: "$round",
-            }}
-          />
-          <Text
-            size="md"
-            weight="bold"
-            css={{ color: "$neutral900", marginTop: "10px" }}
-            truncate
-          >
-            Leo
-          </Text>
-          <Text
-            size="xs"
-            css={{ color: "$neutral800", textAlign: "center", maxWidth: "70%" }}
-          >
-            Personalized Travel
-            <br />
-            Booking Agent
-          </Text>
-          {!callingView && (
-            <CallButton
-              primaryColor={primaryColor}
-              accentColor={accentColor}
-              setCallingView={setCallingView}
-            />
-          )}
-          {callingView && <CallingView />}
+              borderRadius: '$round'
+            }}/>
+            <Text size="md" weight="bold" css={{ color: '$neutral900', marginTop: '10px' }} truncate>Leo</Text>
+            <Text size="xs" css={{ color: '$neutral800', textAlign: 'center', maxWidth: '70%' }}>Personalized Travel<br/>Booking Agent</Text>
+            {!callingView && <CallButton primaryColor={primaryColor} accentColor={accentColor} setCallingView={setCallingView} />}
+            {callingView && <CallingView />}
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
-  );
-};
+    </ThemeProvider>
+  )
+}
 
 export default VoiceSurvey;
 /* HTML: <div class="loader"></div> */
@@ -421,12 +370,12 @@ const CallingView = () => {
   };
 
 
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition
-  } = useSpeechRecognition();
+  // const {
+  //   transcript,
+  //   listening,
+  //   resetTranscript,
+  //   browserSupportsSpeechRecognition
+  // } = useSpeechRecognition();
 
   // useEffect(() => {
   //   SpeechRecognition.startListening()
@@ -439,61 +388,61 @@ const CallingView = () => {
   //   }
   // }, [transcript]);
 
-  const handleAudioStream = async () => {
+  // const handleAudioStream = async () => {
 
 
-    const welcomeMessage = "Hello, how can I help you today?";
-    await startStream(welcomeMessage);
+  //   const welcomeMessage = "Hello, how can I help you today?";
+  //   await startStream(welcomeMessage);
 
-    const stream = await navigator.mediaDevices
-      .getUserMedia({ audio: true, video: false })
-      .then(async (stream) => {
-        if (!MediaRecorder.isTypeSupported("audio/webm")) {
-          return alert("Browser not supported");
-        }
+  //   const stream = await navigator.mediaDevices
+  //     .getUserMedia({ audio: true, video: false })
+  //     .then(async (stream) => {
+  //       if (!MediaRecorder.isTypeSupported("audio/webm")) {
+  //         return alert("Browser not supported");
+  //       }
 
-        var options = { mimeType: "video/webm" };
-        mediaRecorder = new MediaRecorder(stream, options);
+  //       var options = { mimeType: "video/webm" };
+  //       mediaRecorder = new MediaRecorder(stream, options);
 
-        const socket = new WebSocket(`wss://api.deepgram.com/v1/listen?model=nova-3`, [
-          "token",
-          "d830852caa0c9a10d0c0559d0303706841ae98e6",
-        ]);
+  //       const socket = new WebSocket(`wss://api.deepgram.com/v1/listen?model=nova-3`, [
+  //         "token",
+  //         "d830852caa0c9a10d0c0559d0303706841ae98e6",
+  //       ]);
 
-        socket.onopen = () => {
-          mediaRecorder.addEventListener("dataavailable", async (event) => {
-            if (event.data.size > 0 && socket.readyState == 1) {
-              socket.send(event.data);
-            }
-          });
-        };
+  //       socket.onopen = () => {
+  //         mediaRecorder.addEventListener("dataavailable", async (event) => {
+  //           if (event.data.size > 0 && socket.readyState == 1) {
+  //             socket.send(event.data);
+  //           }
+  //         });
+  //       };
 
-        mediaRecorder.start(1100);
-        console.log("started");
+  //       mediaRecorder.start(1100);
+  //       console.log("started");
 
-        socket.onmessage = async (message) => {
-          const received = JSON.parse(message.data);
-          console.log("📱 ~ socket.onmessage= ~ received:", received)
-          const transcript = received.channel.alternatives[0].transcript;
-          if (transcript && received.is_final) {
-            console.log("📱 ~ socket.onmessage= ~ transcript:", transcript);
-            // currentText = currentText.concat(' ' + transcript);
-            // audioText = currentText;
+  //       socket.onmessage = async (message) => {
+  //         const received = JSON.parse(message.data);
+  //         console.log("📱 ~ socket.onmessage= ~ received:", received)
+  //         const transcript = received.channel.alternatives[0].transcript;
+  //         if (transcript && received.is_final) {
+  //           console.log("📱 ~ socket.onmessage= ~ transcript:", transcript);
+  //           // currentText = currentText.concat(' ' + transcript);
+  //           // audioText = currentText;
 
-            const response = await makeChatQuery(
-              "state.userId_2abcdfgki",
-              `User response -> ${transcript}`
-            );
-            console.log("📱 ~ response:", response.jsonRes.question);
+  //           const response = await makeChatQuery(
+  //             "state.userId_2abcdfgki",
+  //             `User response -> ${transcript}`
+  //           );
+  //           console.log("📱 ~ response:", response.jsonRes.question);
 
-            await startStream(response.jsonRes.question);
-          }
-        };
-      });
-  };
+  //           await startStream(response.jsonRes.question);
+  //         }
+  //       };
+  //     });
+  // };
 
   useEffect(() => {
-    handleAudioStream();
+    // handleAudioStream();
   }, []);
 
   useEffect(() => {

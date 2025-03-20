@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import MobilePreview from './MobilePreview';
-import { Flex } from '@sparrowengg/twigs-react';
+import { Flex, ThemeProvider } from '@sparrowengg/twigs-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchInitialQuestion, fetchNextQuestion, resetSurvey, updateAnswers } from '../../store/slices/surveySlice';
 import { Template, TemplateResponse } from './utils/models/TemplateModel';
-
+import { useParams } from 'react-router-dom';
 const message =   {
   id: 100001352,
   category: "UTILITY",
@@ -48,18 +48,21 @@ const message =   {
 };
 
 const WhatsAppSurvey = () => {
-  console.log('WhatsAppSurvey')
+  const { triggerToken } = useParams();
+  console.log('WhatsAppSurvey', triggerToken)
   return (
-    <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
-      <Flex
-        flexDirection="column"
-        // css={{ height: '85vh', width: '350px' }}
-        alignItems="end"
-        gap="$4"
-      >
-        <WhatsAppQuestion />
+    <ThemeProvider>
+      <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
+        <Flex
+          flexDirection="column"
+          // css={{ height: '85vh', width: '350px' }}
+          alignItems="end"
+          gap="$4"
+        >
+          <WhatsAppQuestion />
+        </Flex>
       </Flex>
-    </Flex>
+    </ThemeProvider>
   );
 };
 
