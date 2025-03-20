@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
 
-export const makeChatQuery = async (userId, query) => {
+export const makeChatQuery = async (userId, query, triggerToken) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/chat`, {
+    const response = await axios.post(`${BASE_URL}/api/chat/${triggerToken}`, {
       userId,
       query
     });

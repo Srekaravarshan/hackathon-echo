@@ -113,7 +113,8 @@ export const fetchNextQuestion = createAsyncThunk(
     const currentIndex = state.questionIndex;
     console.log("📱 ~ currentIndex:", currentIndex)
     
-    const response = await makeChatQuery("state.userId_2abcdfgki", `User response -> ${answer}`);
+    const triggerToken = window.location.pathname.split('/').slice(-1)[0];
+    const response = await makeChatQuery("state.userId_2abcdfgki", `User response -> ${answer}`, triggerToken);
     console.log("📱 ~ response:", response)
 
 
