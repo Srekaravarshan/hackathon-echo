@@ -31,11 +31,6 @@ const surveyQuestions = [
     "hasConfirmation": false,
   },
   {
-    "type": "action",
-    "question": "I am booking demo call on coming saturday",
-    "actionType": "appointment"
-  },
-  {
     "question": "Are you going to be traveling alone?",
     "type": "yesOrNo",
     "choices": ["Yes", "No"]
@@ -176,6 +171,7 @@ export const fetchInitialQuestion = createAsyncThunk(
 export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
   async (answer, { getState, dispatch }) => {
+    console.log("🚀 ~ fetchNextQuestion ~ answer:", answer, getState())
     const state = getState().survey;
     
     if (state.questionIndex >= surveyQuestions.length) {

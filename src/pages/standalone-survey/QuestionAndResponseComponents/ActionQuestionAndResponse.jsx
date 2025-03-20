@@ -7,9 +7,12 @@ import { appointmentAction } from "../../../components/actions/actions";
 import { updateActionData } from "../../../store/slices/surveySlice";
 import DefaultQuestionAndResponseComponent from "./DefaultQuestionAndResponseComponent";
 import TextTypewriter from "../../components/TextTypewriter";
+
 const ActionQuestionAndResponse = ({ handleResponse }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const { currentQuestion, typing, actionData } = useSelector((state) => state.survey);
+
+  const [actionSuccessMessage, setActionSuccessMessage] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -26,6 +29,7 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
     dispatch(updateActionData({
       actionStatus,
       response: {
+        actionSuccessMessage: response.actionSuccessMessage,
         question: response.question,
         type: response.type,
       }
@@ -110,7 +114,20 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
       >
         <WelcomeMessage currentQuestion={currentQuestion} onAnswer={handleResponse} />
       </Box> */}
-      {actionData.actionStatus === 'ACTION_COMPLETED' && actionData.response.question && (
+      {actionData.actionStatus === 'ACTION_COMPLETED' && actionData.response.actionSuccessMessage && actionData.response.question && (
+        <TextTypewriter
+          text={actionData.response.actionSuccessMessage}
+          // makeDim={
+          //   // actionData.actionStatus === 'ACTION_STARTED' || 
+          //   actionData.actionStatus === 'ACTION_COMPLETED'}
+          // makeSmall={actionData.actionStatus === 'ACTION_COMPLETED'}
+          makeDim={typing}
+          // makeSmall={typing}
+          onAnimationComplete={() => setActionSuccessMessage(true)}
+          hideCursor={actionSuccessMessage}
+        />
+      )}
+      {actionData.actionStatus === 'ACTION_COMPLETED' && (!actionData.response.actionSuccessMessage || actionSuccessMessage) && actionData.response.question && (
         <DefaultQuestionAndResponseComponent 
           currentQuestion={actionData.response}
           handleResponse={handleResponse}
