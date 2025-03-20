@@ -3,26 +3,6 @@ import { makeChatQuery } from '../../apis';
 
 const surveyQuestions = [
   {
-    "question": "Hi, how can I help you today?",
-    "type": "text"
-  },
-  {
-    "question": "How would you rate your experience with our travel assistance?",
-    "type": "opinionScale",
-    "scale": {
-      min: 1,
-      max: 10,
-    },
-  },
-  {
-    "question": "Provide your aadhar card",
-    "type": "fileUpload",
-  },
-  {
-    "question": "What is your travel destination?",
-    "type": "text"
-  },
-  {
     "question": "Hello! Do you need travel recommendations or booking sfasdf?",
     "type": "singleChoice",
     "choices": ["Travel recommendations", "Booking assistance"]
@@ -38,6 +18,30 @@ const surveyQuestions = [
     "choices": ["Budget", "Mid-range", "Luxury"]
   },
   {
+    "question": "How would you rate your experience with our travel assistance?",
+    "type": "opinionScale",
+    "scale": {
+      min: 1,
+      max: 10,
+    },
+  },
+  {
+    "question": "Hello! Welcome to the XYZ Travel Agency. How can I help you today?",
+    "type": "message"
+  },
+  // {
+  //   "question": "Provide your aadhar card",
+  //   "type": "fileUpload",
+  // },
+  // {
+  //   "question": "Hey! How can I help you today? sample audio question",
+  //   "type": "audio"
+  // },
+  {
+    "question": "What is your travel destination?",
+    "type": "text"
+  },
+  {
     "question": "Do you have any hotel preferences?",
     "type": "multipleChoice",
     "choices": ["Budget hotels", "Boutique hotels", "Luxury hotels", "No preference"]
@@ -51,11 +55,11 @@ const surveyQuestions = [
     "type": "yesOrNo",
     "choices": ["Yes", "No"]
   },
-  {
-    "question": "Would you like us to book a hotel for you?",
-    "type": "multipleChoice",
-    "choices": ["Yes", "No"]
-  },
+  // {
+  //   "question": "Would you like us to book a hotel for you?",
+  //   "type": "multipleChoice",
+  //   "choices": ["Yes", "No"]
+  // },
   {
     "question": "Please provide your email for booking confirmation.",
     "type": "text"
@@ -94,16 +98,26 @@ const initialState = {
 
 export const fetchInitialQuestion = createAsyncThunk(
   'survey/fetchInitialQuestion',
-  async ({ theme }) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async ({ theme } = { theme: initialState.theme }) => {
+    try {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    return {
-      currentQuestion: {...surveyQuestions[0]},
-      theme
-    };
+      if (!surveyQuestions.length) {
+        throw new Error('No survey questions available');
+      }
+
+      return {
+        currentQuestion: {...surveyQuestions[0]},
+        theme
+      };
+    } catch (error) {
+      console.error('Error in fetchInitialQuestion:', error);
+      throw error; // Re-throw to trigger rejected state
+    }
   }
 );
+
 
 export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
@@ -137,9 +151,7 @@ export const fetchNextQuestion = createAsyncThunk(
     // }
 
     // Save the answer for the current question
-    if (answer !== undefined) {
-      dispatch(addAnswer(answer));
-    }
+    dispatch(addAnswer(answer));
 
 
     // Simulate API delay
@@ -183,7 +195,12 @@ export const surveySlice = createSlice({
       });
     },
     setTyping: (state, action) => {
+      console.log("🚀 ~ setTyping ~ action:", action)
       state.typing = action.payload;
+    },
+    updateAnswers: (state, action) => {
+      console.log("🚀 ~ setTyping ~ action:", action)
+      state.answers = action.payload;
     },
     resetSurvey: () => {
       return initialState;
@@ -236,6 +253,7 @@ export const {
   addAnswer,
   resetSurvey,
   setTyping,
+  updateAnswers,
 } = surveySlice.actions;
 
 export default surveySlice.reducer; 

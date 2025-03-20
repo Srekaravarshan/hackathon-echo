@@ -1,7 +1,6 @@
 import { useState, Fragment, useCallback } from 'react';
 import Typewriter from 'typewriter-effect';
 import { SurveyContainer, QuestionContainer } from '../../components/StyledComponents';
-import { YesOrNo, MultipleChoice, SingleChoice, Message, FileUpload, Audio, TextInput, OpinionScale, EndMessage } from '../../components/QuestionTypes';
 import { Box } from '@sparrowengg/twigs-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchNextQuestion } from '../../store/slices/surveySlice';
@@ -36,16 +35,14 @@ const Question = () => {
         }
       }} className='dm-sans'>
         {(loading || loadingNextQuestion) ? (
-          <Fragment>
-            <QuestionContainer>
-              <Typewriter
-                key={currentQuestion.question}
-                options={{
-                  strings: [''],
-                }}
-              />
-            </QuestionContainer>
-          </Fragment>
+          <QuestionContainer>
+            <Typewriter
+              key={currentQuestion.question}
+              options={{
+                strings: [''],
+              }}
+            />
+          </QuestionContainer>
         ) : (
           <Fragment>
             <Box css={{
