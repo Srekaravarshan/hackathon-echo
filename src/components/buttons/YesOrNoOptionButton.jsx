@@ -2,7 +2,7 @@ import { Button as TwigsButton, Flex, Text } from '@sparrowengg/twigs-react';
 import { useSelector } from 'react-redux';
 import ShortcutKey from './ShortcutKey';
 
-const YesOrNoOptionButton = ({ onClick, icon, label, shortCutKey, selected }) => {
+const YesOrNoOptionButton = ({ onClick, icon, label, shortCutKey, selected, ...props }) => {
   const theme = useSelector((state) => state.survey.theme);
 
   return (
@@ -32,6 +32,7 @@ const YesOrNoOptionButton = ({ onClick, icon, label, shortCutKey, selected }) =>
           color: selected ? `${theme?.secondaryColor} !important` : `${theme?.primaryColor} !important`,
         },
       }}
+      {...props}
     >
       {icon}
       <Flex alignItems="center" justifyContent="space-between" css={{ marginTop: '$4', width: '100%' }}>

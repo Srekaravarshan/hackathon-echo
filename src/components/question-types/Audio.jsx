@@ -178,9 +178,9 @@ const Audio = ({ onAnswer }) => {
   }, [hasRecording, isRecording, isPlaying]);
 
   return (
-    <OptionsContainer>
+    <OptionsContainer className="audio-question">
       {!hasRecording ? (
-        <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }}>
+        <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }} className="audio-question-container">
           <Button
             onClick={isRecording ? stopRecording : startRecording}
             css={{
@@ -192,6 +192,7 @@ const Audio = ({ onAnswer }) => {
                 }
               })
             }}
+            className="audio-start-recording-button"
           >
             {isRecording ? '⏹ Stop Recording' : '🎤 Start Recording'}
           </Button>
@@ -202,14 +203,16 @@ const Audio = ({ onAnswer }) => {
             onKeyDown={onKeyDown}
             onChange={onChange} 
             style={{ color: theme?.primaryColor }}
+            className="audio-textarea answer-input"
           />
         </Flex>
       ) : (
-        <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }}>
-          <Flex gap="$4" css={{ width: '100%', backgroundColor: `${theme?.primaryColor}1A`, borderRadius: '$pill' }} alignItems="center">
+        <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }} className="audio-question-container">
+          <Flex gap="$4" css={{ width: '100%', backgroundColor: `${theme?.primaryColor}1A`, borderRadius: '$pill' }} alignItems="center" className="audio-play-pause-container">
             <Button
               onClick={isPlaying ? pauseRecording : playRecording}
               css={{ height: 'auto', flex: '0 0 auto', borderRadius: '$pill', color: theme?.primaryColor, backgroundColor: 'transparent !important' }}
+              className="audio-play-pause-button"
             >
               {isPlaying ? <PauseIcon size="24" /> : <PlayIcon size="24" />}
             </Button>
@@ -225,10 +228,12 @@ const Audio = ({ onAnswer }) => {
                 borderRadius: '5px',
                 accentColor: theme?.primaryColor
               }}
+              className="audio-progress-bar"
             />
             <Button
               onClick={resetRecording}
               css={{ height: 'auto', flex: '0 0 auto', borderRadius: '$pill', color: theme?.primaryColor, backgroundColor: 'transparent !important' }}
+              className="audio-reset-button"
             >
               <ResetIcon size="24" />
             </Button>
@@ -240,8 +245,10 @@ const Audio = ({ onAnswer }) => {
             onKeyDown={onKeyDown}
             onChange={onChange} 
             style={{ color: theme?.primaryColor }}
+            className="audio-textarea answer-input"
           />
           <SubmitButton 
+            className="audio-submit-button submit-button"
             handleSubmit={handleSubmit}
             disabled={!hasRecording && text.length === 0}
             css={{

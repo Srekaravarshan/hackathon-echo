@@ -1,0 +1,47 @@
+export default ({ color = '#100E0E', extraClass = '' }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={extraClass}
+      width="15"
+      height="9"
+      viewBox="0 0 15 9"
+      fill="none"
+    >
+      <rect
+        x="0.787109"
+        y="5.30078"
+        width="2.31813"
+        height="3.44037"
+        rx="0.705769"
+        fill={color}
+      />
+      <rect
+        x="4.65234"
+        y="3.58203"
+        width="2.31813"
+        height="5.16055"
+        rx="0.705769"
+        fill={color}
+      />
+      <rect
+        x="8.51562"
+        y="1.85938"
+        width="2.31813"
+        height="6.88073"
+        rx="0.705769"
+        fill={color}
+      />
+      <rect
+        opacity="0.3"
+        x="12.377"
+        y="0.140625"
+        width="2.31813"
+        height="8.60092"
+        rx="0.705769"
+        fill={color}
+        fillOpacity="0.6"
+      />
+    </svg>
+  );
+};

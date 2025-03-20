@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { makeChatQuery } from '../../apis';
+import { makeChatQuery, makeSubmissionEntry } from '../../apis';
 
 const surveyQuestions = [
   {
@@ -41,11 +41,11 @@ const surveyQuestions = [
     "type": "yesOrNo",
     "choices": ["Yes", "No"]
   },
-  {
-    "question": "Would you like us to book a hotel for you?",
-    "type": "multipleChoice",
-    "choices": ["Yes", "No"]
-  },
+  // {
+  //   "question": "Would you like us to book a hotel for you?",
+  //   "type": "multipleChoice",
+  //   "choices": ["Yes", "No"]
+  // },
   {
     "question": "Please provide your email for booking confirmation.",
     "type": "text"
@@ -84,16 +84,26 @@ const initialState = {
 
 export const fetchInitialQuestion = createAsyncThunk(
   'survey/fetchInitialQuestion',
-  async ({ theme }) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async ({ theme } = { theme: initialState.theme }) => {
+    try {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-    return {
-      currentQuestion: {...surveyQuestions[0]},
-      theme
-    };
+      if (!surveyQuestions.length) {
+        throw new Error('No survey questions available');
+      }
+
+      return {
+        currentQuestion: {...surveyQuestions[0]},
+        theme
+      };
+    } catch (error) {
+      console.error('Error in fetchInitialQuestion:', error);
+      throw error; // Re-throw to trigger rejected state
+    }
   }
 );
+
 
 export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
@@ -103,7 +113,8 @@ export const fetchNextQuestion = createAsyncThunk(
     const currentIndex = state.questionIndex;
     console.log("📱 ~ currentIndex:", currentIndex)
     
-    const response = await makeChatQuery("state.userId_2abcdfgki", `User response -> ${answer}`);
+    const conversationId = "state.userId_2abcdfgkiolpkmnmllopkdjpljmnmdoplnb";
+    const response = await makeChatQuery(conversationId, `User response -> ${answer}`);
     console.log("📱 ~ response:", response)
 
 
@@ -117,6 +128,21 @@ export const fetchNextQuestion = createAsyncThunk(
     if(response.jsonRes.actionExecutedMessage){
       nextQuestion.question = response.jsonRes.actionExecutedMessage;
       nextQuestion.type = "message";
+    }
+
+    const kbExecutionMessage = response.jsonRes.kbExecutionMessage;
+    if(kbExecutionMessage){
+      nextQuestion.question = kbExecutionMessage;
+      nextQuestion.type = "message";
+    }
+
+    const conversationCompleted = response.jsonRes?.conversationCompleted;
+    if(conversationCompleted){
+      if(response.jsonRes?.conversationCompletedMessage){
+        nextQuestion.question += `\n\n${response.jsonRes?.conversationCompletedMessage}`;
+      }
+      nextQuestion.closeSurvey = true;
+      await makeSubmissionEntry(conversationId);
     }
 
     console.log("📱 ~ nextQuestion:", nextQuestion)
@@ -134,8 +160,7 @@ export const fetchNextQuestion = createAsyncThunk(
     // Simulate API delay
     // await new Promise(resolve => setTimeout(resolve, 1000));
 
-    return nextQuestion
-    ;
+    return nextQuestion;
   }
 );
 
@@ -172,7 +197,12 @@ export const surveySlice = createSlice({
       });
     },
     setTyping: (state, action) => {
+      console.log("🚀 ~ setTyping ~ action:", action)
       state.typing = action.payload;
+    },
+    updateAnswers: (state, action) => {
+      console.log("🚀 ~ setTyping ~ action:", action)
+      state.answers = action.payload;
     },
     resetSurvey: () => {
       return initialState;
@@ -225,6 +255,7 @@ export const {
   addAnswer,
   resetSurvey,
   setTyping,
+  updateAnswers,
 } = surveySlice.actions;
 
 export default surveySlice.reducer; 

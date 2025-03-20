@@ -1,29 +1,37 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ThemeProvider, Tooltip, TooltipProvider } from '@sparrowengg/twigs-react';
+import { ThemeProvider, Tooltip, TooltipProvider, Box, Tabs, TabsList, TabsTrigger } from '@sparrowengg/twigs-react';
 import Question from './pages/standalone-survey/Question';
 import { fetchInitialQuestion, resetSurvey } from './store/slices/surveySlice';
-import { Box, Tabs, TabsList, TabsTrigger } from '@sparrowengg/twigs-react';
 import { StandaloneSurveyIcon, ChatSurveyIcon, VoiceSurveyIcon, IVRSurveyIcon, WhatsAppSurveyIcon } from './assets/icons';
 import ChatSurvey from './pages/chat-survey/ChatSurvey';
+import WhatsAppSurvey from './components/whatsapp/WhatsAppSurvey';
+import VoiceSurvey from './pages/voice-survey/VoiceSurvey';
 
 function App() {
-  const [surveyType, setSurveyType] = useState('standalone');
+  return (
+      <Survey/>
+  );
+}
+
+export default App;
+
+const Survey = () => {
+  const [surveyType, setSurveyType] = useState('whatsapp');
+
   return (
     <ThemeProvider>
       <Box css={{ position: 'relative', height: '100vh', width: '100vw' }}>
         {surveyType === 'standalone' && <StandaloneSurvey />}
         {surveyType === 'chat' && <ChatSurvey />}
-        {/* {surveyType === 'voice' && <VoiceSurvey />} */}
+        {surveyType === 'voice' && <VoiceSurvey />}
         {/* {surveyType === 'ivr' && <IVRSurvey />} */}
-        {/* {surveyType === 'whatsapp' && <WhatsAppSurvey />} */}
+        {surveyType === 'whatsapp' && <WhatsAppSurvey />}
         <SurveyTypeTabs surveyType={surveyType} setSurveyType={setSurveyType} />
       </Box>
     </ThemeProvider>
-  );
+  )
 }
-
-export default App;
 
 const StandaloneSurvey = () => {
   const dispatch = useDispatch();
@@ -43,7 +51,7 @@ const StandaloneSurvey = () => {
 const SurveyTypeTabs = ({ surveyType, setSurveyType }) => {
   return (
     <TooltipProvider delayDuration={0}>
-      <Tabs defaultValue={surveyType} onValueChange={setSurveyType} css={{ position: 'absolute', borderRadius: '16px', bottom: '24px', left: '50%', transform: 'translateX(-50%)' }}>
+      <Tabs defaultValue={surveyType} onValueChange={setSurveyType} css={{ position: 'absolute', borderRadius: '16px', bottom: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: '100' }}>
         <TabsList
           aria-label="tabs example"
           css={{

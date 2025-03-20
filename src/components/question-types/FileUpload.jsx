@@ -95,19 +95,21 @@ const FileUpload = ({ onAnswer }) => {
   }, [selected]);
 
   return (
-    <OptionsContainer>
-      <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }}>
+    <OptionsContainer className="file-upload-question">
+      <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }} className="file-upload-question-container">
         <FileInput
           type="file"
           id="file-upload"
           onChange={handleFileChange}
           ref={fileInputRef}
+          className="file-upload-input"
         />
         {!selected && <FileUploadButton
           htmlFor="file-upload"
           as={motion.label}
           whileTap={{ scale: 0.95 }}
           primaryColor={theme?.primaryColor}
+          className="file-upload-button"
         >
           Click or drag to upload file
         </FileUploadButton>}
@@ -124,6 +126,7 @@ const FileUpload = ({ onAnswer }) => {
               height: '100px',
               maxWidth: '260px',
             }}
+            className="file-upload-file-container"
           >
             <Text css={{ color: theme?.primaryColor }} truncate>{selected.name}</Text>
             <Button 
@@ -133,6 +136,7 @@ const FileUpload = ({ onAnswer }) => {
               css={{ 
                 height: 'auto',
               }}
+              className="file-upload-delete-button"
             >
               <DeleteIcon size="20" />
             </Button>
@@ -146,9 +150,11 @@ const FileUpload = ({ onAnswer }) => {
           onKeyDown={onKeyDown}
           onChange={onChange} 
           style={{ color: theme?.primaryColor }}
+          className="file-upload-textarea answer-input"
         />}
 
         <SubmitButton
+          className="file-upload-submit-button submit-button"
           disabled={!selected && text.length === 0} 
           handleSubmit={handleSubmit}
           css={{

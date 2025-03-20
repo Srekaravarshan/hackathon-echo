@@ -7,12 +7,17 @@ import { fetchInitialQuestion, fetchNextQuestion, resetSurvey } from '../../stor
 import Typewriter from 'typewriter-effect';
 import ResponseComponent from '../standalone-survey/ResponseQuestion';
 import QuestionAnswerTypes from '../../components/question-answer-types/QuestionAnswerTypes';
+import './ChatSurvey.css';
 
 const ChatSurvey = () => {
   const dispatch = useDispatch();
 
+  const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
+  const accentColor = '#F5D161';
+
+
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff', actionColor: '#e3f2fd' } }));
+    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff', actionColor: '#F5D161', profileImage: profileImage } }));
 
     return () => {
       dispatch(resetSurvey());
@@ -21,11 +26,16 @@ const ChatSurvey = () => {
 
   return (
     <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
-      <Flex flexDirection="column" css={{ height: '85vh', width: '350px' }} alignItems="end" gap="$4">
-        <Flex flexDirection="column" css={{ height: '100%', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;', backgroundColor: 'white', width: '100%', borderRadius: '$3xl' }}>
+      <Flex flexDirection="column" css={{ 
+        height: '100%',
+        width: '350px',
+        paddingTop: '20px',
+        paddingBottom: '86px',
+      }} alignItems="end" gap="$4" justifyContent="center">
+        <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;', backgroundColor: 'white', width: '100%', borderRadius: '$3xl' }}>
           <Flex css={{
             height: '50px',
-            backgroundColor: '#e3f2fd',
+            backgroundColor: accentColor,
             borderTopLeftRadius: '$3xl',
             borderTopRightRadius: '$3xl',
             overflow: 'hidden',
@@ -36,8 +46,8 @@ const ChatSurvey = () => {
                 marginLeft: '20px',
                 width: '40px',
                 height: '40px',
-                backgroundColor: '#e3f2fd',
-                backgroundImage: 'url(https://static.surveysparrow.com/application/production/1742064379689__9086c18ce55cb2ef57d40d3bfb9160f9faa48865d67c4341b5db44e62aca__pngegg.png)',
+                backgroundColor: accentColor,
+                backgroundImage: `url(${profileImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -58,9 +68,9 @@ const ChatSurvey = () => {
         {/* <Box css={{
           width: '50px',
           border: '1px solid white',
-          backgroundColor: '#e3f2fd',
+          backgroundColor: accentColor,
           boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;',
-          backgroundImage: 'url(https://static.surveysparrow.com/application/production/1742064379689__9086c18ce55cb2ef57d40d3bfb9160f9faa48865d67c4341b5db44e62aca__pngegg.png)',
+          backgroundImage: `url(${profileImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -136,9 +146,11 @@ const Questions = () => {
 const AIPill = forwardRef(({ children, css }, ref) => {
   const theme = useSelector((state) => state.survey.theme);
 
+  const profileImage = theme?.profileImage;
+
   return (
     <Box css={{ padding: '$4', position: 'relative', backgroundColor: `${theme?.actionColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem', ...css }} ref={ref}>
-      <Box css={{ position: 'absolute', top: '0', left: 'auto', right: 'calc(100% + $3)', width: '$4', height: '$4', backgroundColor: `${theme?.actionColor}`, borderRadius: '$round', backgroundImage: 'url(https://static.surveysparrow.com/application/production/1742064379689__9086c18ce55cb2ef57d40d3bfb9160f9faa48865d67c4341b5db44e62aca__pngegg.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
+      <Box css={{ position: 'absolute', top: '0', left: 'auto', right: 'calc(100% + $3)', width: '$4', height: '$4', backgroundColor: `${theme?.actionColor}`, borderRadius: '$round', backgroundImage: `url(${profileImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
       {children}
     </Box>
   )

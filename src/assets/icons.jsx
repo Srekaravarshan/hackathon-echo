@@ -166,3 +166,54 @@ export const WhatsAppSurveyIcon = ({ size = 52, color = "currentColor" }) => {
   )
 };
 
+export const TwigsImageFilledSVG = ({ size = 16, color, extraClass }) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      className={extraClass}
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.00003 11.5L1.50003 18C-0.0999731 20.4 3.16669 23.3333 5.00003 24.5H20.5L22 23.5L10 11.5H8.00003Z"
+        fill={color}
+        stroke={color}
+      />
+      <path
+        d="M23.9282 10L17.4282 16.5C15.8282 18.9 19.0949 21.8333 20.9282 23L23.5 22.5L25 19V9L23.9282 10Z"
+        fill={color}
+        stroke={color}
+      />
+      <path
+        d="M25 7.66666L15.6667 17"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22.3333 23.6667L10.8856 12.2189C10.3855 11.7188 9.70724 11.4379 9 11.4379C8.29276 11.4379 7.61448 11.7188 7.11439 12.2189L1 18.3333"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18.3333 1H7.66667C3.98477 1 1 3.98477 1 7.66667V18.3333C1 22.0152 3.98477 25 7.66667 25H18.3333C22.0152 25 25 22.0152 25 18.3333V7.66667C25 3.98477 22.0152 1 18.3333 1Z"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18 7C18.0177 7 18.0346 7.00702 18.0471 7.01953C18.0596 7.03203 18.0667 7.04899 18.0667 7.06667"
+        stroke={color}
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

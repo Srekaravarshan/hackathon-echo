@@ -66,11 +66,12 @@ const MultipleChoice = ({ choices = [], onAnswer }) => {
   }
 
   return (
-    <OptionsContainer>
-      <Flex gap="$4" css={{ flexWrap: 'wrap' }}>
+    <OptionsContainer className="multiple-choice-question">
+      <Flex gap="$4" css={{ flexWrap: 'wrap' }} className="multiple-choice-option-container">
         {choices.map((option, index) => (
           <Option
             key={index}
+            className="multiple-choice-option choice-option"
             selected={selected.includes(option)}
             onClick={() => handleSelect(option)}
             whileTap={{ scale: 0.95 }}
@@ -89,8 +90,9 @@ const MultipleChoice = ({ choices = [], onAnswer }) => {
         onKeyDown={onKeyDown}
         onChange={onChange} 
         style={{ color: theme?.primaryColor }}
+        className="multiple-choice-textarea answer-input"
       />
-      <SubmitButton css={{ height: 'auto' }} disabled={selected.length === 0 && text.length === 0} handleSubmit={handleSubmit} />
+      <SubmitButton css={{ height: 'auto' }} disabled={selected.length === 0 && text.length === 0} handleSubmit={handleSubmit} className="multiple-choice-submit-button submit-button" />
     </OptionsContainer>
   );
 };
