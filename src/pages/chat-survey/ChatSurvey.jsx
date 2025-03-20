@@ -72,6 +72,7 @@ const ChatSurvey = () => {
   )
 }
 export const ChatSurveyPreview = () => {
+  const { triggerToken } = useParams();
 
   return (
     <ThemeProvider>
@@ -83,7 +84,7 @@ export const ChatSurveyPreview = () => {
           paddingBottom: '86px',
         }} alignItems="end" gap="$4" justifyContent="center">
           <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', borderRadius: '$3xl', overflow: 'hidden', backgroundColor: 'white', width: '100%' }}>
-            <Box as="iframe" src="http://localhost:5173/chat/23" css={{ height: '100%', width: '100%' }} />
+            <Box as="iframe" src={`http://localhost:5173/chat/${triggerToken ?? 123}`} css={{ height: '100%', width: '100%' }} />
           </Flex>
           {/* <Box css={{
             width: '50px',

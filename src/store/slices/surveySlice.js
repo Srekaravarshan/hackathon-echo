@@ -102,7 +102,7 @@ export const fetchInitialQuestion = createAsyncThunk(
   async ({ theme, triggerToken } = { theme: initialState.theme, triggerToken: "" }) => {
     console.log("📱 ~ fetchInitialQuestion ~ theme:", theme)
     try {
-      const response = await makeChatQuery("state.userId_2abcdfgki", "start", triggerToken);
+      const response = await makeChatQuery(triggerToken, "start", triggerToken);
       console.log("📱 ~ fetchInitialQuestion ~ response:", response)
 
       const initialQuestion = {
@@ -136,7 +136,7 @@ export const fetchNextQuestion = createAsyncThunk(
     dispatch(addAnswer(answer));
 
     console.log("📱 ~ triggerToken:", triggerToken)
-    const response = await makeChatQuery("state.userId_2abcdfgki", `User response -> ${answer}`, triggerToken);
+    const response = await makeChatQuery(triggerToken, `User response -> ${answer}`, triggerToken);
     console.log("📱 ~ response:", response)
     const nextQuestion = {
       question: response.jsonRes.question,
@@ -151,16 +151,6 @@ export const fetchNextQuestion = createAsyncThunk(
     }
 
     console.log("📱 ~ nextQuestion:", nextQuestion)
-
-    // if (state.questionIndex >= surveyQuestions.length) {
-    //   return null;
-    // }
-
-    // Save the answer for the current question
-
-
-    // Simulate API delay
-    // await new Promise(resolve => setTimeout(resolve, 1000));
 
     return nextQuestion
     ;
