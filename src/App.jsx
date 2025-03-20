@@ -4,13 +4,24 @@ import { ThemeProvider, Tooltip, TooltipProvider, Box, Tabs, TabsList, TabsTrigg
 import Question from './pages/standalone-survey/Question';
 import { fetchInitialQuestion, resetSurvey } from './store/slices/surveySlice';
 import { StandaloneSurveyIcon, ChatSurveyIcon, VoiceSurveyIcon, IVRSurveyIcon, WhatsAppSurveyIcon } from './assets/icons';
-import ChatSurvey from './pages/chat-survey/ChatSurvey';
+import ChatSurvey, { ChatSurveyPreview } from './pages/chat-survey/ChatSurvey';
 import WhatsAppSurvey from './components/whatsapp/WhatsAppSurvey';
 import VoiceSurvey from './pages/voice-survey/VoiceSurvey';
+import IVRSurvey from './pages/ivr-survey/IVRSurvey.jsx';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-      <Survey/>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Survey />} />
+        <Route path="/standalone" element={<StandaloneSurvey />} />
+        <Route path="/chat" element={<ChatSurvey />} />
+        <Route path="/voice" element={<VoiceSurvey />} />
+        <Route path="/ivr" element={<IVRSurvey />} />
+        <Route path="/whatsapp" element={<WhatsAppSurvey />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
@@ -23,14 +34,14 @@ const Survey = () => {
     <ThemeProvider>
       <Box css={{ position: 'relative', height: '100vh', width: '100vw' }}>
         {surveyType === 'standalone' && <StandaloneSurvey />}
-        {surveyType === 'chat' && <ChatSurvey />}
+        {surveyType === 'chat' && <ChatSurveyPreview />}
         {surveyType === 'voice' && <VoiceSurvey />}
-        {/* {surveyType === 'ivr' && <IVRSurvey />} */}
+        {surveyType === 'ivr' && <IVRSurvey />}
         {surveyType === 'whatsapp' && <WhatsAppSurvey />}
         <SurveyTypeTabs surveyType={surveyType} setSurveyType={setSurveyType} />
       </Box>
     </ThemeProvider>
-  )
+  );
 }
 
 const StandaloneSurvey = () => {

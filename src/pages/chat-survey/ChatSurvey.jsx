@@ -25,6 +25,51 @@ const ChatSurvey = () => {
   }, [dispatch]);
 
   return (
+    <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;' }} alignItems="center" justifyContent="center" className="dm-sans">
+      <Flex css={{
+        height: '50px',
+        backgroundColor: accentColor,
+        // borderTopLeftRadius: '$3xl',
+        // borderTopRightRadius: '$3xl',
+        overflow: 'hidden',
+        width: '100%',
+        position: 'sticky',
+        top: '0',
+        zIndex: '99',
+      }} alignItems="center">
+        <Box
+          css={{
+            marginTop: 'auto',
+            marginLeft: '20px',
+            width: '40px',
+            height: '40px',
+            backgroundColor: accentColor,
+            backgroundImage: `url(${profileImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            flexShrink: 0,
+          }}
+        >
+        </Box>
+        <Box>
+          <Text size="sm" weight="medium" css={{ color: '$neutral900', marginLeft: '10px' }} truncate>Leo</Text>
+          <Text size="xs" css={{ color: '$neutral800', marginLeft: '10px' }} truncate>Personalized Travel Booking Agent</Text>
+        </Box>
+        <IconButton icon={<CloseIcon />} color="default" css={{ marginRight: '$6', marginLeft: 'auto' }} />
+      </Flex>
+      <Box css={{
+        width: '100%', flex: '1', overflow: 'scroll',
+        // borderBottomLeftRadius: '$3xl', borderBottomRightRadius: '$3xl'
+      }}>
+        <Questions />
+      </Box>
+    </Flex>
+  )
+}
+export const ChatSurveyPreview = () => {
+
+  return (
     <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
       <Flex flexDirection="column" css={{ 
         height: '100%',
@@ -32,38 +77,8 @@ const ChatSurvey = () => {
         paddingTop: '20px',
         paddingBottom: '86px',
       }} alignItems="end" gap="$4" justifyContent="center">
-        <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;', backgroundColor: 'white', width: '100%', borderRadius: '$3xl' }}>
-          <Flex css={{
-            height: '50px',
-            backgroundColor: accentColor,
-            borderTopLeftRadius: '$3xl',
-            borderTopRightRadius: '$3xl',
-            overflow: 'hidden',
-          }} alignItems="center">
-            <Box
-              css={{
-                marginTop: 'auto',
-                marginLeft: '20px',
-                width: '40px',
-                height: '40px',
-                backgroundColor: accentColor,
-                backgroundImage: `url(${profileImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                flexShrink: 0,
-              }}
-            >
-            </Box>
-            <Box>
-              <Text size="sm" weight="medium" css={{ color: '$neutral900', marginLeft: '10px' }} truncate>Leo</Text>
-              <Text size="xs" css={{ color: '$neutral800', marginLeft: '10px' }} truncate>Personalized Travel Booking Agent</Text>
-            </Box>
-            <IconButton icon={<CloseIcon />} color="default" css={{ marginRight: '$6', marginLeft: 'auto' }} />
-          </Flex>
-          <Box css={{ width: '100%', flex: '1', overflow: 'scroll', borderBottomLeftRadius: '$3xl', borderBottomRightRadius: '$3xl' }}>
-            <Questions />
-          </Box>
+        <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', borderRadius: '$3xl', overflow: 'hidden', backgroundColor: 'white', width: '100%' }}>
+          <Box as="iframe" src="http://localhost:5173/chat" css={{ height: '100%', width: '100%' }} />
         </Flex>
         {/* <Box css={{
           width: '50px',
@@ -108,7 +123,7 @@ const Questions = () => {
       style={{ backgroundColor: theme?.secondaryColor }}
     >
       <Flex flexDirection="column" gap="$6" css={{
-        minHeight: '350px', width: '100%',
+        minHeight: '100%',
         padding: '30px 8%',
         '[data-testid="typewriter-wrapper"]': {
           fontSize: '14px',
