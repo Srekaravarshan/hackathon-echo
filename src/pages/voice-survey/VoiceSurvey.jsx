@@ -1,4 +1,4 @@
-import { Box, Button, Flex, IconButton, Text } from '@sparrowengg/twigs-react';
+import { Box, Button, Flex, IconButton, Text, ThemeProvider } from '@sparrowengg/twigs-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, forwardRef, useState, useRef } from 'react';
 import { fetchInitialQuestion, resetSurvey } from '../../store/slices/surveySlice';
@@ -26,32 +26,34 @@ const VoiceSurvey = () => {
   }, [dispatch]);
 
   return (
-    <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
-      <Flex flexDirection="column" css={{ 
-        height: '100%',
-        width: '350px',
-        paddingTop: '20px',
-        paddingBottom: '86px',
-      }} alignItems="end" gap="$4" justifyContent="center">
-        <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;', backgroundColor: 'white', width: '100%', borderRadius: '$3xl' }} justifyContent="center" alignItems="center">
-          <Box css={{
-            width: '100px',
-            height: '100px',
-            backgroundColor: accentColor,
-            backgroundImage: `url(${profileImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            flexShrink: 0,
-            borderRadius: '$round'
-          }}/>
-          <Text size="md" weight="bold" css={{ color: '$neutral900', marginTop: '10px' }} truncate>Leo</Text>
-          <Text size="xs" css={{ color: '$neutral800', textAlign: 'center', maxWidth: '70%' }}>Personalized Travel<br/>Booking Agent</Text>
-          {!callingView && <CallButton primaryColor={primaryColor} accentColor={accentColor} setCallingView={setCallingView} />}
-          {callingView && <CallingView />}
+    <ThemeProvider>
+      <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
+        <Flex flexDirection="column" css={{ 
+          height: '100%',
+          width: '350px',
+          paddingTop: '20px',
+          paddingBottom: '86px',
+        }} alignItems="end" gap="$4" justifyContent="center">
+          <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;', backgroundColor: 'white', width: '100%', borderRadius: '$3xl' }} justifyContent="center" alignItems="center">
+            <Box css={{
+              width: '100px',
+              height: '100px',
+              backgroundColor: accentColor,
+              backgroundImage: `url(${profileImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              flexShrink: 0,
+              borderRadius: '$round'
+            }}/>
+            <Text size="md" weight="bold" css={{ color: '$neutral900', marginTop: '10px' }} truncate>Leo</Text>
+            <Text size="xs" css={{ color: '$neutral800', textAlign: 'center', maxWidth: '70%' }}>Personalized Travel<br/>Booking Agent</Text>
+            {!callingView && <CallButton primaryColor={primaryColor} accentColor={accentColor} setCallingView={setCallingView} />}
+            {callingView && <CallingView />}
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+    </ThemeProvider>
   )
 }
 

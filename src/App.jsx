@@ -15,6 +15,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Survey />} />
+        <Route path="/survey/:triggerToken" element={<Survey />} />
         <Route path="/standalone/:triggerToken" element={<StandaloneSurvey />} />
         <Route path="/chat/:triggerToken" element={<ChatSurvey />} />
         <Route path="/voice/:triggerToken" element={<VoiceSurvey />} />
@@ -36,16 +37,14 @@ const Survey = () => {
   const [surveyType, setSurveyType] = useState('whatsapp');
 
   return (
-    <ThemeProvider>
-      <Box css={{ position: 'relative', height: '100vh', width: '100vw' }}>
-        {surveyType === 'standalone' && <StandaloneSurvey />}
-        {surveyType === 'chat' && <ChatSurveyPreview />}
-        {surveyType === 'voice' && <VoiceSurvey />}
-        {surveyType === 'ivr' && <IVRSurvey />}
-        {surveyType === 'whatsapp' && <WhatsAppSurvey />}
-        <SurveyTypeTabs surveyType={surveyType} setSurveyType={setSurveyType} />
-      </Box>
-    </ThemeProvider>
+    <Box css={{ position: 'relative', height: '100vh', width: '100vw' }}>
+      {surveyType === 'standalone' && <StandaloneSurvey />}
+      {surveyType === 'chat' && <ChatSurveyPreview />}
+      {surveyType === 'voice' && <VoiceSurvey />}
+      {surveyType === 'ivr' && <IVRSurvey />}
+      {surveyType === 'whatsapp' && <WhatsAppSurvey />}
+      <SurveyTypeTabs surveyType={surveyType} setSurveyType={setSurveyType} />
+    </Box>
   );
 }
 
@@ -62,7 +61,9 @@ const StandaloneSurvey = () => {
   }, [dispatch]);
 
   return (
-    <Question />
+    <ThemeProvider>
+      <Question />
+    </ThemeProvider>
   );
 };
 
