@@ -19,9 +19,9 @@ const WelcomeMessageQuestionAndResponse = ({ handleResponse }) => {
         },
         '[data-testid="typewriter-wrapper"]': {
           transition: 'opacity 0.2s ease-in-out',
-          fontSize: '$5xl',
-          lineHeight: '$5xl',
-          fontWeight: '$7',
+          fontSize: '$5xl !important',
+          lineHeight: '$5xl !important',
+          fontWeight: '$7 !important',
           // textAlign: 'center',
           ...(typing && { opacity: '0.5' })
         }
@@ -46,8 +46,8 @@ const WelcomeMessageQuestionAndResponse = ({ handleResponse }) => {
         },
         '[data-testid="typewriter-wrapper"]': {
           transition: 'opacity 0.2s ease-in-out',
-          fontSize: '$3xl',
-          lineHeight: '$3xl',
+          fontSize: '$3xl !important',
+          lineHeight: '$3xl !important',
           // textAlign: 'center',
           ...(typing && { opacity: '0.5' })
         }

@@ -450,7 +450,7 @@ const StandaloneSurvey = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff' } }));
+    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#ffffff', secondaryColor: '#000000' } }));
     return () => {
       dispatch(resetSurvey());
     }
