@@ -18,7 +18,7 @@ const VoiceSurvey = () => {
   const primaryColor = '#000000';
 
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor: primaryColor, secondaryColor: secondaryColor, actionColor: accentColor, profileImage: profileImage } }));
+    dispatch(fetchInitialQuestion({ theme: { primaryColor: primaryColor, secondaryColor: secondaryColor, actionColor: accentColor, profileImage: profileImage }, triggerToken }));
 
     return () => {
       dispatch(resetSurvey());

@@ -71,6 +71,8 @@ const WhatsAppQuestion = () => {
   
   const dispatch = useDispatch();
 
+  const { triggerToken } = useParams() ?? {};
+
   const messageScreenRef = useRef(null);
 
   const [currentMessage, setCurrentMessage] = useState(null);
@@ -120,7 +122,7 @@ const WhatsAppQuestion = () => {
     const newMessages = [...answeredMessages, newAnsweredMessage, newUserMessage]
     setAnsweredMessages(newMessages)
     setCurrentMessage(null);
-    const res = await dispatch(fetchNextQuestion(button?.label))
+    const res = await dispatch(fetchNextQuestion({ answer: button?.label, triggerToken }))
     addQuestionToWhatsAppMessage(res?.payload)
   }
 
@@ -130,7 +132,7 @@ const WhatsAppQuestion = () => {
 
   useEffect(() => {
     const fetchQuestion = async () => {
-      const res = await dispatch(fetchInitialQuestion());
+      const res = await dispatch(fetchInitialQuestion({ triggerToken }));
       addQuestionToWhatsAppMessage(res?.payload?.currentQuestion)
     };
 

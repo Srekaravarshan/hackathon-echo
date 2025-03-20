@@ -5,10 +5,12 @@ import { Box } from '@sparrowengg/twigs-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchNextQuestion } from '../../store/slices/surveySlice';
 import ResponseComponent from './ResponseQuestion';
+import { useParams } from 'react-router-dom';
 
 const Question = () => {
 
   const dispatch = useDispatch();
+  const { triggerToken } = useParams() ?? {};
   
   const { currentQuestion, loading, loadingNextQuestion, typing, theme } = useSelector((state) => state.survey);
   
@@ -17,7 +19,7 @@ const Question = () => {
   const handleResponse = useCallback(async (answer) => {
     console.log("📱 ~ handleResponse ~ answer:", answer)
 
-    dispatch(fetchNextQuestion(answer));
+    dispatch(fetchNextQuestion({ answer, triggerToken }));
   }, [dispatch]);
   
   return (

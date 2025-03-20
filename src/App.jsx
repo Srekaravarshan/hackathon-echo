@@ -55,7 +55,7 @@ const StandaloneSurvey = () => {
   console.log("🚀 ~ StandaloneSurvey ~ triggerToken:", triggerToken)
 
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff' } }));
+    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff' }, triggerToken }));
     return () => {
       dispatch(resetSurvey());
     }

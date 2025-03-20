@@ -19,7 +19,7 @@ const ChatSurvey = () => {
 
 
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff', actionColor: '#F5D161', profileImage: profileImage } }));
+    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff', actionColor: '#F5D161', profileImage: profileImage }, triggerToken }));
 
     return () => {
       dispatch(resetSurvey());
@@ -110,8 +110,10 @@ const Questions = () => {
   
   const [animationComplete, setAnimationComplete] = useState(false);
 
+  const { triggerToken } = useParams() ?? {};
+
   const handleResponse = useCallback(async (answer) => {
-    dispatch(fetchNextQuestion(answer))
+    dispatch(fetchNextQuestion({ answer, triggerToken }))
     // .then(() => {
     //   endOfQuestionsRef.current.scrollIntoView({ behavior: 'smooth' });
     // });

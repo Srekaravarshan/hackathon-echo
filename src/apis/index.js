@@ -8,6 +8,7 @@ export const makeChatQuery = async (userId, query, triggerToken) => {
       userId,
       query
     });
+    console.log("🚀 ~ makeChatQuery ~ response:", response)
     return response.data;
   } catch (error) {
     console.error('Error making query:', error);

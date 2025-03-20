@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { makeChatQuery } from '../../apis';
+import { useParams } from 'react-router-dom';
 
 const surveyQuestions = [
   {
@@ -98,17 +99,26 @@ const initialState = {
 
 export const fetchInitialQuestion = createAsyncThunk(
   'survey/fetchInitialQuestion',
-  async ({ theme } = { theme: initialState.theme }) => {
+  async ({ theme, triggerToken } = { theme: initialState.theme, triggerToken: "" }) => {
+    console.log("📱 ~ fetchInitialQuestion ~ theme:", theme)
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await makeChatQuery("state.userId_2abcdfgki", "start", triggerToken);
+      console.log("📱 ~ fetchInitialQuestion ~ response:", response)
 
-      if (!surveyQuestions.length) {
-        throw new Error('No survey questions available');
+      const initialQuestion = {
+        question: response.jsonRes.question,
+        type: response.jsonRes.questionType,
+        choices: response.jsonRes.choices || [],
+        closeSurvey: false
+      }
+
+      if(response.jsonRes.actionExecutedMessage){
+        initialQuestion.question = response.jsonRes.actionExecutedMessage;
+        initialQuestion.type = "message";
       }
 
       return {
-        currentQuestion: {...surveyQuestions[0]},
+        currentQuestion: initialQuestion,
         theme
       };
     } catch (error) {
@@ -121,17 +131,13 @@ export const fetchInitialQuestion = createAsyncThunk(
 
 export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
-  async (answer, { getState, dispatch }) => {
-    const state = getState().survey;
+  async ({ answer, triggerToken }, { getState, dispatch }) => {
+    // const { triggerToken } = useParams();
+    dispatch(addAnswer(answer));
 
-    const currentIndex = state.questionIndex;
-    console.log("📱 ~ currentIndex:", currentIndex)
-    
-    const triggerToken = window.location.pathname.split('/').slice(-1)[0];
+    console.log("📱 ~ triggerToken:", triggerToken)
     const response = await makeChatQuery("state.userId_2abcdfgki", `User response -> ${answer}`, triggerToken);
     console.log("📱 ~ response:", response)
-
-
     const nextQuestion = {
       question: response.jsonRes.question,
       type: response.jsonRes.questionType,
@@ -151,7 +157,6 @@ export const fetchNextQuestion = createAsyncThunk(
     // }
 
     // Save the answer for the current question
-    dispatch(addAnswer(answer));
 
 
     // Simulate API delay
@@ -225,9 +230,11 @@ export const surveySlice = createSlice({
         state.typing = false;
       })
       .addCase(fetchNextQuestion.pending, (state) => {
+        console.log("🚀 ~ fetchNextQuestion.pending ~ state:", state)
         state.loadingNextQuestion = true;
       })
       .addCase(fetchNextQuestion.fulfilled, (state, action) => {
+        console.log("🚀 ~ fetchNextQuestion.fulfilled ~ action:", action)
         if (action.payload) {
           state.currentQuestion = action.payload;
           state.questionIndex += 1;
@@ -235,7 +242,8 @@ export const surveySlice = createSlice({
         state.loadingNextQuestion = false;
         state.typing = false;
       })
-      .addCase(fetchNextQuestion.rejected, (state) => {
+      .addCase(fetchNextQuestion.rejected, (state, ...props) => {
+        console.log("🚀 ~ fetchNextQuestion.rejected ~ state:", state, props)
         state.loadingNextQuestion = false;
         state.typing = false;
       });
