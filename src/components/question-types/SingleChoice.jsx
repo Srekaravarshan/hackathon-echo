@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { OptionsContainer, Option, StyledTextareaInput } from '../StyledComponents';
 import SubmitButton from '../buttons/SubmitButton';
 import { setTyping } from '../../store/slices/surveySlice';
+import styles from '../../pages/chat-survey/ChatSurvey.module.css';
 
 const SingleChoice = ({ choices = [], onAnswer }) => {
   const [selected, setSelected] = useState(null);
@@ -77,7 +78,7 @@ const SingleChoice = ({ choices = [], onAnswer }) => {
             whileTap={{ scale: 0.95 }}
             style={{ color: selected === option ? theme?.secondaryColor : theme?.primaryColor }}
             primaryColor={theme?.primaryColor}
-            className="single-choice-option choice-option"
+            className={`${styles.choiceOption} single-choice-option choice-option`}
           >
             {option}
             {/* <ShortcutKey css={{ marginLeft: '$4', textTransform: 'uppercase' }}>{NumAlphaMapping[index + 1]}</ShortcutKey> */}
@@ -91,7 +92,7 @@ const SingleChoice = ({ choices = [], onAnswer }) => {
         onKeyDown={onKeyDown}
         onChange={onChange} 
         style={{ color: theme?.primaryColor }}
-        className="single-choice-textarea answer-input"
+        className={styles.answerInput}
       />
       <SubmitButton css={{ height: 'auto' }} disabled={!selected && text.length === 0} handleSubmit={handleSubmit} className="single-choice-submit-button submit-button" />
     </OptionsContainer>

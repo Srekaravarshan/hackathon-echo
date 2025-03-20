@@ -1,45 +1,52 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { makeChatQuery, makeSubmissionEntry } from '../../apis';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { makeChatQuery, makeSubmissionEntry, getWelcomeMessage } from "../../apis";
+import { ButtonActions } from "../../components/question-types/constants";
 
 const surveyQuestions = [
   {
-    "question": "Hi, how can I help you today?",
-    "type": "text"
+    question: "Hi, how can I help you today?",
+    type: "text",
   },
   {
-    "question": "How would you rate your experience with our travel assistance?",
-    "type": "opinionScale",
-    "scale": {
+    question: "How would you rate your experience with our travel assistance?",
+    type: "opinionScale",
+    scale: {
       min: 1,
       max: 10,
     },
   },
   {
-    "question": "Provide your aadhar card",
-    "type": "fileUpload",
+    question: "Provide your aadhar card",
+    type: "fileUpload",
   },
   {
-    "question": "What is your travel destination?",
-    "type": "text"
+    question: "What is your travel destination?",
+    type: "text",
   },
   {
-    "question": "Are you going to be traveling alone?",
-    "type": "yesOrNo",
-    "choices": ["Yes", "No"]
+    question: "Are you going to be traveling alone?",
+    type: "yesOrNo",
+    choices: ["Yes", "No"],
   },
   {
-    "question": "Do you have any hotel preferences?",
-    "type": "multipleChoice",
-    "choices": ["Budget hotels", "Boutique hotels", "Luxury hotels", "No preference"]
+    question: "Do you have any hotel preferences?",
+    type: "multipleChoice",
+    choices: [
+      "Budget hotels",
+      "Boutique hotels",
+      "Luxury hotels",
+      "No preference",
+    ],
   },
   {
-    "question": "What are your planned travel dates?",
-    "type": "text"
+    question: "What are your planned travel dates?",
+    type: "text",
   },
   {
-    "question": "Based on your preferences, here are some travel recommendations. Do you want more details on any of them?",
-    "type": "yesOrNo",
-    "choices": ["Yes", "No"]
+    question:
+      "Based on your preferences, here are some travel recommendations. Do you want more details on any of them?",
+    type: "yesOrNo",
+    choices: ["Yes", "No"],
   },
   // {
   //   "question": "Would you like us to book a hotel for you?",
@@ -47,35 +54,36 @@ const surveyQuestions = [
   //   "choices": ["Yes", "No"]
   // },
   {
-    "question": "Please provide your email for booking confirmation.",
-    "type": "text"
+    question: "Please provide your email for booking confirmation.",
+    type: "text",
   },
   {
-    "question": "Please provide your phone number for booking assistance.",
-    "type": "text"
+    question: "Please provide your phone number for booking assistance.",
+    type: "text",
   },
   {
-    "question": "Thank you for your time!",
-    "type": "endMessage",
+    question: "Thank you for your time!",
+    type: "endMessage",
     closeSurvey: true,
-  }
+  },
 ];
 
 const initialState = {
   currentQuestion: {
     choices: [],
-    question: '',
-    type: '',
-    closeSurvey: false
+    question: "",
+    description: "",
+    type: "",
+    closeSurvey: false,
   },
   theme: {
-    primaryColor: '#000000',
-    secondaryColor: '#ffffff',
+    primaryColor: "#000000",
+    secondaryColor: "#ffffff",
   },
   loading: true,
   loadingNextQuestion: false,
   showChat: false,
-  chatInput: '',
+  chatInput: "",
   chatMessages: [],
   questionIndex: 0,
   answers: [],
@@ -83,69 +91,90 @@ const initialState = {
 };
 
 export const fetchInitialQuestion = createAsyncThunk(
-  'survey/fetchInitialQuestion',
+  "survey/fetchInitialQuestion",
   async ({ theme } = { theme: initialState.theme }) => {
     try {
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // await new Promise(resolve => setTimeout(resolve, 1000));
+      // const response = await Axios.post('http://localhost:3000/api/chat/getWelcomeMessage');
+      // const welcomeMessageData = response?.data?.welcomeMessageData;
+      
+      const welcomeMessageRes = await getWelcomeMessage(1000000449);
+      console.log("📱 ~ welcomeMessageRes:", welcomeMessageRes)
+      
+      
+      const welcomeMessageData = welcomeMessageRes?.welcomeMessageData;
 
       if (!surveyQuestions.length) {
-        throw new Error('No survey questions available');
+        throw new Error("No survey questions available");
       }
 
       return {
-        currentQuestion: {...surveyQuestions[0]},
-        theme
+        currentQuestion: {
+          question: welcomeMessageData.greetingHeader,
+          description: welcomeMessageData.greetingDescription,
+          type: "welcomeMessage",
+          buttons: [
+            {
+              text: welcomeMessageData.welcomeButtonText,
+              action: ButtonActions.NEXT_QUESTION,
+            },
+          ],
+        },
+        theme,
       };
     } catch (error) {
-      console.error('Error in fetchInitialQuestion:', error);
+      console.error("Error in fetchInitialQuestion:", error);
       throw error; // Re-throw to trigger rejected state
     }
   }
 );
 
-
 export const fetchNextQuestion = createAsyncThunk(
-  'survey/fetchNextQuestion',
+  "survey/fetchNextQuestion",
   async (answer, { getState, dispatch }) => {
     const state = getState().survey;
 
     const currentIndex = state.questionIndex;
-    console.log("📱 ~ currentIndex:", currentIndex)
-    
-    const conversationId = "state.userId_2abcdfgkiolpkmnmllopkdjpljmnmdoplnbmmn";
-    const response = await makeChatQuery(conversationId, `User response -> ${answer}`);
-    console.log("📱 ~ response:", response)
+    console.log("📱 ~ currentIndex:", currentIndex);
 
+    const conversationId =
+      "state.userId_2abcdfgkiolpkmnmllopkdjpljmnmdoplnbmmnbnnb";
+    const response = await makeChatQuery(
+      conversationId,
+      `User response -> ${answer}`
+    );
+    console.log("📱 ~ response:", response);
 
     const nextQuestion = {
       question: response.jsonRes.question,
       type: response.jsonRes.questionType,
       choices: response.jsonRes.choices || [],
-      closeSurvey: false
-    }
+      closeSurvey: false,
+    };
 
-    if(response.jsonRes.actionExecutedMessage){
+    if (response.jsonRes.actionExecutedMessage) {
       nextQuestion.question = response.jsonRes.actionExecutedMessage;
       nextQuestion.type = "message";
     }
 
     const kbExecutionMessage = response.jsonRes.kbExecutionMessage;
-    if(kbExecutionMessage){
+    if (kbExecutionMessage) {
       nextQuestion.question = kbExecutionMessage;
       nextQuestion.type = "message";
     }
 
     const conversationCompleted = response.jsonRes?.conversationCompleted;
-    if(conversationCompleted){
-      if(response.jsonRes?.conversationCompletedMessage){
+    if (conversationCompleted) {
+      if (response.jsonRes?.conversationCompletedMessage) {
         nextQuestion.question += `\n\n${response.jsonRes?.conversationCompletedMessage}`;
       }
       nextQuestion.closeSurvey = true;
+      nextQuestion.type = "endMessage";
       await makeSubmissionEntry(conversationId);
     }
 
-    console.log("📱 ~ nextQuestion:", nextQuestion)
+    console.log("📱 ~ nextQuestion:", nextQuestion);
 
     // if (state.questionIndex >= surveyQuestions.length) {
     //   return null;
@@ -153,9 +182,8 @@ export const fetchNextQuestion = createAsyncThunk(
 
     // Save the answer for the current question
     // if (answer !== undefined) {
-      dispatch(addAnswer(answer));
+    dispatch(addAnswer(answer));
     // }
-
 
     // Simulate API delay
     // await new Promise(resolve => setTimeout(resolve, 1000));
@@ -165,7 +193,7 @@ export const fetchNextQuestion = createAsyncThunk(
 );
 
 export const surveySlice = createSlice({
-  name: 'survey',
+  name: "survey",
   initialState,
   reducers: {
     setCurrentQuestion: (state, action) => {
@@ -197,11 +225,11 @@ export const surveySlice = createSlice({
       });
     },
     setTyping: (state, action) => {
-      console.log("🚀 ~ setTyping ~ action:", action)
+      console.log("🚀 ~ setTyping ~ action:", action);
       state.typing = action.payload;
     },
     updateAnswers: (state, action) => {
-      console.log("🚀 ~ setTyping ~ action:", action)
+      console.log("🚀 ~ setTyping ~ action:", action);
       state.answers = action.payload;
     },
     resetSurvey: () => {
@@ -258,4 +286,4 @@ export const {
   updateAnswers,
 } = surveySlice.actions;
 
-export default surveySlice.reducer; 
+export default surveySlice.reducer;

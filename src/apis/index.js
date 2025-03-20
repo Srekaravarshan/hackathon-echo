@@ -29,3 +29,16 @@ export const makeSubmissionEntry = async (conversationId) => {
     throw error;
   }
 };
+
+
+export const getWelcomeMessage = async (surveyId) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/chat/getWelcomeMessage`, {
+      surveyId: surveyId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error making query:', error);
+    throw error;
+  }
+};
