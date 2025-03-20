@@ -8,6 +8,7 @@ import Audio from '../../components/question-types/Audio';
 import TextInput from '../../components/question-types/TextInput';
 import OpinionScale from '../../components/question-types/OpinionScale';
 import EndMessage from '../../components/question-types/EndMessage';
+import WelcomeMessage from '../../components/question-types/WelcomeMessage';
 
 const ResponseComponent = ({ currentQuestion, handleResponse, animationComplete }) => {
   if (!currentQuestion) return null;
@@ -21,6 +22,8 @@ const ResponseComponent = ({ currentQuestion, handleResponse, animationComplete 
     >
       {(() => {
         switch (currentQuestion.type) {
+          case 'welcomeMessage':
+            return <WelcomeMessage currentQuestion={currentQuestion} onAnswer={handleResponse} />;
           case 'yesOrNo':
             return (
               <YesOrNo onAnswer={handleResponse} />

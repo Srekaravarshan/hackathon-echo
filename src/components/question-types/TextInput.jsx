@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setTyping } from '../../store/slices/surveySlice';
 import { StyledTextareaInput } from '../StyledComponents';
 import SubmitButton from '../buttons/SubmitButton';
+import styles from '../../pages/chat-survey/ChatSurvey.module.css';
 
 const TextInput = ({ onAnswer }) => {
   const [text, setText] = useState('');
@@ -67,7 +68,7 @@ const TextInput = ({ onAnswer }) => {
         onKeyDown={onKeyDown}
         onChange={onChange} 
         style={{ color: theme?.primaryColor }}
-        className="text-input-textarea answer-input"
+        className={styles.answerInput}
       />
       <SubmitButton css={{ height: 'auto' }} disabled={text.trim().length === 0} handleSubmit={() => {
         if (text.trim().length > 0) {

@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { ButtonActions } from '../../components/question-types/constants';
 
 const surveyQuestions = [
   {
@@ -78,6 +79,7 @@ const initialState = {
   currentQuestion: {
     choices: [],
     question: '',
+    description: '',
     type: '',
     closeSurvey: false
   },
@@ -100,14 +102,31 @@ export const fetchInitialQuestion = createAsyncThunk(
   async ({ theme } = { theme: initialState.theme }) => {
     try {
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // await new Promise(resolve => setTimeout(resolve, 1000));
+      // const response = await Axios.post('http://localhost:3000/api/chat/getWelcomeMessage');
+      // const welcomeMessageData = response?.data?.welcomeMessageData;
+      const welcomeMessageData = {
+        "greetingHeader": "Hey Welcome to Paris Travel Corporation",
+        "greetingDescription": "Share your travel story about Paris Travel Corporation.",
+        "welcomeButtonText": "Lets Get Started"
+    }
 
       if (!surveyQuestions.length) {
         throw new Error('No survey questions available');
       }
 
       return {
-        currentQuestion: {...surveyQuestions[0]},
+        currentQuestion: {
+          question: welcomeMessageData.greetingHeader,
+          description: welcomeMessageData.greetingDescription,
+          type: 'welcomeMessage',
+          buttons: [
+            {
+              text: welcomeMessageData.welcomeButtonText,
+              action: ButtonActions.NEXT_QUESTION
+            }
+          ]
+        },
         theme
       };
     } catch (error) {

@@ -7,8 +7,8 @@ import { fetchInitialQuestion, fetchNextQuestion, resetSurvey } from '../../stor
 import Typewriter from 'typewriter-effect';
 import ResponseComponent from '../standalone-survey/ResponseQuestion';
 import QuestionAnswerTypes from '../../components/question-answer-types/QuestionAnswerTypes';
-import './ChatSurvey.css';
 import { useParams } from 'react-router-dom';
+import styles from './ChatSurvey.module.css';
 
 const ChatSurvey = () => {
   const dispatch = useDispatch();
