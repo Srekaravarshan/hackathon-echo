@@ -1,11 +1,39 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ButtonActions } from '../../components/question-types/constants';
 
+const welcomeMessageData = {
+  "greetingHeader": "Hey Welcome to Paris Travel Corporation",
+  "greetingDescription": "Share your travel story about Paris Travel Corporation.",
+  "welcomeButtonText": "Lets Get Started"
+}
+
 const surveyQuestions = [
+  {    
+    question: welcomeMessageData.greetingHeader,
+    description: welcomeMessageData.greetingDescription,
+    type: 'welcomeMessage',
+    buttons: [
+      {
+        text: welcomeMessageData.welcomeButtonText,
+        action: ButtonActions.NEXT_QUESTION
+      }
+    ]
+  },
   {
-    "question": "Hello! Do you need travel recommendations or booking sfasdf?",
-    "type": "singleChoice",
-    "choices": ["Travel recommendations", "Booking assistance"]
+    "question": "Hello! Do you need to book demo on coming saturday?",
+    "type": "yesOrNo",
+    // "choices": ["Travel recommendations", "Booking assistance"]
+  },
+  {
+    "type": "action",
+    "question": "I am booking demo call on coming saturday",
+    "actionType": "appointment",
+    "hasConfirmation": false,
+  },
+  {
+    "type": "action",
+    "question": "I am booking demo call on coming saturday",
+    "actionType": "appointment"
   },
   {
     "question": "Are you going to be traveling alone?",
@@ -95,6 +123,13 @@ const initialState = {
   questionIndex: 0,
   answers: [],
   typing: false,
+  actionData: {
+    actionStatus: 'ACTION_NOT_STARTED',
+    response: {
+      question: '',
+      type: '',
+    }
+  }
 };
 
 export const fetchInitialQuestion = createAsyncThunk(
@@ -105,11 +140,11 @@ export const fetchInitialQuestion = createAsyncThunk(
       // await new Promise(resolve => setTimeout(resolve, 1000));
       // const response = await Axios.post('http://localhost:3000/api/chat/getWelcomeMessage');
       // const welcomeMessageData = response?.data?.welcomeMessageData;
-      const welcomeMessageData = {
-        "greetingHeader": "Hey Welcome to Paris Travel Corporation",
-        "greetingDescription": "Share your travel story about Paris Travel Corporation.",
-        "welcomeButtonText": "Lets Get Started"
-    }
+    //   const welcomeMessageData = {
+    //     "greetingHeader": "Hey Welcome to Paris Travel Corporation",
+    //     "greetingDescription": "Share your travel story about Paris Travel Corporation.",
+    //     "welcomeButtonText": "Lets Get Started"
+    // }
 
       if (!surveyQuestions.length) {
         throw new Error('No survey questions available');
@@ -117,15 +152,16 @@ export const fetchInitialQuestion = createAsyncThunk(
 
       return {
         currentQuestion: {
-          question: welcomeMessageData.greetingHeader,
-          description: welcomeMessageData.greetingDescription,
-          type: 'welcomeMessage',
-          buttons: [
-            {
-              text: welcomeMessageData.welcomeButtonText,
-              action: ButtonActions.NEXT_QUESTION
-            }
-          ]
+          ...surveyQuestions[0],
+          // question: welcomeMessageData.greetingHeader,
+          // description: welcomeMessageData.greetingDescription,
+          // type: 'welcomeMessage',
+          // buttons: [
+          //   {
+          //     text: welcomeMessageData.welcomeButtonText,
+          //     action: ButtonActions.NEXT_QUESTION
+          //   }
+          // ]
         },
         theme
       };
@@ -199,6 +235,12 @@ export const surveySlice = createSlice({
     resetSurvey: () => {
       return initialState;
     },
+    updateActionData: (state, action) => {
+      state.actionData = {
+        ...state.actionData,
+        ...action.payload,
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -248,6 +290,7 @@ export const {
   resetSurvey,
   setTyping,
   updateAnswers,
+  updateActionData,
 } = surveySlice.actions;
 
 export default surveySlice.reducer; 
