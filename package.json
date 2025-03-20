@@ -32,6 +32,7 @@
     "react-dom": "^19.0.0",
     "react-frame-component": "^5.2.7",
     "react-redux": "^9.2.0",
+    "react-router-dom": "^7.4.0",
     "react-speech-recognition": "^4.0.0",
     "short-uuid": "^5.2.0",
     "typewriter-effect": "^2.21.0"
