@@ -14,6 +14,8 @@ export const ChatProfile = () => {
 
   const dispatch = useDispatch();
 
+  const { triggerToken } = useParams();
+
   const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
   const accentColor = '#F5D161';
 
