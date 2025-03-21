@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ButtonActions } from '../../components/question-types/constants';
 
+// const welcomeMessageData = {
+//   "greetingHeader": "Hey",
+//   "greetingDescription": "Share",
+//   "welcomeButtonText": "Lets Get Started"
+// }
 const welcomeMessageData = {
   "greetingHeader": "Hey Welcome to Paris Travel Corporation",
   "greetingDescription": "Share your travel story about Paris Travel Corporation.",
@@ -79,12 +84,12 @@ const messageQuestion = {
 }
 
 const surveyQuestions = [
-  actionData1,
+  welcomeMessage,
   ratingQuestion,
   actionDataRedirect,
   yesOrNoQuestionData,
   yesOrNoQuestionData2,
-  welcomeMessage,
+  actionData1,
   multipleChoiceQuestion,
   opinionScaleQuestion,
   messageQuestion,

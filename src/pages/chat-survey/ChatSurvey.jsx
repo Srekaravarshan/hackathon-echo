@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton, Text, ThemeProvider } from '@sparrowengg/twigs-react';
+import { Box, Flex, IconButton, Text, ThemeProvider, keyframes } from '@sparrowengg/twigs-react';
 import { CloseIcon } from '@sparrowengg/twigs-react-icons';
 import { ChatSurveyContainer } from '../../components/StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,9 +13,14 @@ const ChatSurvey = () => {
   const { triggerToken } = useParams();
   console.log("🚀 ~ ChatSurvey ~ triggerToken:", triggerToken)
 
+  const { currentQuestion } = useSelector((state) => state.survey);
+  console.log("🚀 ~ ChatSurvey ~ currentQuestion:", currentQuestion)
+
   const dispatch = useDispatch();
 
   const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
+  const primaryColor = '#000000';
+  const secondaryColor = '#ffffff';
   const accentColor = '#F5D161';
   const actionColor = '#F5D161';
 
@@ -80,19 +85,40 @@ const ChatSurvey = () => {
           width: '20px !important',
         },
 
-        '.questions-and-response-component':{
-          display: 'flex',
-          flexDirection: 'column',
-          flex: '1',
+        // '.questions-and-response-component':{
+        //   display: 'flex',
+        //   flexDirection: 'column',
+        //   flex: '1',
+        // },
+
+        '[data-question-type="welcomeMessage"] .chat-survey-messages-body': {
+          position: 'relative'
         },
 
         '.welcome-message': {
           flex: '1',
           display: 'flex',
           flexDirection: 'column',
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          right: '0',
+          bottom: '0',
+          justifyContent: 'start',
+          alignItems: 'start',
+          zIndex: '99',
+          padding: '32px',
+          width: '100%',
+          textAlign: 'start',
+          background: `linear-gradient(to bottom, ${actionColor ?? 'white'}, ${secondaryColor ?? 'white'})`,
+        },
+        '.welcome-message-question-container': {
+          marginTop: 'auto',
+          marginBottom: 'auto',
         },
         '.welcome-message-answer': {
           marginTop: 'auto',
+          width: '100%',
         },
 
         '.welcome-message-question .Typewriter': {
@@ -105,8 +131,15 @@ const ChatSurvey = () => {
           lineHeight: '$xl',
         },
 
-        '.welcome-message-options button': {
+        // '.welcome-message-options button': {
+        //   width: '100%',
+        // },
+        '.welcome-message-option': {
           width: '100%',
+          fontSize: '$md',
+          lineHeight: '$md',
+          minHeight: '48px',
+          height: 'auto'
         },
         '.question-component-typewriter, .action-question-text': {
           padding: '$4', position: 'relative', backgroundColor: `${actionColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem',
@@ -152,43 +185,45 @@ const ChatSurvey = () => {
       }}
       alignItems="center"
       justifyContent="center"
-      className="dm-sans"
+      className="dm-sans chat-survey-wrapper"
     >
-      <Flex css={{
-        height: '50px',
-        backgroundColor: accentColor,
-        overflow: 'hidden',
-        width: '100%',
-        position: 'sticky',
-        top: '0',
-        zIndex: '99',
-      }} alignItems="center">
-        <Box
-          css={{
-            marginTop: 'auto',
-            marginLeft: '20px',
-            width: '40px',
-            height: '40px',
-            backgroundColor: accentColor,
-            backgroundImage: `url(${profileImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            flexShrink: 0,
-          }}
-        >
+      <Flex className="chat-survey" css={{ height: '100vh', width: '100vw' }} flexDirection="column" data-question-type={currentQuestion?.type}>
+        <Flex css={{
+          height: '50px',
+          backgroundColor: accentColor,
+          overflow: 'hidden',
+          width: '100%',
+          position: 'sticky',
+          top: '0',
+          zIndex: '99',
+        }} alignItems="center" className="chat-survey-header">
+          <Box
+            css={{
+              marginTop: 'auto',
+              marginLeft: '20px',
+              width: '40px',
+              height: '40px',
+              backgroundColor: accentColor,
+              backgroundImage: `url(${profileImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              flexShrink: 0,
+            }}
+          >
+          </Box>
+          <Box>
+            <Text size="sm" weight="medium" css={{ color: '$neutral900', marginLeft: '10px' }} truncate>Leo</Text>
+            <Text size="xs" css={{ color: '$neutral800', marginLeft: '10px' }} truncate>Personalized Travel Booking Agent</Text>
+          </Box>
+          <IconButton icon={<CloseIcon />} color="default" css={{ marginRight: '$6', marginLeft: 'auto' }} />
+        </Flex>
+        <Box css={{
+          width: '100%', flex: '1', overflow: 'scroll',
+        }} className="chat-survey-body">
+          <Questions />
         </Box>
-        <Box>
-          <Text size="sm" weight="medium" css={{ color: '$neutral900', marginLeft: '10px' }} truncate>Leo</Text>
-          <Text size="xs" css={{ color: '$neutral800', marginLeft: '10px' }} truncate>Personalized Travel Booking Agent</Text>
-        </Box>
-        <IconButton icon={<CloseIcon />} color="default" css={{ marginRight: '$6', marginLeft: 'auto' }} />
       </Flex>
-      <Box css={{
-        width: '100%', flex: '1', overflow: 'scroll',
-      }}>
-        <Questions />
-      </Box>
     </Flex>
     </ThemeProvider>
   )
@@ -229,15 +264,26 @@ export const ChatSurveyPreview = () => {
 
 export default ChatSurvey;
 
+
 const Questions = () => {
   const { loading, loadingNextQuestion, theme } = useSelector((state) => state.survey);
   
+  const loadingDot = keyframes({
+    '0%': {
+      backgroundColor: theme?.primaryColor,
+    },
+    '50%, 100%': {
+      backgroundColor: `${theme?.primaryColor}33`,
+    }
+  })
+
   return (
     <ChatSurveyContainer
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       style={{ backgroundColor: theme?.secondaryColor }}
+      className="chat-survey-container"
     >
       <Flex flexDirection="column" gap="$6" css={{
         minHeight: '100%',
@@ -253,7 +299,7 @@ const Questions = () => {
             display: 'none',
           }
         })
-      }} className='dm-sans'>
+      }} className='dm-sans chat-survey-messages-body'>
         <ChatHistory />
         <QuestionsAndResponseComponent surveyType="chat"/>
         {/* {(loading || loadingNextQuestion) ? (
@@ -269,6 +315,57 @@ const Questions = () => {
           <ChatQuestion handleResponse={handleResponse} animationComplete={animationComplete} typing={typing} setAnimationComplete={setAnimationComplete} />
         )} */}
         {/* <Box css={{ height: '50px' }}/> */}
+        {loadingNextQuestion && (
+          <Box
+            css={{
+              padding: '$4',
+              position: 'relative', backgroundColor: `${theme?.actionColor}4d`, width: 'fit-content',
+              borderRadius: '0 0.5rem 0.5rem 0.5rem'
+            }}
+          >
+
+            <Box css={{
+              position: 'relative',
+              marginLeft: '9px',
+              marginRight: '9px',
+              width: '7px',
+              height: '7px',
+              borderRadius: '5px',
+              backgroundColor: theme?.primaryColor,
+              color: theme?.primaryColor,
+              animation: `${loadingDot} 0.5s infinite linear alternate`,
+              animationDelay: '0.25s',
+              '&::before, &::after': {
+                content: '""',
+                display: 'inline-block',
+                position: 'absolute',
+                top: '0',
+              },
+              '&::before': {
+                left: '-9px',
+                width: '7px',
+                height: '7px',
+                borderRadius: '5px',
+                backgroundColor: theme?.primaryColor,
+                color: theme?.primaryColor,
+                animation: `${loadingDot} 0.5s infinite alternate`,
+                animationDelay: '0s',
+              },
+              '&::after': {
+                left: '9px',
+                width: '7px',
+                height: '7px',
+                borderRadius: '5px',
+                backgroundColor: theme?.primaryColor,
+                color: theme?.primaryColor,
+                animation: `${loadingDot} 0.5s infinite alternate`,
+                animationDelay: '0.5s',
+              },
+            }}>
+
+            </Box>
+          </Box>
+        )}
       </Flex>
     </ChatSurveyContainer>
   );
@@ -280,7 +377,7 @@ const ChatHistory = () => {
   return (
     <Fragment>
       {answers.map((answer, index) => (
-        <Box key={index}>
+        <Box key={index} className="chat-survey-message-container">
           <AIPill css={{  marginBottom: '$2', opacity: '1' }}>
             <Text css={{ overflowWrap: 'anywhere', color: `${theme?.primaryColor}` }}>{answer.question.question}</Text>
           </AIPill>

@@ -32,7 +32,7 @@ const ActionQuestionAndResponse = ({ handleResponse, surveyType }) => {
     dispatch(updateActionData({
       actionStatus,
       response: {
-        actionSuccessMessage: response.actionSuccessMessage,
+        actionSuccessMessage: response.actionSuccessMessage?.actionExecutedMessage,
         question: response.question,
         type: response.type,
       }

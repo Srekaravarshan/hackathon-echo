@@ -12,53 +12,55 @@ const WelcomeMessageQuestionAndResponse = ({ handleResponse, surveyType }) => {
 
   return (
     <Box className="welcome-message">
-      <Box css={{
-        marginBottom: '1.2rem',
-        '.Typewriter__cursor': {
-          ...(currentQuestion.question === animationComplete && { display: 'none' }),
-          ...(typing && { display: 'none' })
-        },
-        '[data-testid="typewriter-wrapper"]': {
-          transition: 'opacity 0.2s ease-in-out',
-          fontSize: '$5xl',
-          lineHeight: '$5xl',
-          fontWeight: '$7',
-          ...(typing && { opacity: '0.5' })
-        }
-      }} className="welcome-message-question">
-        <TextTypewriter
-          className="welcome-message-question-text"
-          text={currentQuestion.question}
-          onAnimationComplete={() => {
-            if (typeof currentQuestion?.description !== 'string' || !currentQuestion?.description?.length) {
-              setDescriptionAnimationComplete(true);
-            }
-            return setAnimationComplete(currentQuestion.question);
-          }}
-        />
+      <Box className="welcome-message-question-container">
+        <Box css={{
+          marginBottom: '1.2rem',
+          '.Typewriter__cursor': {
+            ...(currentQuestion.question === animationComplete && { display: 'none' }),
+            ...(typing && { display: 'none' })
+          },
+          '[data-testid="typewriter-wrapper"]': {
+            transition: 'opacity 0.2s ease-in-out',
+            fontSize: '$5xl',
+            lineHeight: '$5xl',
+            fontWeight: '$7',
+            ...(typing && { opacity: '0.5' })
+          }
+        }} className="welcome-message-question">
+          <TextTypewriter
+            className="welcome-message-question-text"
+            text={currentQuestion.question}
+            onAnimationComplete={() => {
+              if (typeof currentQuestion?.description !== 'string' || !currentQuestion?.description?.length) {
+                setDescriptionAnimationComplete(true);
+              }
+              return setAnimationComplete(currentQuestion.question);
+            }}
+          />
+        </Box>
+        {typeof currentQuestion?.description === 'string' && animationComplete && currentQuestion?.description?.length && <Box css={{
+          marginBottom: '1.2rem',
+          '.Typewriter__cursor': {
+            ...(currentQuestion.question === animationComplete && { display: 'none' }),
+            ...(typing && { display: 'none' })
+          },
+          '[data-testid="typewriter-wrapper"]': {
+            transition: 'opacity 0.2s ease-in-out',
+            fontSize: '$3xl',
+            lineHeight: '$3xl',
+            ...(typing && { opacity: '0.5' })
+          }
+        }} className="welcome-message-description">
+          <Typewriter
+            key={currentQuestion.question}
+            onInit={(typewriter) => {
+              typewriter.changeDelay(15).typeString(currentQuestion.description).callFunction(() => {
+                return setDescriptionAnimationComplete(currentQuestion.description);
+              }).start();
+            }}
+          />
+        </Box>}
       </Box>
-      {typeof currentQuestion?.description === 'string' && animationComplete && currentQuestion?.description?.length && <Box css={{
-        marginBottom: '1.2rem',
-        '.Typewriter__cursor': {
-          ...(currentQuestion.question === animationComplete && { display: 'none' }),
-          ...(typing && { display: 'none' })
-        },
-        '[data-testid="typewriter-wrapper"]': {
-          transition: 'opacity 0.2s ease-in-out',
-          fontSize: '$3xl',
-          lineHeight: '$3xl',
-          ...(typing && { opacity: '0.5' })
-        }
-      }} className="welcome-message-description">
-        <Typewriter
-          key={currentQuestion.question}
-          onInit={(typewriter) => {
-            typewriter.changeDelay(15).typeString(currentQuestion.description).callFunction(() => {
-              return setDescriptionAnimationComplete(currentQuestion.description);
-            }).start();
-          }}
-        />
-      </Box>}
       <Box
         css={{
           opacity: descriptionAnimationComplete ? 1 : 0,
