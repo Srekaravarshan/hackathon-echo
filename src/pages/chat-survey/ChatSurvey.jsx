@@ -136,6 +136,13 @@ const ChatSurvey = () => {
             fontSize: '$sm',
             lineHeight: '$sm',
           }
+        },
+        '.rating-option': {
+          gap: '$4'
+        },
+        '.rating-option svg': {
+          height: '32px',
+          width: '32px',
         }
       }}
       alignItems="center"

@@ -14,7 +14,7 @@ const yesOrNoQuestionData = {
 }
 
 const yesOrNoQuestionData2 = {
-  "question": "Hello! Do you need to book demo on coming saturday?",
+  "question": "Do you have any hotel preferences?",
   "type": "yesOrNo",
 }
 
@@ -53,35 +53,41 @@ const actionDataRedirect = {
   ]
 }
 
+const opinionScaleQuestion = {
+  "question": "How would you rate your experience with our travel assistance?",
+  "type": "opinionScale",
+  "scale": {
+    min: 1,
+    max: 10,
+  },
+}
+const ratingQuestion = {
+  "question": "How would you rate your experience with our travel assistance?",
+  "type": "rating",
+  "steps": 5,
+}
+
+const multipleChoiceQuestion = {
+  "question": "What is your budget range for the trip?",
+  "type": "multipleChoice",
+  "choices": ["Budget", "Mid-range", "Luxury"]
+}
+
+const messageQuestion = {
+  "question": "Hello! Welcome to the XYZ Travel Agency. How can I help you today?",
+  "type": "message"
+}
 
 const surveyQuestions = [
+  ratingQuestion,
   actionDataRedirect,
   actionData1,
   yesOrNoQuestionData,
   yesOrNoQuestionData2,
   welcomeMessage,
-  {
-    "question": "Are you going to be traveling alone?",
-    "type": "yesOrNo",
-    "choices": ["Yes", "No"]
-  },
-  {
-    "question": "What is your budget range for the trip?",
-    "type": "multipleChoice",
-    "choices": ["Budget", "Mid-range", "Luxury"]
-  },
-  {
-    "question": "How would you rate your experience with our travel assistance?",
-    "type": "opinionScale",
-    "scale": {
-      min: 1,
-      max: 10,
-    },
-  },
-  {
-    "question": "Hello! Welcome to the XYZ Travel Agency. How can I help you today?",
-    "type": "message"
-  },
+  multipleChoiceQuestion,
+  opinionScaleQuestion,
+  messageQuestion,
   // {
   //   "question": "Provide your aadhar card",
   //   "type": "fileUpload",
