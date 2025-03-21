@@ -47,14 +47,14 @@ function App() {
 export default App;
 
 const voice = {
-  "voice_id": "21m00Tcm4TlvDq8ikWAM",
-  "name": "Rachel",
+  "voice_id": "iP95p4xoKVk53GoZ742B",
+  "name": "Chris",
   "category": "professional",
   "labels": {
     "accent": "American",
     "age": "middle-aged",
     "description": "expressive",
-    "gender": "female",
+    "gender": "male",
     "use_case": "social media"
   },
   "available_for_tiers": [
@@ -116,10 +116,10 @@ const voice = {
     "category": "professional",
     "liked_by_count": 100,
     "cloned_by_count": 50,
-    "name": "Rachel",
+    "name": "Saam",
     "labels": {
       "accent": "American",
-      "gender": "female"
+      "gender": "male"
     },
     "review_status": "allowed",
     "enabled_in_library": true,

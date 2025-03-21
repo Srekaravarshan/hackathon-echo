@@ -1,11 +1,10 @@
-import { Box, Flex, Text, Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose, Button, IconButton, FormLabel, Input, ThemeProvider } from '@sparrowengg/twigs-react';
+import { Box, Flex, Text, Input, ThemeProvider, Button } from '@sparrowengg/twigs-react';
 import { PhoneIcon } from '@sparrowengg/twigs-react-icons';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Axios from 'axios';
 
 const IVRSurvey = () => {
-  const { triggerToken } = useParams();
-  console.log('IVRSurvey', triggerToken)
   return (
     <ThemeProvider>
       <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
@@ -26,6 +25,14 @@ export default IVRSurvey;
 
 export const IVRPreview = ({ css }) => {
   const [phoneNumber, setPhoneNumber] = useState('')
+  const { triggerToken } = useParams();
+  const handleIVRCall = () => {
+    console.log('handleIVRCall', triggerToken)
+    Axios.post(`http://localhost:3000/api/v1/ivr`, {
+      phoneNumber,
+      triggerToken,
+    })
+  }
   return (
     <Box css={{ position: 'relative', ...css }}>
       <Box as="img" css={{ aspectRatio: '245/496', maxHeight: '521px' }} src="https://static.surveysparrow.com/application/production/1742442116170__6988144c212b9aa3c4dee45fa1d4a049b9a6d4ae6e76d581a56408257aea__phone.png" />
@@ -40,7 +47,9 @@ export const IVRPreview = ({ css }) => {
           Type your Mobile number to receive a call from the Survey Agent
         </Text>  
         <Input size="lg" placeholder="+XXXXXXXXXXXX" value={phoneNumber} leftIcon={<PhoneIcon />} onChange={(e) => setPhoneNumber(e.target.value)} />
-        <Button size="lg" variant="primary" disabled={!phoneNumber.length}>Call Now</Button>
+        <Button size="lg" variant="primary" disabled={!phoneNumber.length} 
+          onClick={handleIVRCall}
+        >Call Now</Button>
       </Flex>
     </Box>
   );

@@ -35,7 +35,10 @@ export const fetchInitialQuestion = createAsyncThunk(
   async ({ theme, triggerToken } = { theme: initialState.theme, triggerToken: "" }) => {
     console.log("📱 ~ fetchInitialQuestion ~ theme:", theme)
     try {
-      const response = await makeChatQuery(triggerToken, "init", triggerToken);
+      const localStorageConversationId = localStorage.getItem('conversationId');
+      console.log("📱 ~ localStorageConversationId:", localStorageConversationId)
+      const conversationId = localStorageConversationId;
+      const response = await makeChatQuery(conversationId, "init", triggerToken);
       console.log("📱 ~ fetchInitialQuestion ~ response:", response)
 
       const initialQuestion = {

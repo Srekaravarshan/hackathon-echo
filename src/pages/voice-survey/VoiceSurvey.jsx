@@ -461,9 +461,11 @@ const CallingView = () => {
             console.log("📱 ~ socket.onmessage= ~ transcript:", transcript);
             // currentText = currentText.concat(' ' + transcript);
             // audioText = currentText;
-
+            const localStorageConversationId = localStorage.getItem('conversationId');
+            console.log("📱 ~ localStorageConversationId:", localStorageConversationId)
+            const conversationId = localStorageConversationId;
             const response = await makeChatQuery(
-              "state.userId_2abcdfgki",
+              conversationId,
               `User response -> ${transcript}`,
               triggerToken
             );
