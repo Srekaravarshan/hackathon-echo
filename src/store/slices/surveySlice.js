@@ -7,29 +7,59 @@ const welcomeMessageData = {
   "welcomeButtonText": "Lets Get Started"
 }
 
+const yesOrNoQuestionData = {
+  "question": "Are you going to be traveling alone?",
+  "type": "yesOrNo",
+  "choices": ["Yes", "No"]
+}
+
+const yesOrNoQuestionData2 = {
+  "question": "Hello! Do you need to book demo on coming saturday?",
+  "type": "yesOrNo",
+}
+
+const welcomeMessage = {
+  question: welcomeMessageData.greetingHeader,
+  description: welcomeMessageData.greetingDescription,
+  type: 'welcomeMessage',
+  buttons: [
+    {
+      text: welcomeMessageData.welcomeButtonText,
+      action: ButtonActions.NEXT_QUESTION
+    }
+  ]
+}
+
+const actionData1 = {
+  "type": "action",
+  "question": "I am booking demo call on coming saturday",
+  "actionType": "appointment",
+  "hasConfirmation": false,
+}
+const actionDataRedirect = {
+  "type": "action_button_url",
+  "question": "I am booking demo call on coming saturday",
+  buttons: [
+    {
+      text: "Please visit SurveySparrow",
+      action: ButtonActions.REDIRECT_URL,
+      url: "https://www.surveysparrow.com"
+    },
+    {
+      text: "Next",
+      action: ButtonActions.NEXT_QUESTION,
+      variant: "secondary"
+    },
+  ]
+}
+
+
 const surveyQuestions = [
-  {    
-    question: welcomeMessageData.greetingHeader,
-    description: welcomeMessageData.greetingDescription,
-    type: 'welcomeMessage',
-    buttons: [
-      {
-        text: welcomeMessageData.welcomeButtonText,
-        action: ButtonActions.NEXT_QUESTION
-      }
-    ]
-  },
-  {
-    "question": "Hello! Do you need to book demo on coming saturday?",
-    "type": "yesOrNo",
-    // "choices": ["Travel recommendations", "Booking assistance"]
-  },
-  {
-    "type": "action",
-    "question": "I am booking demo call on coming saturday",
-    "actionType": "appointment",
-    "hasConfirmation": false,
-  },
+  actionDataRedirect,
+  actionData1,
+  yesOrNoQuestionData,
+  yesOrNoQuestionData2,
+  welcomeMessage,
   {
     "question": "Are you going to be traveling alone?",
     "type": "yesOrNo",

@@ -1,14 +1,12 @@
 import { Fragment, useState } from "react";
 import QuestionComponent from "../QuestionComponent";
 import ResponseComponent from "../ResponseQuestion";
-import { useSelector } from "react-redux";
 
 const DefaultQuestionAndResponseComponent = ({ currentQuestion, handleResponse }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
-  // const { currentQuestion } = useSelector((state) => state.survey);
   
   return (
-    <Fragment>
+    <Fragment key={currentQuestion.question}>
       <QuestionComponent
         currentQuestion={currentQuestion}
         setAnimationComplete={setAnimationComplete}

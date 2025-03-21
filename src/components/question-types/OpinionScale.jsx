@@ -5,7 +5,6 @@ import OpinionScaleButton from '../buttons/OpinionScaleButton';
 import { OptionsContainer, StyledTextareaInput } from '../StyledComponents';
 import SubmitButton from '../buttons/SubmitButton';
 import { setTyping } from '../../store/slices/surveySlice';
-import styles from '../../pages/chat-survey/ChatSurvey.module.css';
 
 const OpinionScale = ({ onAnswer, currentQuestion }) => {
   const [selected, setSelected] = useState(null);
@@ -77,13 +76,13 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
   return (
     <OptionsContainer className="opinion-scale-question">
       <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }} className="opinion-scale-question-container">
-        <Flex gap="$4" css={{ flexWrap: 'wrap' }} className={styles.opinionScaleOptionContainer}>
+        <Flex gap="$4" css={{ flexWrap: 'wrap' }} className='opinion-scale-option-container'>
           {Array.from({ length: max - min + 1 }, (_, i) => (
             <OpinionScaleButton
               key={i}
               selected={selected === min + i}
               onClick={() => handleSelect(min + i)}
-              className={styles.opinionScaleOption}
+              className='opinion-scale-option'
             >
               {min + i}
             </OpinionScaleButton>
@@ -96,7 +95,7 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
           onKeyDown={onKeyDown}
           onChange={onChange} 
           style={{ color: theme?.primaryColor }}
-          className={styles.answerInput}
+          className='answer-input'
         />
         <SubmitButton 
           className="opinion-scale-submit-button submit-button"

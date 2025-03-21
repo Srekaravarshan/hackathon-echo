@@ -25,11 +25,6 @@ function App() {
         <Route path="/ivr/:triggerToken" element={<IVRSurvey />} />
         <Route path="/call/:triggerToken" element={<IVRAndWebCall />} />
         <Route path="/whatsapp/:triggerToken" element={<WhatsAppSurvey />} />
-        {/* <Route path="/standalone" element={<StandaloneSurvey />} />
-        <Route path="/chat" element={<ChatSurvey />} />
-        <Route path="/voice" element={<VoiceSurvey />} />
-        <Route path="/ivr" element={<IVRSurvey />} />
-        <Route path="/whatsapp" element={<WhatsAppSurvey />} /> */}
       </Routes>
     </BrowserRouter>
   );
@@ -432,7 +427,7 @@ const DeviceSwitcher = ({
 
 
 const Survey = () => {
-  const [surveyType, setSurveyType] = useState('standalone');
+  const [surveyType, setSurveyType] = useState('chat');
 
   return (
     <Box css={{ position: 'relative', height: '100vh', width: '100vw' }}>

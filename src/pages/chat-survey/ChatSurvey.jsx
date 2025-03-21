@@ -2,20 +2,17 @@ import { Box, Flex, IconButton, Text, ThemeProvider } from '@sparrowengg/twigs-r
 import { CloseIcon } from '@sparrowengg/twigs-react-icons';
 import { ChatSurveyContainer } from '../../components/StyledComponents';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useCallback, Fragment, useEffect, useRef, forwardRef } from 'react';
-import { fetchInitialQuestion, fetchNextQuestion, resetSurvey } from '../../store/slices/surveySlice';
-import Typewriter from 'typewriter-effect';
-import ResponseComponent from '../standalone-survey/ResponseQuestion';
+import { Fragment, useEffect, forwardRef } from 'react';
+import { fetchInitialQuestion, resetSurvey } from '../../store/slices/surveySlice';
 import QuestionAnswerTypes from '../../components/question-answer-types/QuestionAnswerTypes';
-import { useParams } from 'react-router-dom';
-import styles from './ChatSurvey.module.css';
+import QuestionsAndResponseComponent from '../standalone-survey/QuestionsAndResponseComponent';
 
 const ChatSurvey = () => {
   const dispatch = useDispatch();
-  const { triggerToken } = useParams();
 
   const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
   const accentColor = '#F5D161';
+  const actionColor = '#F5D161';
 
 
   useEffect(() => {
@@ -28,12 +25,126 @@ const ChatSurvey = () => {
 
   return (
     <ThemeProvider>
-    <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;' }} alignItems="center" justifyContent="center" className="dm-sans">
+    <Flex
+      flexDirection="column"
+      css={{
+        height: '100vh',
+        width: '100vw',
+        backgroundColor: '#f2f5f8',
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;',
+        '.choice-option': {
+          fontSize: '14px !important',
+          lineHeight: '18.2px !important',
+          padding: '8px !important',
+        },
+
+        '.answer-input': {
+          fontSize: '14px !important',
+          lineHeight: '18.2px !important',
+        },
+
+        '.opinion-scale-option': {
+          fontSize: '14px !important',
+          lineHeight: '18.2px !important',
+          padding: '4px !important',
+          height: '32px !important',
+          width: '32px !important',
+        },
+
+        '.yes-no-option-container :global(.twigs-button__content) > div > p': {
+          fontSize: '14px !important',
+          lineHeight: '18.2px !important',
+        },
+
+        '.yes-no-option-container button': {
+          width: '90px !important',
+        },
+
+        '.yes-no-option-container :global(.twigs-button__content) > svg': {
+          width: '24px !important',
+          height: '24px !important',
+        },
+
+        '.yes-no-option-container :global(.twigs-button__content) > div > div > p': {
+          fontSize: '12px !important',
+          lineHeight: '15.6px !important',
+        },
+
+        '.yes-no-option-container :global(.twigs-button__content) > div > div': {
+          height: '20px !important',
+          width: '20px !important',
+        },
+
+        '.questions-and-response-component':{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: '1',
+        },
+
+        '.welcome-message': {
+          flex: '1',
+          display: 'flex',
+          flexDirection: 'column',
+        },
+        '.welcome-message-answer': {
+          marginTop: 'auto',
+        },
+
+        '.welcome-message-question .Typewriter': {
+          fontSize: '$2xl',
+          lineHeight: '$2xl',
+        },
+
+        '.welcome-message-description .Typewriter': {
+          fontSize: '$xl',
+          lineHeight: '$xl',
+        },
+
+        '.welcome-message-options button': {
+          width: '100%',
+        },
+        '.question-component-typewriter, .action-question-text': {
+          padding: '$4', position: 'relative', backgroundColor: `${actionColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem',
+          '&::before': {
+            content: ' ',
+            position: 'absolute',
+            top: '0',
+            left: 'auto',
+            right: 'calc(100% + $3)',
+            width: '$4',
+            height: '$4',
+            backgroundColor: `${actionColor}`,
+            borderRadius: '$round',
+            backgroundImage: `url(${profileImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }
+        },
+
+        '.action-question-text': {
+          marginBottom: '0.5rem',
+        },
+        '.action-question-text.ACTION_COMPLETED [data-testid="typewriter-wrapper"]': {
+          opacity: '1',
+        },
+        '.buttons-options': {
+          button: {
+            flexShrink: '0',
+            height: '38px',
+            padding: '8px 16px',
+            fontSize: '$sm',
+            lineHeight: '$sm',
+          }
+        }
+      }}
+      alignItems="center"
+      justifyContent="center"
+      className="dm-sans"
+    >
       <Flex css={{
         height: '50px',
         backgroundColor: accentColor,
-        // borderTopLeftRadius: '$3xl',
-        // borderTopRightRadius: '$3xl',
         overflow: 'hidden',
         width: '100%',
         position: 'sticky',
@@ -63,7 +174,6 @@ const ChatSurvey = () => {
       </Flex>
       <Box css={{
         width: '100%', flex: '1', overflow: 'scroll',
-        // borderBottomLeftRadius: '$3xl', borderBottomRightRadius: '$3xl'
       }}>
         <Questions />
       </Box>
@@ -106,20 +216,7 @@ export const ChatSurveyPreview = () => {
 export default ChatSurvey;
 
 const Questions = () => {
- 
-  const dispatch = useDispatch();
-
-  
-  const { currentQuestion, loading, loadingNextQuestion, typing, theme, answers } = useSelector((state) => state.survey);
-  
-  const [animationComplete, setAnimationComplete] = useState(false);
-
-  const handleResponse = useCallback(async (answer) => {
-    dispatch(fetchNextQuestion(answer))
-    // .then(() => {
-    //   endOfQuestionsRef.current.scrollIntoView({ behavior: 'smooth' });
-    // });
-  }, [dispatch]);
+  const { loading, loadingNextQuestion, theme } = useSelector((state) => state.survey);
   
   return (
     <ChatSurveyContainer
@@ -137,16 +234,15 @@ const Questions = () => {
           fontWeight: '$5',
           color: theme?.primaryColor
         },
+        ...(loading || loadingNextQuestion && {
+          '.questions-and-response-component':{
+            display: 'none',
+          }
+        })
       }} className='dm-sans'>
-        {answers.map((answer, index) => (
-          <Box key={index}>
-            <AIPill css={{  marginBottom: '$2', opacity: '1' }}>
-              <Text css={{ overflowWrap: 'anywhere', color: `${theme?.primaryColor}` }}>{answer.question.question}</Text>
-            </AIPill>
-            <QuestionAnswerTypes answer={answer} />
-          </Box>
-        ))}
-        {(loading || loadingNextQuestion) ? (
+        <ChatHistory />
+        <QuestionsAndResponseComponent />
+        {/* {(loading || loadingNextQuestion) ? (
           <AIPill>
             <Typewriter
               key={currentQuestion.question}
@@ -157,11 +253,28 @@ const Questions = () => {
           </AIPill>
         ) : (
           <ChatQuestion handleResponse={handleResponse} animationComplete={animationComplete} typing={typing} setAnimationComplete={setAnimationComplete} />
-        )}
-        <Box css={{ height: '50px' }}/>
+        )} */}
+        {/* <Box css={{ height: '50px' }}/> */}
       </Flex>
     </ChatSurveyContainer>
   );
+}
+
+const ChatHistory = () => {
+  const { answers, theme } = useSelector((state) => state.survey);
+
+  return (
+    <Fragment>
+      {answers.map((answer, index) => (
+        <Box key={index}>
+          <AIPill css={{  marginBottom: '$2', opacity: '1' }}>
+            <Text css={{ overflowWrap: 'anywhere', color: `${theme?.primaryColor}` }}>{answer.question.question}</Text>
+          </AIPill>
+          <QuestionAnswerTypes answer={answer} />
+        </Box>
+      ))}
+    </Fragment>
+  )
 }
 
 const AIPill = forwardRef(({ children, css }, ref) => {
@@ -179,47 +292,3 @@ const AIPill = forwardRef(({ children, css }, ref) => {
 
 AIPill.displayName = 'AIPill';
 
-const ChatQuestion = ({ handleResponse, animationComplete, typing, setAnimationComplete }) => {
-  const { currentQuestion } = useSelector((state) => state.survey);
-
-  const questionRef = useRef(null);
-
-  useEffect(() => {
-    questionRef.current.scrollIntoView({ behavior: 'smooth' });
-  }, [currentQuestion]);
-
-  return (
-    <Fragment>
-      <AIPill ref={questionRef} css={{
-        '.Typewriter__cursor': {
-          ...(currentQuestion.question === animationComplete && { display: 'none' }),
-          ...(typing && { display: 'none' }),
-        },
-        // backgroundColor: `${theme?.primaryColor}`,
-        '[data-testid="typewriter-wrapper"]': {
-          // color: `${theme?.secondaryColor}`,
-          // transition: 'opacity 0.2s ease-in-out',
-          // fontSize: '14px',
-          // lineHeight: '18.2px',
-          // fontWeight: '$5',
-          // color: theme?.primaryColor,
-          ...(typing && { opacity: '0.9' })
-        },
-      }}>
-        <Typewriter
-          key={currentQuestion.question}
-          onInit={(typewriter) => {
-            typewriter.changeDelay(15).typeString(currentQuestion.question).callFunction(() => {
-              return setAnimationComplete(currentQuestion.question);
-            }).start();
-          }}
-        />
-      </AIPill>
-      <ResponseComponent
-        currentQuestion={currentQuestion} 
-        handleResponse={handleResponse} 
-        animationComplete={animationComplete === currentQuestion.question}
-      />
-    </Fragment>
-  )
-}

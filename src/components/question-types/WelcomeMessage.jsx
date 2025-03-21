@@ -23,14 +23,12 @@ const WelcomeMessage = ({ currentQuestion, onAnswer }) => {
 
   if (currentQuestion?.buttons?.length > 0) {
     return (
-      <OptionsContainer style={{
-        // alignItems: 'center'
-      }}>
+      <OptionsContainer className="welcome-message-options">
         {currentQuestion?.buttons?.map((button, index) => (
-          <Button onClick={() => onAnswer(null, { action: button.action })} key={index} css={{
+          <Button size="xl" onClick={() => onAnswer(null, { action: button.action })} key={index} css={{
             position: 'unset',
-            height: 'auto',
-          }}>
+            // height: 'auto',
+          }} className="welcome-message-option">
             <Text css={{ fontSize: 'inherit', fontWeight: 'inherit', color: 'inherit' }}>{button.text}&nbsp;</Text>
             {/* Submit */}
             <ShortcutKey css={{
@@ -46,11 +44,11 @@ const WelcomeMessage = ({ currentQuestion, onAnswer }) => {
   }
 
   return (
-    <OptionsContainer>
+    <OptionsContainer className="welcome-message-options">
       <Button onClick={() => onAnswer(null)} css={{
         position: 'unset',
         height: 'auto',
-      }}>
+      }} className="welcome-message-option">
         <Text css={{ fontSize: 'inherit', fontWeight: 'inherit', color: 'inherit' }}>Let&apos;s Go&nbsp;</Text>
         {/* Submit */}
         <ShortcutKey css={{

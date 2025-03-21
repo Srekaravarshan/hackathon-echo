@@ -31,5 +31,6 @@ export const NumAlphaMapping = Object.fromEntries(Object.entries(AlphaNumMapping
 
 export const ButtonActions = {
   NEXT_QUESTION: 'NEXT_QUESTION',
+  REDIRECT_URL: 'REDIRECT_URL',
   END_SURVEY: 'END_SURVEY',
 }
