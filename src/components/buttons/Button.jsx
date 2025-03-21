@@ -25,17 +25,17 @@ const Button = ({ children, onClick, disabled, css, ...props }) => {
         },
         ...(props.variant === 'ghost' ? {
           backgroundColor: css?.['backgroundColor'] || 'transparent !important',
-          color: css?.['color'] || `${theme?.primaryColor} !important`,
+          color: css?.['color'] || `${theme?.accentColor} !important`,
         } : {
-          backgroundColor: css?.['backgroundColor'] || `${theme?.primaryColor} !important`,
+          backgroundColor: css?.['backgroundColor'] || `${theme?.accentColor} !important`,
           color: css?.['color'] || `${theme?.secondaryColor} !important`,
         }),
 
         '&:hover, &:focus, &:active, &:focus-visible': {
           scale: 1.05,
           ...(props.variant === 'ghost' ? {
-            backgroundColor: `${theme?.primaryColor}1a !important`,
-            color: `${theme?.primaryColor} !important`,
+            backgroundColor: `${theme?.accentColor}1a !important`,
+            color: `${theme?.accentColor} !important`,
           } : {}),
           ...css?.['&:hover, &:focus, &:active, &:focus-visible'],
         },

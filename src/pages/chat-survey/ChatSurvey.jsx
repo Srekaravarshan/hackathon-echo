@@ -14,11 +14,19 @@ export const ChatProfile = () => {
 
   const dispatch = useDispatch();
 
-  const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
-  const accentColor = '#F5D161';
+  const { triggerToken } = useParams();
+
+  const profileImage = useSelector((state) => state.survey.theme.profileImage);
+  const name = useSelector((state) => state.survey.theme.name);
+  const role = useSelector((state) => state.survey.theme.role);
+  const primaryColor = useSelector((state) => state.survey.theme.primaryColor);
+  const secondaryColor = useSelector((state) => state.survey.theme.secondaryColor);
+  const accentColor = useSelector((state) => state.survey.theme.accentColor);
 
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor: '#000000', secondaryColor: '#ffffff', actionColor: '#F5D161', profileImage: profileImage } }));
+    dispatch(fetchInitialQuestion({
+      triggerToken: triggerToken
+    }));
 
     return () => {
       dispatch(resetSurvey());
@@ -44,20 +52,24 @@ export const ChatProfile = () => {
 const ChatSurvey = () => {
   const dispatch = useDispatch();
 
+  const { triggerToken } = useParams();
+
   const { currentQuestion } = useSelector((state) => state.survey);
 
-  const [surveyType, setSurveyType] = useState('chat');
+  const [surveyType, setSurveyType] = useState('chat')
 
-
-  const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
-  const primaryColor = '#000000';
-  const secondaryColor = '#ffffff';
-  const accentColor = '#F5D161';
-  const actionColor = '#F5D161';
+  const profileImage = useSelector((state) => state.survey.theme.profileImage);
+  const name = useSelector((state) => state.survey.theme.name);
+  const role = useSelector((state) => state.survey.theme.role);
+  const primaryColor = useSelector((state) => state.survey.theme.primaryColor);
+  const secondaryColor = useSelector((state) => state.survey.theme.secondaryColor);
+  const accentColor = useSelector((state) => state.survey.theme.accentColor);
 
 
   useEffect(() => {
-    dispatch(fetchInitialQuestion({ theme: { primaryColor, secondaryColor: '#ffffff', actionColor: '#F5D161', profileImage: profileImage } }));
+    dispatch(fetchInitialQuestion({
+      triggerToken: triggerToken
+    }));
 
     return () => {
       dispatch(resetSurvey());
@@ -141,7 +153,7 @@ const ChatSurvey = () => {
             padding: '32px 32px 32px 32px',
             width: '100%',
             textAlign: 'start',
-            background: `linear-gradient(to bottom, ${actionColor ?? 'white'}, ${secondaryColor ?? 'white'})`,
+            background: `linear-gradient(to bottom, ${accentColor ?? 'white'}, ${secondaryColor ?? 'white'})`,
           },
           '.welcome-message-question-container': {
             marginTop: 'auto',
@@ -173,7 +185,7 @@ const ChatSurvey = () => {
             height: 'auto'
           },
           '.question-component-typewriter, .action-question-text': {
-            padding: '$4', position: 'relative', backgroundColor: `${actionColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem',
+            padding: '$4', position: 'relative', backgroundColor: `${accentColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem',
             '&::before': {
               content: ' ',
               position: 'absolute',
@@ -182,7 +194,7 @@ const ChatSurvey = () => {
               right: 'calc(100% + $3)',
               width: '$4',
               height: '$4',
-              backgroundColor: `${actionColor}`,
+              backgroundColor: `${accentColor}`,
               borderRadius: '$round',
               backgroundImage: `url(${profileImage})`,
               backgroundSize: 'cover',
@@ -272,8 +284,8 @@ const ChatSurvey = () => {
             >
             </Box>
             <Box>
-              <Text size="sm" weight="medium" css={{ color: '$neutral900', marginLeft: '10px' }} truncate>Leo</Text>
-              <Text size="xs" css={{ color: '$neutral800', marginLeft: '10px' }} truncate>Personalized Travel Booking Agent</Text>
+              <Text size="sm" weight="medium" css={{ color: secondaryColor, marginLeft: '10px' }} truncate>{name}</Text>
+              {role && <Text size="xs" css={{ color: secondaryColor, marginLeft: '10px' }} truncate>{role}</Text>}
             </Box>
             <IconButton icon={<CloseIcon />} color="default" css={{ marginRight: '$6', marginLeft: 'auto', opacity: '0', pointerEvents: 'none' }} />
           </Flex>
@@ -371,7 +383,7 @@ const Questions = () => {
           <Box
             css={{
               padding: '$4',
-              position: 'relative', backgroundColor: `${theme?.actionColor}4d`, width: 'fit-content',
+              position: 'relative', backgroundColor: `${theme?.accentColor}4d`, width: 'fit-content',
               borderRadius: '0 0.5rem 0.5rem 0.5rem'
             }}
           >
@@ -424,7 +436,9 @@ const Questions = () => {
 }
 
 const Fab = ({ surveyType, setSurveyType }) => {
-  
+
+  const accentColor = useSelector((state) => state.survey.theme.accentColor);
+  const primaryColor = useSelector((state) => state.survey.theme.primaryColor);
   return (
     <TooltipProvider delayDuration={0}>
       <Tooltip content={surveyType === 'voice' ? 'Switch to Chat' : 'Switch to Voice'} className="dm-sans" side="left">
@@ -449,9 +463,9 @@ const Fab = ({ surveyType, setSurveyType }) => {
             width: 'fit-content',
             lineHeight: '0',
             '&, &:hover, &:focus, &:active': {
-              backgroundColor: '$neutral900 !important',
-              border: '1px solid #717171 !important',
-              color: '$neutral700 !important',
+              backgroundColor: `${accentColor} !important`,
+              border: `1px solid ${accentColor} !important`,
+              color: `${primaryColor} !important`,
             },
             // backgroundColor: '$neutral900',
             // border: '1px solid #717171',
@@ -558,8 +572,8 @@ const AIPill = forwardRef(({ children, css }, ref) => {
   const profileImage = theme?.profileImage;
 
   return (
-    <Box css={{ padding: '$4', position: 'relative', backgroundColor: `${theme?.actionColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem', ...css }} ref={ref}>
-      <Box css={{ position: 'absolute', top: '0', left: 'auto', right: 'calc(100% + $3)', width: '$4', height: '$4', backgroundColor: `${theme?.actionColor}`, borderRadius: '$round', backgroundImage: `url(${profileImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
+    <Box css={{ padding: '$4', position: 'relative', backgroundColor: `${theme?.accentColor}4d`, width: '100%', borderRadius: '0 0.5rem 0.5rem 0.5rem', ...css }} ref={ref}>
+      <Box css={{ position: 'absolute', top: '0', left: 'auto', right: 'calc(100% + $3)', width: '$4', height: '$4', backgroundColor: `${theme?.accentColor}`, borderRadius: '$round', backgroundImage: `url(${profileImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }} />
       {children}
     </Box>
   )

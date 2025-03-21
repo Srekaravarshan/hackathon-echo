@@ -21,110 +21,47 @@
       // Create the widget container
       const container = document.createElement('div');
       container.id = widgetId;
-      
-      // Create the styling
-      const style = document.createElement('style');
-      style.textContent = `
-        #${widgetId} .iframe-container {
-          display: none;
-          position: fixed;
-          bottom: 80px;
-          right: 20px;
-          width: 300px;
-          height: 520px;
-          background: white;
-          border-radius: 12px;
-          // box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-          z-index: 1000;
-          overflow: hidden;
-        }
-        
-        #${widgetId} .close-button {
-          position: absolute;
-          top: 13px;
-          right: 10px;
-          cursor: pointer;
-          background: #f0f0f0;
-          border-radius: 50%;
-          width: 24px;
-          height: 24px;
-          text-align: center;
-          line-height: 24px;
-          font-family: Arial, sans-serif;
-          z-index: 1001;
-        }
-        
-        #${widgetId} .embed-iframe {
-          width: 100%;
-          height: 100%;
-          border: none;
-          overflow: hidden;
-          display: block;
-          line-height: 0;
-          margin: 0;
-          padding: 0;
-          position: relative;
-
-        }
-
-        #${widgetId} .profile-iframe {
-          width: 50px;
-          height: 50px;
-          border: none;
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          z-index: 999;
-          cursor: pointer;
-          border-radius: 50%;
-          pointer-events: none;
-          // box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        }
-
-        #${widgetId} .profile-container {
-          width: 50px;
-          height: 50px;
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          z-index: 999;
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        }
-
-        #${widgetId} .help-text {
-          position: fixed;
-          bottom: 80px;
-          right: 20px;
-          background: white;
-          padding: 8px 16px;
-          border-radius: 20px;
-          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-          font-family: Arial, sans-serif;
-          font-size: 14px;
-          z-index: 998;
-          display: block;
-        }
-      `;
-      
-      // Append style to the container
-      container.appendChild(style);
 
       // Create help text pill
       const helpText = document.createElement('div');
-      helpText.className = 'help-text';
+      helpText.style.position = 'fixed';
+      helpText.style.bottom = '80px';
+      helpText.style.right = '20px';
+      helpText.style.background = 'white';
+      helpText.style.padding = '8px 16px';
+      helpText.style.borderRadius = '20px';
+      helpText.style.boxShadow = 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px';
+      helpText.style.fontFamily = 'Arial, sans-serif';
+      helpText.style.fontSize = '14px';
+      helpText.style.zIndex = '998';
+      helpText.style.display = 'block';
       helpText.textContent = 'Hey, do you need help?';
       container.appendChild(helpText);
       
       // Create a container for the profile iframe
       const profileContainer = document.createElement('div');
-      profileContainer.className = 'profile-container';
+      profileContainer.style.width = '50px';
+      profileContainer.style.height = '50px';
+      profileContainer.style.position = 'fixed';
+      profileContainer.style.bottom = '20px';
+      profileContainer.style.right = '20px';
+      profileContainer.style.zIndex = '999';
+      profileContainer.style.borderRadius = '50%';
+      profileContainer.style.cursor = 'pointer';
+      profileContainer.style.boxShadow = 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px';
       
       // Create the profile iframe
       const profileIframe = document.createElement('iframe');
-      profileIframe.className = 'profile-iframe';
+      profileIframe.style.width = '50px';
+      profileIframe.style.height = '50px';
+      profileIframe.style.border = 'none';
+      profileIframe.style.position = 'fixed';
+      profileIframe.style.bottom = '20px';
+      profileIframe.style.right = '20px';
+      profileIframe.style.zIndex = '999';
+      profileIframe.style.cursor = 'pointer';
+      profileIframe.style.borderRadius = '50%';
+      profileIframe.style.pointerEvents = 'none';
       profileIframe.src = config.profileUrl;
       profileContainer.appendChild(profileIframe);
       container.appendChild(profileContainer);
@@ -132,17 +69,46 @@
       // Create the iframe container
       const iframeContainer = document.createElement('div');
       iframeContainer.id = `${widgetId}-container`;
-      iframeContainer.className = 'iframe-container';
+      iframeContainer.style.display = 'none';
+      iframeContainer.style.position = 'fixed';
+      iframeContainer.style.bottom = '80px';
+      iframeContainer.style.right = '20px';
+      iframeContainer.style.width = '300px';
+      iframeContainer.style.height = '520px';
+      iframeContainer.style.background = 'white';
+      iframeContainer.style.borderRadius = '12px';
+      iframeContainer.style.boxShadow = 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px';
+      iframeContainer.style.zIndex = '1000';
+      iframeContainer.style.overflow = 'hidden';
       
       // Create the close button
       const closeButton = document.createElement('div');
-      closeButton.className = 'close-button';
+      closeButton.style.position = 'absolute';
+      closeButton.style.top = '13px';
+      closeButton.style.right = '10px';
+      closeButton.style.cursor = 'pointer';
+      closeButton.style.background = '#f0f0f0';
+      closeButton.style.borderRadius = '50%';
+      closeButton.style.width = '24px';
+      closeButton.style.height = '24px';
+      closeButton.style.textAlign = 'center';
+      closeButton.style.lineHeight = '24px';
+      closeButton.style.fontFamily = 'Arial, sans-serif';
+      closeButton.style.zIndex = '1001';
       closeButton.textContent = '×';
       iframeContainer.appendChild(closeButton);
       
       // Create the iframe
       const iframe = document.createElement('iframe');
-      iframe.className = 'embed-iframe';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.border = 'none';
+      iframe.style.overflow = 'hidden';
+      iframe.style.display = 'block';
+      iframe.style.lineHeight = '0';
+      iframe.style.margin = '0';
+      iframe.style.padding = '0';
+      iframe.style.position = 'relative';
       iframe.src = config.url;
       iframe.setAttribute('allow', 'microphone; camera');
       iframeContainer.appendChild(iframe);
@@ -170,6 +136,6 @@
       // Append the widget to the document body
       document.body.appendChild(container);
     })();
-    </script>
+  </script>
 </body>
 </html>

@@ -5,12 +5,8 @@ import {
   getWelcomeMessage,
 } from "../../apis";
 import { ButtonActions } from "../../components/question-types/constants";
+import Axios from "axios";
 
-// const welcomeMessageData = {
-//   "greetingHeader": "Hey",
-//   "greetingDescription": "Share",
-//   "welcomeButtonText": "Lets Get Started"
-// }
 const welcomeMessageData = {
   greetingHeader: "Hey Welcome to Paris Travel Corporation",
   greetingDescription:
@@ -91,12 +87,14 @@ const messageQuestion = {
 }
 
 const surveyQuestions = [
+  actionData1,
+  actionData1,
+  actionDataRedirect,
+  actionDataRedirect,
   welcomeMessage,
   ratingQuestion,
-  actionDataRedirect,
   yesOrNoQuestionData,
   yesOrNoQuestionData2,
-  actionData1,
   multipleChoiceQuestion,
   opinionScaleQuestion,
   messageQuestion,
@@ -176,8 +174,12 @@ const initialState = {
     closeSurvey: false,
   },
   theme: {
+    name: 'https://static.surveysparrow.com/application/production/1742586553866__97484540c48fe4510f6c6fa1248f4cf5c80e5a3dac71dcc4bb3c3affd36a__man-empty-avatar-photo-placeholder-for-s...vector.jpg',
+    role: '',
+    profileImage: '',
     primaryColor: "#000000",
     secondaryColor: "#ffffff",
+    accentColor: "#F5D161",
   },
   loading: true,
   loadingNextQuestion: false,
@@ -194,45 +196,55 @@ const initialState = {
       type: "",
     },
   },
+  survey: {},
 };
 
 export const fetchInitialQuestion = createAsyncThunk(
   "survey/fetchInitialQuestion",
-  async ({ theme } = { theme: initialState.theme }) => {
-    try {
-      // Simulate API delay
-      // await new Promise(resolve => setTimeout(resolve, 1000));
-      // const response = await Axios.post('http://localhost:3000/api/chat/getWelcomeMessage');
-      // const welcomeMessageData = response?.data?.welcomeMessageData;
-      const tokenId = window.location.pathname.split("/").pop();
-      const welcomeMessageRes = await getWelcomeMessage(tokenId);
-      console.log("📱 ~ welcomeMessageRes:", welcomeMessageRes);
+  async ({ theme, triggerToken } = { theme: initialState.theme, triggerToken: null }) => {
 
-      const welcomeMessageData = welcomeMessageRes?.welcomeMessageData;
-      console.log("📱 ~ welcomeMessageData:", welcomeMessageData);
+    const response = await Axios.get(`http://srekarannew.surveysparrow.test/api/internal/echo/properties/${triggerToken}`)
 
-      if (!surveyQuestions.length) {
-        throw new Error("No survey questions available");
-      }
+    console.log("🚀 ~ fetchInitialQuestion ~ survey:", response)
 
-      return {
-        currentQuestion: {
-          question: welcomeMessageData.greetingHeader,
-          description: welcomeMessageData.greetingDescription,
-          type: "welcomeMessage",
-          buttons: [
-            {
-              text: welcomeMessageData.welcomeButtonText,
-              action: ButtonActions.NEXT_QUESTION,
-            },
-          ],
-        },
-        theme,
-      };
-    } catch (error) {
-      console.error("Error in fetchInitialQuestion:", error);
-      throw error; // Re-throw to trigger rejected state
-    }
+    return {
+      currentQuestion: {
+        ...surveyQuestions[0],
+      },
+      survey: response?.data?.survey,
+      theme: response?.data?.survey?.properties?.personalization,
+    };
+
+    // try {
+    //   const tokenId = window.location.pathname.split("/").pop();
+    //   const welcomeMessageRes = await getWelcomeMessage(tokenId);
+    //   console.log("📱 ~ welcomeMessageRes:", welcomeMessageRes);
+
+    //   const welcomeMessageData = welcomeMessageRes?.welcomeMessageData;
+    //   console.log("📱 ~ welcomeMessageData:", welcomeMessageData);
+
+    //   if (!surveyQuestions.length) {
+    //     throw new Error("No survey questions available");
+    //   }
+
+    //   return {
+    //     currentQuestion: {
+    //       question: welcomeMessageData.greetingHeader,
+    //       description: welcomeMessageData.greetingDescription,
+    //       type: "welcomeMessage",
+    //       buttons: [
+    //         {
+    //           text: welcomeMessageData.welcomeButtonText,
+    //           action: ButtonActions.NEXT_QUESTION,
+    //         },
+    //       ],
+    //     },
+    //     theme,
+    //   };
+    // } catch (error) {
+    //   console.error("Error in fetchInitialQuestion:", error);
+    //   throw error; // Re-throw to trigger rejected state
+    // }
   }
 );
 
@@ -246,113 +258,130 @@ const getCurrentAgentType = (actions, currentActionName) => {
 export const fetchNextQuestion = createAsyncThunk(
   "survey/fetchNextQuestion",
   async (answer, { getState, dispatch }) => {
-    // http://localhost:5173/survey/tt-mLKsJ
-    dispatch(addAnswer(answer));
 
+
+    console.log("🚀 ~ fetchNextQuestion ~ answer:", answer, getState())
     const state = getState().survey;
-    // take the tokenId as the last part of the url
-    const tokenId = window.location.pathname.split("/").pop();
-
-    const currentIndex = state.questionIndex;
-    console.log("📱 ~ currentIndex:", currentIndex);
-
-    const localStorageConversationId = localStorage.getItem("conversationId");
-    console.log("📱 ~ localStorageConversationId:", localStorageConversationId);
-    const conversationId = localStorageConversationId;
-    const response = await makeChatQuery(
-      conversationId,
-      `User response -> ${answer}`,
-      tokenId
-    );
-    console.log("📱 ~ response:", response.jsonRes);
-
-    const nextQuestion = {
-      question: response.jsonRes.question,
-      type: response.jsonRes.questionType,
-      choices: response.jsonRes.choices || [],
-      closeSurvey: false,
-    };
-
-    if (
-      response.jsonRes.actionLoaderMessage &&
-      response.jsonRes?.actions.length
-    ) {
-      const currentAction = getCurrentAgentType(
-        response?.actionMeta,
-        response?.jsonRes?.actions
-      );
-
-      if (currentAction?.meta?.actionButtonText) {
-        // {
-        //   type: "action_button_url",
-        //   question: "I am booking demo call on coming saturday",
-        //   buttons: [
-        //     {
-        //       text: "Please visit SurveySparrow",
-        //       action: ButtonActions.REDIRECT_URL,
-        //       url: "https://www.surveysparrow.com",
-        //     },
-            // {
-            //   text: "Next",
-            //   action: ButtonActions.NEXT_QUESTION,
-            //   variant: "secondary",
-            // },
-        //   ],
-        // };
-
-        nextQuestion.type = "action_button_url";
-        nextQuestion.question = response.jsonRes?.actionLoaderMessage || response.jsonRes.question;
-        nextQuestion.buttons = [
-          {
-            text: currentAction?.meta?.actionButtonText,
-            action: ButtonActions.REDIRECT_URL,
-            url: currentAction?.meta?.actionButtonUrl,
-          }
-        ];
-      } else {
-        nextQuestion.question = response.jsonRes.actionLoaderMessage;
-        nextQuestion.type = "action";
-        nextQuestion.action = response?.jsonRes?.actions;
-        nextQuestion.actionMeta = response?.actionMeta;
-        nextQuestion.userId = conversationId;
-      }
+    
+    if (state.questionIndex >= surveyQuestions.length) {
+      return null;
     }
-
-    // const kbExecutionMessage = response.jsonRes.kbExecutionMessage;
-    // if (kbExecutionMessage) {
-    //   nextQuestion.question = kbExecutionMessage;
-    //   nextQuestion.type = "message";
-    // }
-
-    const conversationCompleted = response.jsonRes?.conversationCompleted;
-    if (conversationCompleted) {
-      if (response.jsonRes?.conversationCompletedMessage) {
-        if( nextQuestion.question){
-          nextQuestion.question += `\n\n${response.jsonRes?.conversationCompletedMessage}`;
-        } else {
-          nextQuestion.question = response.jsonRes?.conversationCompletedMessage;
-        }
-      }
-      nextQuestion.closeSurvey = true;
-      nextQuestion.type = "endMessage";
-      await makeSubmissionEntry(conversationId, tokenId);
-    }
-
-    console.log("📱 ~ nextQuestion:", nextQuestion);
-
-    // if (state.questionIndex >= surveyQuestions.length) {
-    //   return null;
-    // }
 
     // Save the answer for the current question
-    // if (answer !== undefined) {
-    // dispatch(addAnswer(answer));
-    // }
+    dispatch(addAnswer(answer));
 
     // Simulate API delay
-    // await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    return nextQuestion;
+    return surveyQuestions[state.questionIndex];
+
+    // http://localhost:5173/survey/tt-mLKsJ
+    // dispatch(addAnswer(answer));
+
+    // const state = getState().survey;
+    // // take the tokenId as the last part of the url
+    // const tokenId = window.location.pathname.split("/").pop();
+
+    // const currentIndex = state.questionIndex;
+    // console.log("📱 ~ currentIndex:", currentIndex);
+
+    // const localStorageConversationId = localStorage.getItem("conversationId");
+    // console.log("📱 ~ localStorageConversationId:", localStorageConversationId);
+    // const conversationId = localStorageConversationId;
+    // const response = await makeChatQuery(
+    //   conversationId,
+    //   `User response -> ${answer}`,
+    //   tokenId
+    // );
+    // console.log("📱 ~ response:", response.jsonRes);
+
+    // const nextQuestion = {
+    //   question: response.jsonRes.question,
+    //   type: response.jsonRes.questionType,
+    //   choices: response.jsonRes.choices || [],
+    //   closeSurvey: false,
+    // };
+
+    // if (
+    //   response.jsonRes.actionLoaderMessage &&
+    //   response.jsonRes?.actions.length
+    // ) {
+    //   const currentAction = getCurrentAgentType(
+    //     response?.actionMeta,
+    //     response?.jsonRes?.actions
+    //   );
+
+    //   if (currentAction?.meta?.actionButtonText) {
+    //     // {
+    //     //   type: "action_button_url",
+    //     //   question: "I am booking demo call on coming saturday",
+    //     //   buttons: [
+    //     //     {
+    //     //       text: "Please visit SurveySparrow",
+    //     //       action: ButtonActions.REDIRECT_URL,
+    //     //       url: "https://www.surveysparrow.com",
+    //     //     },
+    //         // {
+    //         //   text: "Next",
+    //         //   action: ButtonActions.NEXT_QUESTION,
+    //         //   variant: "secondary",
+    //         // },
+    //     //   ],
+    //     // };
+
+    //     nextQuestion.type = "action_button_url";
+    //     nextQuestion.question = response.jsonRes?.actionLoaderMessage || response.jsonRes.question;
+    //     nextQuestion.buttons = [
+    //       {
+    //         text: currentAction?.meta?.actionButtonText,
+    //         action: ButtonActions.REDIRECT_URL,
+    //         url: currentAction?.meta?.actionButtonUrl,
+    //       }
+    //     ];
+    //   } else {
+    //     nextQuestion.question = response.jsonRes.actionLoaderMessage;
+    //     nextQuestion.type = "action";
+    //     nextQuestion.action = response?.jsonRes?.actions;
+    //     nextQuestion.actionMeta = response?.actionMeta;
+    //     nextQuestion.userId = conversationId;
+    //   }
+    // }
+
+    // // const kbExecutionMessage = response.jsonRes.kbExecutionMessage;
+    // // if (kbExecutionMessage) {
+    // //   nextQuestion.question = kbExecutionMessage;
+    // //   nextQuestion.type = "message";
+    // // }
+
+    // const conversationCompleted = response.jsonRes?.conversationCompleted;
+    // if (conversationCompleted) {
+    //   if (response.jsonRes?.conversationCompletedMessage) {
+    //     if( nextQuestion.question){
+    //       nextQuestion.question += `\n\n${response.jsonRes?.conversationCompletedMessage}`;
+    //     } else {
+    //       nextQuestion.question = response.jsonRes?.conversationCompletedMessage;
+    //     }
+    //   }
+    //   nextQuestion.closeSurvey = true;
+    //   nextQuestion.type = "endMessage";
+    //   await makeSubmissionEntry(conversationId, tokenId);
+    // }
+
+    // console.log("📱 ~ nextQuestion:", nextQuestion);
+
+    // // if (state.questionIndex >= surveyQuestions.length) {
+    // //   return null;
+    // // }
+
+    // // Save the answer for the current question
+    // // if (answer !== undefined) {
+    // // dispatch(addAnswer(answer));
+    // // }
+
+    // // Simulate API delay
+    // // await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // return nextQuestion;
   }
 );
 

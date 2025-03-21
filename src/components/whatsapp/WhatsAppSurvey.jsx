@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import MobilePreview from './MobilePreview';
 import { Flex, ThemeProvider } from '@sparrowengg/twigs-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInitialQuestion, fetchNextQuestion, resetSurvey, updateAnswers } from '../../store/slices/surveySlice';
-import { Template, TemplateResponse } from './utils/models/TemplateModel';
+import { fetchInitialQuestion, fetchNextQuestion, resetSurvey } from '../../store/slices/surveySlice';
+import { Template } from './utils/models/TemplateModel';
 import { useParams } from 'react-router-dom';
 const message =   {
   id: 100001352,
@@ -73,6 +73,8 @@ const WhatsAppQuestion = () => {
   
   const dispatch = useDispatch();
 
+  const { triggerToken } = useParams();
+
   const messageScreenRef = useRef(null);
 
   const [currentMessage, setCurrentMessage] = useState(null);
@@ -130,9 +132,19 @@ const WhatsAppQuestion = () => {
     handleButtonClick({ label: message})
   }
 
+  const profileImage = useSelector((state) => state.survey.theme.profileImage);
+  const name = useSelector((state) => state.survey.theme.name);
+  const role = useSelector((state) => state.survey.theme.role);
+  const primaryColor = useSelector((state) => state.survey.theme.primaryColor);
+  const secondaryColor = useSelector((state) => state.survey.theme.secondaryColor);
+  const accentColor = useSelector((state) => state.survey.theme.accentColor);
+
+
   useEffect(() => {
     const fetchQuestion = async () => {
-      const res = await dispatch(fetchInitialQuestion());
+      const res = await dispatch(fetchInitialQuestion({
+        triggerToken: triggerToken
+      }));
       addQuestionToWhatsAppMessage(res?.payload?.currentQuestion)
     };
 

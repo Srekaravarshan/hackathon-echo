@@ -30,22 +30,34 @@ const ActionQuestionAndResponse = ({ handleResponse, surveyType }) => {
     dispatch(updateActionData({
       actionStatus: 'ACTION_STARTED',
     }));
-    const { response, actionStatus } = await executeAction({
-      action: currentQuestion.action,
-      actionMeta: currentQuestion.actionMeta,
-      userId: currentQuestion.userId
-    });
-    console.log('🚀 ~ performAction ~ response:', response);
-    additionalMeta.current = response;
+    const { response, actionStatus } = await appointmentAction();
     dispatch(updateActionData({
       actionStatus,
       response: {
         actionSuccessMessage: response.actionSuccessMessage?.actionExecutedMessage,
         question: response.question,
         type: response.type,
-        choices: response?.choices || []
       }
     }))
+    // dispatch(updateActionData({
+    //   actionStatus: 'ACTION_STARTED',
+    // }));
+    // const { response, actionStatus } = await executeAction({
+    //   action: currentQuestion.action,
+    //   actionMeta: currentQuestion.actionMeta,
+    //   userId: currentQuestion.userId
+    // });
+    // console.log('🚀 ~ performAction ~ response:', response);
+    // additionalMeta.current = response;
+    // dispatch(updateActionData({
+    //   actionStatus,
+    //   response: {
+    //     actionSuccessMessage: response.actionSuccessMessage?.actionExecutedMessage,
+    //     question: response.question,
+    //     type: response.type,
+    //     choices: response?.choices || []
+    //   }
+    // }))
   }
 
   return (
@@ -72,7 +84,8 @@ const ActionQuestionAndResponse = ({ handleResponse, surveyType }) => {
             lineHeight: '$sm',
             fontWeight: '$4',
             ...(typing && { opacity: '0.5' })
-          }
+          },
+          minHeight: '20px'
         }} className={`action-loading-text ${actionData.actionStatus}`}>
           <Typewriter
             options={{

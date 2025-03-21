@@ -6,7 +6,7 @@ const QuestionAnswerTypes = ({ answer = {} }) => {
 
   if (answer.question?.type === 'rating' && typeof answer.answer === 'number') {
     return (
-      <Flex css={{ width: 'fit-content', marginLeft: 'auto', padding: '$4', backgroundColor: `${theme?.actionColor}4d`, borderRadius: '0.5rem 0 0.5rem 0.5rem' }}>
+      <Flex css={{ width: 'fit-content', marginLeft: 'auto', padding: '$4', backgroundColor: `${theme?.accentColor}4d`, borderRadius: '0.5rem 0 0.5rem 0.5rem' }}>
         <Flex gap="$2">
           {Array.from({ length: answer.answer }, (_, i) => (
             <Box
@@ -33,7 +33,7 @@ const QuestionAnswerTypes = ({ answer = {} }) => {
       return null;
     default:
       if (typeof answer?.answer !== 'string' && typeof answer?.answer !== 'number') return null;
-      return <Text css={{ width: 'fit-content', marginLeft: 'auto', padding: '$4', backgroundColor: `${theme?.actionColor}4d`, borderRadius: '0.5rem 0 0.5rem 0.5rem' }}>{answer?.answer}</Text>;
+      return <Text css={{ width: 'fit-content', marginLeft: 'auto', padding: '$4', backgroundColor: `${theme?.accentColor}4d`, borderRadius: '0.5rem 0 0.5rem 0.5rem' }}>{answer?.answer}</Text>;
   }
 }
 

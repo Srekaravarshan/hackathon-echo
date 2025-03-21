@@ -33,21 +33,17 @@ export const WebCallPreview = ({ css }) => {
 
   const [callingView, setCallingView] = useState(false);
 
-  const profileImage =
-    "https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png";
-  const accentColor = "#F5D161";
-  const secondaryColor = "#ffffff";
-  const primaryColor = "#000000";
+  const profileImage = useSelector((state) => state.survey.theme.profileImage);
+  const name = useSelector((state) => state.survey.theme.name);
+  const role = useSelector((state) => state.survey.theme.role);
+  const primaryColor = useSelector((state) => state.survey.theme.primaryColor);
+  const secondaryColor = useSelector((state) => state.survey.theme.secondaryColor);
+  const accentColor = useSelector((state) => state.survey.theme.accentColor);
 
   useEffect(() => {
     dispatch(
       fetchInitialQuestion({
-        theme: {
-          primaryColor: primaryColor,
-          secondaryColor: secondaryColor,
-          actionColor: accentColor,
-          profileImage: profileImage,
-        },
+        triggerToken: triggerToken
       })
     );
 
@@ -72,7 +68,7 @@ export const WebCallPreview = ({ css }) => {
         flexShrink: 0,
         borderRadius: '$round'
       }}/>
-      <Text size="md" weight="bold" css={{ color: '$neutral900', marginTop: '10px' }} truncate>Leo</Text>
+      <Text size="md" weight="bold" css={{ color: '$neutral900', marginTop: '10px' }} truncate>{name}</Text>
       <Text size="xs" css={{ color: '$neutral800', textAlign: 'center', maxWidth: '70%' }}>Personalized Travel<br/>Booking Agent</Text>
       {!callingView && <CallButton primaryColor={primaryColor} accentColor={accentColor} setCallingView={setCallingView} />}
       {callingView && <CallingView />}
@@ -642,7 +638,7 @@ const CallButton = ({ primaryColor, accentColor, setCallingView }) => {
       }}
       onClick={() => setCallingView(true)}
     >
-      Talk to Leo
+      Talk to {name}
     </Button>
   );
 };
@@ -656,7 +652,7 @@ const AIPill = forwardRef(({ children, css }, ref) => {
       css={{
         padding: "$4",
         position: "relative",
-        backgroundColor: `${theme?.actionColor}4d`,
+        backgroundColor: `${theme?.accentColor}4d`,
         width: "100%",
         borderRadius: "0 0.5rem 0.5rem 0.5rem",
         ...css,
@@ -671,7 +667,7 @@ const AIPill = forwardRef(({ children, css }, ref) => {
           right: "calc(100% + $3)",
           width: "$4",
           height: "$4",
-          backgroundColor: `${theme?.actionColor}`,
+          backgroundColor: `${theme?.accentColor}`,
           borderRadius: "$round",
           backgroundImage: `url(${profileImage})`,
           backgroundSize: "cover",
