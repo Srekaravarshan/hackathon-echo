@@ -1,28 +1,80 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { makeChatQuery, makeSubmissionEntry, getWelcomeMessage } from "../../apis";
+import {
+  makeChatQuery,
+  makeSubmissionEntry,
+  getWelcomeMessage,
+} from "../../apis";
 import { ButtonActions } from "../../components/question-types/constants";
 
 const welcomeMessageData = {
-  "greetingHeader": "Hey Welcome to Paris Travel Corporation",
-  "greetingDescription": "Share your travel story about Paris Travel Corporation.",
-  "welcomeButtonText": "Lets Get Started"
-}
+  greetingHeader: "Hey Welcome to Paris Travel Corporation",
+  greetingDescription:
+    "Share your travel story about Paris Travel Corporation.",
+  welcomeButtonText: "Lets Get Started",
+};
+
+const yesOrNoQuestionData = {
+  question: "Are you going to be traveling alone?",
+  type: "yesOrNo",
+  choices: ["Yes", "No"],
+};
+
+const yesOrNoQuestionData2 = {
+  question: "Hello! Do you need to book demo on coming saturday?",
+  type: "yesOrNo",
+};
+
+const welcomeMessage = {
+  question: welcomeMessageData.greetingHeader,
+  description: welcomeMessageData.greetingDescription,
+  type: "welcomeMessage",
+  buttons: [
+    {
+      text: welcomeMessageData.welcomeButtonText,
+      action: ButtonActions.NEXT_QUESTION,
+    },
+  ],
+};
+
+const actionData1 = {
+  type: "action",
+  question: "I am booking demo call on coming saturday",
+  actionType: "appointment",
+  hasConfirmation: false,
+};
+
+const actionDataRedirect = {
+  type: "action_button_url",
+  question: "I am booking demo call on coming saturday",
+  buttons: [
+    {
+      text: "Please visit SurveySparrow",
+      action: ButtonActions.REDIRECT_URL,
+      url: "https://www.surveysparrow.com",
+    },
+    {
+      text: "Next",
+      action: ButtonActions.NEXT_QUESTION,
+      variant: "secondary",
+    },
+  ],
+};
 
 const surveyQuestions = [
-  {    
-    question: welcomeMessageData.greetingHeader,
-    description: welcomeMessageData.greetingDescription,
-    type: 'welcomeMessage',
-    buttons: [
-      {
-        text: welcomeMessageData.welcomeButtonText,
-        action: ButtonActions.NEXT_QUESTION
-      }
-    ]
+  actionDataRedirect,
+  actionData1,
+  yesOrNoQuestionData,
+  yesOrNoQuestionData2,
+  welcomeMessage,
+  {
+    question: "Are you going to be traveling alone?",
+    type: "yesOrNo",
+    choices: ["Yes", "No"],
   },
   {
-    question: "Hi, how can I help you today?",
-    type: "text",
+    question: "What is your budget range for the trip?",
+    type: "multipleChoice",
+    choices: ["Budget", "Mid-range", "Luxury"],
   },
   {
     question: "How would you rate your experience with our travel assistance?",
@@ -84,11 +136,11 @@ const surveyQuestions = [
     closeSurvey: true,
   },
   {
-    "type": "action",
-    "question": "I am booking demo call on coming saturday",
-    "actionType": "appointment",
-    "hasConfirmation": false,
-  }
+    type: "action",
+    question: "I am booking demo call on coming saturday",
+    actionType: "appointment",
+    hasConfirmation: false,
+  },
 ];
 
 const initialState = {
@@ -112,12 +164,12 @@ const initialState = {
   answers: [],
   typing: false,
   actionData: {
-    actionStatus: 'ACTION_NOT_STARTED',
+    actionStatus: "ACTION_NOT_STARTED",
     response: {
-      question: '',
-      type: '',
-    }
-  }
+      question: "",
+      type: "",
+    },
+  },
 };
 
 export const fetchInitialQuestion = createAsyncThunk(
@@ -128,13 +180,12 @@ export const fetchInitialQuestion = createAsyncThunk(
       // await new Promise(resolve => setTimeout(resolve, 1000));
       // const response = await Axios.post('http://localhost:3000/api/chat/getWelcomeMessage');
       // const welcomeMessageData = response?.data?.welcomeMessageData;
-      const tokenId = window.location.pathname.split('/').pop();
+      const tokenId = window.location.pathname.split("/").pop();
       const welcomeMessageRes = await getWelcomeMessage(tokenId);
-      console.log("📱 ~ welcomeMessageRes:", welcomeMessageRes)
-      
-      
+      console.log("📱 ~ welcomeMessageRes:", welcomeMessageRes);
+
       const welcomeMessageData = welcomeMessageRes?.welcomeMessageData;
-      console.log("📱 ~ welcomeMessageData:", welcomeMessageData)
+      console.log("📱 ~ welcomeMessageData:", welcomeMessageData);
 
       if (!surveyQuestions.length) {
         throw new Error("No survey questions available");
@@ -161,6 +212,13 @@ export const fetchInitialQuestion = createAsyncThunk(
   }
 );
 
+const getCurrentAgentType = (actions, currentActionName) => {
+  const currentAction = actions.find(
+    (action) => action.name === currentActionName
+  );
+  return currentAction;
+};
+
 export const fetchNextQuestion = createAsyncThunk(
   "survey/fetchNextQuestion",
   async (answer, { getState, dispatch }) => {
@@ -168,21 +226,20 @@ export const fetchNextQuestion = createAsyncThunk(
 
     const state = getState().survey;
     // take the tokenId as the last part of the url
-    const tokenId = window.location.pathname.split('/').pop();
-    
+    const tokenId = window.location.pathname.split("/").pop();
+
     const currentIndex = state.questionIndex;
     console.log("📱 ~ currentIndex:", currentIndex);
 
-
-    const localStorageConversationId = localStorage.getItem('conversationId');
-    console.log("📱 ~ localStorageConversationId:", localStorageConversationId)
+    const localStorageConversationId = localStorage.getItem("conversationId");
+    console.log("📱 ~ localStorageConversationId:", localStorageConversationId);
     const conversationId = localStorageConversationId;
     const response = await makeChatQuery(
       conversationId,
       `User response -> ${answer}`,
       tokenId
     );
-    console.log("📱 ~ response:", response);
+    console.log("📱 ~ response:", response.jsonRes);
 
     const nextQuestion = {
       question: response.jsonRes.question,
@@ -191,12 +248,49 @@ export const fetchNextQuestion = createAsyncThunk(
       closeSurvey: false,
     };
 
-    if (response.jsonRes.actionLoaderMessage && response.jsonRes?.actions.length) {
-      nextQuestion.question = response.jsonRes.actionLoaderMessage;
-      nextQuestion.type = "action";
-      nextQuestion.action = response?.jsonRes?.actions;
-      nextQuestion.actionMeta = response?.actionMeta;
-      nextQuestion.userId = conversationId;
+    if (
+      response.jsonRes.actionLoaderMessage &&
+      response.jsonRes?.actions.length
+    ) {
+      const currentAction = getCurrentAgentType(
+        response?.actionMeta,
+        response?.jsonRes?.actions
+      );
+
+      if (currentAction?.meta?.actionButtonText) {
+        // {
+        //   type: "action_button_url",
+        //   question: "I am booking demo call on coming saturday",
+        //   buttons: [
+        //     {
+        //       text: "Please visit SurveySparrow",
+        //       action: ButtonActions.REDIRECT_URL,
+        //       url: "https://www.surveysparrow.com",
+        //     },
+            // {
+            //   text: "Next",
+            //   action: ButtonActions.NEXT_QUESTION,
+            //   variant: "secondary",
+            // },
+        //   ],
+        // };
+
+        nextQuestion.type = "action_button_url";
+        nextQuestion.question = response.jsonRes?.actionLoaderMessage || response.jsonRes.question;
+        nextQuestion.buttons = [
+          {
+            text: currentAction?.meta?.actionButtonText,
+            action: ButtonActions.REDIRECT_URL,
+            url: currentAction?.meta?.actionButtonUrl,
+          }
+        ];
+      } else {
+        nextQuestion.question = response.jsonRes.actionLoaderMessage;
+        nextQuestion.type = "action";
+        nextQuestion.action = response?.jsonRes?.actions;
+        nextQuestion.actionMeta = response?.actionMeta;
+        nextQuestion.userId = conversationId;
+      }
     }
 
     // const kbExecutionMessage = response.jsonRes.kbExecutionMessage;
@@ -280,7 +374,7 @@ export const surveySlice = createSlice({
       state.actionData = {
         ...state.actionData,
         ...action.payload,
-      }
+      };
     },
   },
   extraReducers: (builder) => {

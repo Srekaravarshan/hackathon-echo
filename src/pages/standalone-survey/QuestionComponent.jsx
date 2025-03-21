@@ -10,6 +10,7 @@ const QuestionComponent = ({ currentQuestion, setAnimationComplete, animationCom
       makeDim={typing}
       hideCursor={currentQuestion.question === animationComplete}
       onAnimationComplete={() => setAnimationComplete(currentQuestion.question)}
+      className="question-component-typewriter"
     />
   )
 }

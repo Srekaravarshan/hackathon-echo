@@ -30,6 +30,7 @@ export const OptionsContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  flex-wrap: wrap;
 `;
 
 export const Button = styled(motion.button)`

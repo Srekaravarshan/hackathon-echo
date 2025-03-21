@@ -11,10 +11,9 @@ const Button = ({ children, onClick, disabled, css, ...props }) => {
       {...props}
       css={{
         width: 'fit-content',
-        // height: 'auto',
         border: 'none',
-        padding: '$4',
-        borderRadius: '8px',
+        padding: '$4 $8',
+        borderRadius: '$pill',
         ...css,
         '.twigs-button__content': {
           flexDirection: 'row',
@@ -37,10 +36,7 @@ const Button = ({ children, onClick, disabled, css, ...props }) => {
           ...(props.variant === 'ghost' ? {
             backgroundColor: `${theme?.primaryColor}1a !important`,
             color: `${theme?.primaryColor} !important`,
-          } : {
-            // backgroundColor: css?.['backgroundColor'] || `${primaryColor} !important`,
-            // color: css?.['color'] || `${secondaryColor} !important`,
-          }),
+          } : {}),
           ...css?.['&:hover, &:focus, &:active, &:focus-visible'],
         },
       }}

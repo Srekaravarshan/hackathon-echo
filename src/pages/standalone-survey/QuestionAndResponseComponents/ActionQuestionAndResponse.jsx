@@ -1,5 +1,4 @@
 import { Box } from "@sparrowengg/twigs-react";
-import WelcomeMessage from "../../../components/question-types/WelcomeMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { Fragment, useEffect, useState, useRef } from "react";
 import Typewriter from "typewriter-effect";
@@ -17,6 +16,8 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
   console.log("📱 ~ ActionQuestionAndResponse ~ additionalMeta:", additionalMeta.current)
   
   console.log("📱 ~ ActionQuestionAndResponse ~ currentQuestion:", currentQuestion)
+
+  const [actionSuccessMessage, setActionSuccessMessage] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -38,6 +39,7 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
     dispatch(updateActionData({
       actionStatus,
       response: {
+        actionSuccessMessage: response.actionSuccessMessage,
         question: response.question,
         type: response.type,
         choices: response?.choices || []
@@ -46,46 +48,15 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
   }
 
   return (
-    <Fragment>
-      {/* <Box css={{
-        marginBottom: '1.2rem',
-        '.Typewriter__cursor': {
-          ...(currentQuestion.question === animationComplete && { display: 'none' }),
-          ...(typing && { display: 'none' })
-        },
-        '[data-testid="typewriter-wrapper"]': {
-          // transition: 'opacity 0.2s ease-in-out',
-          // fontSize: '$5xl !important',
-          // lineHeight: '$5xl !important',
-          // fontWeight: '$7 !important',
-          ...(actionData.actionStatus === 'ACTION_STARTED' && { opacity: '0.5' }),
-          ...(actionData.actionStatus === 'ACTION_COMPLETED' && {
-            opacity: '0.5',
-            fontSize: '$sm !important',
-            lineHeight: '$sm !important',
-            fontWeight: '$4 !important',
-          }),
-          transition: 'all 0.2s ease-in-out',
-          ...(typing && { opacity: '0.5' })
-        }
-      }}>
-        <Typewriter
-          key={currentQuestion.question}
-          onInit={(typewriter) => {
-            typewriter.changeDelay(15).typeString(currentQuestion.question).callFunction(() => {
-              return setAnimationComplete(currentQuestion.question);
-            }).start();
-          }}
-        />
-      </Box> */}
+    <Box className={`action-question-and-response ${actionData.actionStatus}`}>
       <TextTypewriter
         text={currentQuestion.question}
         makeDim={
-          // actionData.actionStatus === 'ACTION_STARTED' || 
           actionData.actionStatus === 'ACTION_COMPLETED'}
         makeSmall={actionData.actionStatus === 'ACTION_COMPLETED'}
         onAnimationComplete={() => setAnimationComplete(currentQuestion.question)}
         hideCursor={currentQuestion.question === animationComplete}
+        className={`action-question-text ${actionData.actionStatus}`}
       />
       {actionData.actionStatus === 'ACTION_STARTED' && animationComplete === currentQuestion.question && (
         <Box css={{
@@ -96,12 +67,12 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
           },
           '[data-testid="typewriter-wrapper"]': {
             transition: 'opacity 0.2s ease-in-out',
-            fontSize: '$sm !important',
-            lineHeight: '$sm !important',
-            fontWeight: '$4 !important',
+            fontSize: '$sm',
+            lineHeight: '$sm',
+            fontWeight: '$4',
             ...(typing && { opacity: '0.5' })
           }
-        }}>
+        }} className={`action-loading-text ${actionData.actionStatus}`}>
           <Typewriter
             options={{
               strings: ['Executing action...'],
@@ -113,24 +84,23 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
           />
         </Box>
       )}
-      {/* <Box
-        css={{
-          opacity: animationComplete ? 1 : 0,
-          transition: 'opacity 0.4s ease-in-out',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-        }}
-      >
-        <WelcomeMessage currentQuestion={currentQuestion} onAnswer={handleResponse} />
-      </Box> */}
-      {actionData.actionStatus === 'ACTION_COMPLETED' && actionData.response.question && (
+      {actionData.actionStatus === 'ACTION_COMPLETED' && actionData.response.actionSuccessMessage && actionData.response.question && (
+        <TextTypewriter
+          className={`action-success-text ${actionData.actionStatus}`}
+          text={actionData.response.actionSuccessMessage}
+          makeDim={typing}
+          onAnimationComplete={() => setActionSuccessMessage(true)}
+          hideCursor={actionSuccessMessage}
+        />
+      )}
+      {actionData.actionStatus === 'ACTION_COMPLETED' && (!actionData.response.actionSuccessMessage || actionSuccessMessage) && actionData.response.question && (
         <DefaultQuestionAndResponseComponent 
           currentQuestion={actionData.response}
           handleResponse={handleResponse}
           additionalMeta={additionalMeta.current}
         />
       )}
-    </Fragment>
+    </Box>
   );
 };
 

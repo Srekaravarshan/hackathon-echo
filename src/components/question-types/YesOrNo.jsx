@@ -6,7 +6,6 @@ import { OptionsContainer, StyledTextareaInput } from '../StyledComponents';
 import YesOrNoOptionButton from '../buttons/YesOrNoOptionButton';
 import SubmitButton from '../buttons/SubmitButton';
 import { setTyping } from '../../store/slices/surveySlice';
-import styles from '../../pages/chat-survey/ChatSurvey.module.css';
 
 const YesOrNo = ({ onAnswer }) => {
   const [selected, setSelected] = useState(null);
@@ -73,7 +72,7 @@ const YesOrNo = ({ onAnswer }) => {
 
   return (
     <OptionsContainer className="yes-or-no-question">
-      <Flex gap="$8" className={styles.yesNoOptionContainer}>
+      <Flex gap="$8" className='yes-no-option-container'>
         <YesOrNoOptionButton className="yes-or-no-option-yes" selected={selected === 'Yes'} onClick={() => handleSelect('Yes')} icon={<YesThumbsUpIcon size="36" />} label="Yes" shortCutKey="Y" />
         <YesOrNoOptionButton className="yes-or-no-option-no" selected={selected === 'No'} onClick={() => handleSelect('No')} icon={<NoThumbsDownIcon size="36" />} label="No" shortCutKey="N" />
       </Flex>
@@ -84,7 +83,7 @@ const YesOrNo = ({ onAnswer }) => {
         onKeyDown={onKeyDown}
         onChange={onChange} 
         style={{ color: theme?.primaryColor }}
-        className={styles.answerInput}
+        className='answer-input'
       />
       <SubmitButton css={{ height: 'auto' }} disabled={!selected && text.length === 0} handleSubmit={handleSubmit} className="yes-or-no-submit-button submit-button" />
     </OptionsContainer>

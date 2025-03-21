@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect, Fragment } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { setTyping } from "../../store/slices/surveySlice";
-import { StyledTextareaInput } from "../StyledComponents";
-import SubmitButton from "../buttons/SubmitButton";
-import styles from "../../pages/chat-survey/ChatSurvey.module.css";
+import { useState, useRef, useEffect, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setTyping } from '../../store/slices/surveySlice';
+import { StyledTextareaInput } from '../StyledComponents';
+import SubmitButton from '../buttons/SubmitButton';
 
 const TextInput = ({ onAnswer, additionalMeta }) => {
   console.log("📱 ~ TextInput ~ additionalMeta:", additionalMeta);
@@ -75,7 +74,7 @@ const TextInput = ({ onAnswer, additionalMeta }) => {
         onKeyDown={onKeyDown}
         onChange={onChange}
         style={{ color: theme?.primaryColor }}
-        className={styles.answerInput}
+        className='answer-input'
       />
       <SubmitButton
         css={{ height: "auto" }}

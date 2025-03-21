@@ -9,6 +9,7 @@ import TextInput from '../../components/question-types/TextInput';
 import OpinionScale from '../../components/question-types/OpinionScale';
 import EndMessage from '../../components/question-types/EndMessage';
 import WelcomeMessage from '../../components/question-types/WelcomeMessage';
+import Buttons from '../../components/question-types/Buttons.jsx';
 
 const ResponseComponent = ({ currentQuestion, handleResponse, animationComplete, additionalMeta }) => {
   if (!currentQuestion) return null;
@@ -19,9 +20,12 @@ const ResponseComponent = ({ currentQuestion, handleResponse, animationComplete,
         opacity: animationComplete ? 1 : 0,
         transition: 'opacity 0.4s ease-in-out',
       }}
+      className="response-component-wrapper"
     >
       {(() => {
         switch (currentQuestion.type) {
+          case 'action_button_url':
+            return <Buttons currentQuestion={currentQuestion} onAnswer={handleResponse} />;
           case 'welcomeMessage':
             return <WelcomeMessage currentQuestion={currentQuestion} onAnswer={handleResponse} />;
           case 'yesOrNo':
