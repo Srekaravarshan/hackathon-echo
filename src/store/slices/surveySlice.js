@@ -20,9 +20,9 @@ const yesOrNoQuestionData = {
 };
 
 const yesOrNoQuestionData2 = {
-  question: "Hello! Do you need to book demo on coming saturday?",
-  type: "yesOrNo",
-};
+  "question": "Do you have any hotel preferences?",
+  "type": "yesOrNo",
+}
 
 const welcomeMessage = {
   question: welcomeMessageData.greetingHeader,
@@ -57,36 +57,55 @@ const actionDataRedirect = {
       action: ButtonActions.NEXT_QUESTION,
       variant: "secondary",
     },
-  ],
-};
+  ]
+}
+
+const opinionScaleQuestion = {
+  "question": "How would you rate your experience with our travel assistance?",
+  "type": "opinionScale",
+  "scale": {
+    min: 1,
+    max: 10,
+  },
+}
+const ratingQuestion = {
+  "question": "How would you rate your experience with our travel assistance?",
+  "type": "rating",
+  "steps": 5,
+}
+
+const multipleChoiceQuestion = {
+  "question": "What is your budget range for the trip?",
+  "type": "multipleChoice",
+  "choices": ["Budget", "Mid-range", "Luxury"]
+}
+
+const messageQuestion = {
+  "question": "Hello! Welcome to the XYZ Travel Agency. How can I help you today?",
+  "type": "message"
+}
 
 const surveyQuestions = [
-  actionDataRedirect,
   actionData1,
+  ratingQuestion,
+  actionDataRedirect,
   yesOrNoQuestionData,
   yesOrNoQuestionData2,
   welcomeMessage,
+  multipleChoiceQuestion,
+  opinionScaleQuestion,
+  messageQuestion,
+  // {
+  //   "question": "Provide your aadhar card",
+  //   "type": "fileUpload",
+  // },
+  // {
+  //   "question": "Hey! How can I help you today? sample audio question",
+  //   "type": "audio"
+  // },
   {
-    question: "Are you going to be traveling alone?",
-    type: "yesOrNo",
-    choices: ["Yes", "No"],
-  },
-  {
-    question: "What is your budget range for the trip?",
-    type: "multipleChoice",
-    choices: ["Budget", "Mid-range", "Luxury"],
-  },
-  {
-    question: "How would you rate your experience with our travel assistance?",
-    type: "opinionScale",
-    scale: {
-      min: 1,
-      max: 10,
-    },
-  },
-  {
-    question: "Provide your aadhar card",
-    type: "fileUpload",
+    "question": "What is your travel destination?",
+    "type": "text"
   },
   {
     question: "What is your travel destination?",
@@ -223,6 +242,7 @@ export const fetchNextQuestion = createAsyncThunk(
   "survey/fetchNextQuestion",
   async (answer, { getState, dispatch }) => {
     // http://localhost:5173/survey/tt-mLKsJ
+    dispatch(addAnswer(answer));
 
     const state = getState().survey;
     // take the tokenId as the last part of the url
@@ -302,7 +322,11 @@ export const fetchNextQuestion = createAsyncThunk(
     const conversationCompleted = response.jsonRes?.conversationCompleted;
     if (conversationCompleted) {
       if (response.jsonRes?.conversationCompletedMessage) {
-        nextQuestion.question += `\n\n${response.jsonRes?.conversationCompletedMessage}`;
+        if( nextQuestion.question){
+          nextQuestion.question += `\n\n${response.jsonRes?.conversationCompletedMessage}`;
+        } else {
+          nextQuestion.question = response.jsonRes?.conversationCompletedMessage;
+        }
       }
       nextQuestion.closeSurvey = true;
       nextQuestion.type = "endMessage";
@@ -317,7 +341,7 @@ export const fetchNextQuestion = createAsyncThunk(
 
     // Save the answer for the current question
     // if (answer !== undefined) {
-    dispatch(addAnswer(answer));
+    // dispatch(addAnswer(answer));
     // }
 
     // Simulate API delay
@@ -358,6 +382,10 @@ export const surveySlice = createSlice({
         answer: action.payload,
         timestamp: new Date().toISOString(),
       });
+    },
+    addChatAnswer: (state, action) => {
+      state.answers.push(action.payload);
+      console.log("🚀 ~ addChatAnswer ~ state.answers:", state.answers)
     },
     setTyping: (state, action) => {
       console.log("🚀 ~ setTyping ~ action:", action);
@@ -426,6 +454,7 @@ export const {
   setTyping,
   updateAnswers,
   updateActionData,
+  addChatAnswer,
 } = surveySlice.actions;
 
 export default surveySlice.reducer;

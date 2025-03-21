@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Fragment, useEffect, useState, useRef } from "react";
 import Typewriter from "typewriter-effect";
 import { appointmentAction } from "../../../components/actions/actions";
-import { updateActionData } from "../../../store/slices/surveySlice";
+import { updateActionData, addChatAnswer } from "../../../store/slices/surveySlice";
 import DefaultQuestionAndResponseComponent from "./DefaultQuestionAndResponseComponent";
 import TextTypewriter from "../../components/TextTypewriter";
 import { executeAction } from "../../../apis";
 
-const ActionQuestionAndResponse = ({ handleResponse }) => {
+const ActionQuestionAndResponse = ({ handleResponse, surveyType }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const { currentQuestion, typing, actionData } = useSelector((state) => state.survey);
   const additionalMeta = useRef({})
@@ -26,6 +26,7 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
   }, []);
 
   const performAction = async () => {
+    
     dispatch(updateActionData({
       actionStatus: 'ACTION_STARTED',
     }));
@@ -39,7 +40,7 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
     dispatch(updateActionData({
       actionStatus,
       response: {
-        actionSuccessMessage: response.actionSuccessMessage,
+        actionSuccessMessage: response.actionSuccessMessage?.actionExecutedMessage,
         question: response.question,
         type: response.type,
         choices: response?.choices || []
@@ -96,7 +97,18 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
       {actionData.actionStatus === 'ACTION_COMPLETED' && (!actionData.response.actionSuccessMessage || actionSuccessMessage) && actionData.response.question && (
         <DefaultQuestionAndResponseComponent 
           currentQuestion={actionData.response}
-          handleResponse={handleResponse}
+          handleResponse={async (answer, options) => {
+            await handleResponse(answer, options);
+            if (surveyType === 'chat') {
+              dispatch(addChatAnswer({
+                question: actionData.response,
+                // type: actionData.response.type,
+                answer: answer,
+                // options: options,
+              }));
+              // return handleResponse(answer, options);
+            }
+          }}
           additionalMeta={additionalMeta.current}
         />
       )}
