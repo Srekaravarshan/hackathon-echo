@@ -3,11 +3,12 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:3000';
 const SPARROW_BASE_URL = 'http://caseactivitylogs2.surveysparrow.test';
 
-export const makeChatQuery = async (userId, query) => {
+export const makeChatQuery = async (userId, query, tokenId) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/chat`, {
       userId,
-      query
+      query,
+      tokenId
     });
     return response.data;
   } catch (error) {
@@ -18,9 +19,9 @@ export const makeChatQuery = async (userId, query) => {
 
 
 
-export const makeSubmissionEntry = async (conversationId) => {
+export const makeSubmissionEntry = async (conversationId, tokenId) => {
   try {
-    const response = await axios.post(`${SPARROW_BASE_URL}/api/internal/echo/submission/answers/tt-YAJiSiTku6`, {
+    const response = await axios.post(`${SPARROW_BASE_URL}/api/internal/echo/submission/answers/${tokenId}`, {
       conversationId: conversationId,
     });
     return response.data;
@@ -31,10 +32,10 @@ export const makeSubmissionEntry = async (conversationId) => {
 };
 
 
-export const getWelcomeMessage = async (surveyId) => {
+export const getWelcomeMessage = async (tokenId) => {
   try {
     const response = await axios.post(`${BASE_URL}/api/chat/getWelcomeMessage`, {
-      surveyId: surveyId,
+      tokenId: tokenId,
     });
     return response.data;
   } catch (error) {

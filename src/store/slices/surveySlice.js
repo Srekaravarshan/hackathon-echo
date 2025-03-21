@@ -128,8 +128,8 @@ export const fetchInitialQuestion = createAsyncThunk(
       // await new Promise(resolve => setTimeout(resolve, 1000));
       // const response = await Axios.post('http://localhost:3000/api/chat/getWelcomeMessage');
       // const welcomeMessageData = response?.data?.welcomeMessageData;
-      
-      const welcomeMessageRes = await getWelcomeMessage(1000000452);
+      const tokenId = window.location.pathname.split('/').pop();
+      const welcomeMessageRes = await getWelcomeMessage(tokenId);
       console.log("📱 ~ welcomeMessageRes:", welcomeMessageRes)
       
       
@@ -164,8 +164,12 @@ export const fetchInitialQuestion = createAsyncThunk(
 export const fetchNextQuestion = createAsyncThunk(
   "survey/fetchNextQuestion",
   async (answer, { getState, dispatch }) => {
-    const state = getState().survey;
+    // http://localhost:5173/survey/tt-mLKsJ
 
+    const state = getState().survey;
+    // take the tokenId as the last part of the url
+    const tokenId = window.location.pathname.split('/').pop();
+    
     const currentIndex = state.questionIndex;
     console.log("📱 ~ currentIndex:", currentIndex);
 
@@ -175,7 +179,8 @@ export const fetchNextQuestion = createAsyncThunk(
     const conversationId = localStorageConversationId;
     const response = await makeChatQuery(
       conversationId,
-      `User response -> ${answer}`
+      `User response -> ${answer}`,
+      tokenId
     );
     console.log("📱 ~ response:", response);
 
@@ -207,7 +212,7 @@ export const fetchNextQuestion = createAsyncThunk(
       }
       nextQuestion.closeSurvey = true;
       nextQuestion.type = "endMessage";
-      await makeSubmissionEntry(conversationId);
+      await makeSubmissionEntry(conversationId, tokenId);
     }
 
     console.log("📱 ~ nextQuestion:", nextQuestion);

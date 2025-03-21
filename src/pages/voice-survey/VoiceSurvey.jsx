@@ -437,6 +437,7 @@ const CallingView = () => {
           console.log("📱 ~ socket.onmessage= ~ received:", received)
           const transcript = received.channel.alternatives[0].transcript;
           if (transcript && received.is_final) {
+            currentAudioPlayer.current = null;
             cancelAudio();
             console.log("📱 ~ socket.onmessage= ~ transcript:", transcript);
             // currentText = currentText.concat(' ' + transcript);
