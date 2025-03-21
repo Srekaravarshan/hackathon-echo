@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState, useCallback } from 'react';
 import Typewriter from 'typewriter-effect';
 import { SurveyContainer, QuestionContainer } from '../../components/StyledComponents';
 import { Box } from '@sparrowengg/twigs-react';
