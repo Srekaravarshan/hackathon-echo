@@ -213,6 +213,12 @@ const ChatSurvey = () => {
             height: '32px',
             width: '32px',
           },
+          '.submit-button': {
+            // position: 'fixed',
+            bottom: '10px',
+            // left: 'auto',
+            right: '50px',
+          },
           overflow: 'hidden',
         }}
         alignItems="center"
@@ -453,7 +459,7 @@ const Fab = ({ surveyType, setSurveyType }) => {
           }}
           onClick={() => setSurveyType(surveyType === 'chat' ? 'voice' : 'chat')}
         >
-          {surveyType === 'voice' ? <ChatSurveyIcon size="22" /> : <VoiceSurveyIcon size="22" />}
+          {surveyType === 'voice' ? <ChatSurveyIcon size="18" /> : <VoiceSurveyIcon size="18" />}
         </Box>
       </Tooltip>
     </TooltipProvider>
