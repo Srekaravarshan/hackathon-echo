@@ -28,3 +28,8 @@ export const AlphaNumMapping = {
 }
 
 export const NumAlphaMapping = Object.fromEntries(Object.entries(AlphaNumMapping).map(([key, value]) => [value, key]));
+
+export const ButtonActions = {
+  NEXT_QUESTION: 'NEXT_QUESTION',
+  END_SURVEY: 'END_SURVEY',
+}

@@ -7,13 +7,14 @@ import { fetchInitialQuestion, fetchNextQuestion, resetSurvey } from '../../stor
 import Typewriter from 'typewriter-effect';
 import ResponseComponent from '../standalone-survey/ResponseQuestion';
 import QuestionAnswerTypes from '../../components/question-answer-types/QuestionAnswerTypes';
-import './ChatSurvey.css';
 import { useParams } from 'react-router-dom';
+import styles from './ChatSurvey.module.css';
 
 const ChatSurvey = () => {
   const dispatch = useDispatch();
-  const { triggerToken } = useParams();
-
+  const params = useParams();
+  console.log("🚀 ~ params:", params);
+  const triggerToken = params.triggerToken;
   const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
   const accentColor = '#F5D161';
 

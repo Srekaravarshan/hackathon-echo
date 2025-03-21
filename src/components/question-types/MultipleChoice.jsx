@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { OptionsContainer, Option, StyledTextareaInput } from '../StyledComponents';
 import SubmitButton from '../buttons/SubmitButton';
 import { setTyping } from '../../store/slices/surveySlice';
+import styles from '../../pages/chat-survey/ChatSurvey.module.css';
 
-const MultipleChoice = ({ choices = [], onAnswer }) => {
+const MultipleChoice = ({ choices = [], onAnswer, additionalMeta }) => {
   const dispatch = useDispatch();
   
   const inputRef = useRef(null);
@@ -25,7 +26,17 @@ const MultipleChoice = ({ choices = [], onAnswer }) => {
 
   const handleSubmit = useCallback(() => {
     if (text.length > 0 || selected.length > 0) {
-      onAnswer(selected.join(', ') + ((selected.length > 0 && text) ? ', ' : '') + text);
+
+      let finalAnswer = selected.join(', ') + ((selected.length > 0 && text) ? ', ' : '') + text;
+      if (additionalMeta?.actionSuccessMessage?.actionExecutedMessage) {
+        finalAnswer = `
+        The action was executed successfully.
+        And the user has replied ${finalAnswer} for the question ${additionalMeta?.question}
+      `;
+      }
+      console.log("📱 ~ finalAnswer:", finalAnswer)
+
+      onAnswer(finalAnswer);
     }
   }, [text, onAnswer, selected]);
 
@@ -71,7 +82,7 @@ const MultipleChoice = ({ choices = [], onAnswer }) => {
         {choices.map((option, index) => (
           <Option
             key={index}
-            className="multiple-choice-option choice-option"
+            className={`${styles.choiceOption} ${selected.includes(option) ? styles.selectedChoiceOption : ''}`}
             selected={selected.includes(option)}
             onClick={() => handleSelect(option)}
             whileTap={{ scale: 0.95 }}
@@ -90,7 +101,7 @@ const MultipleChoice = ({ choices = [], onAnswer }) => {
         onKeyDown={onKeyDown}
         onChange={onChange} 
         style={{ color: theme?.primaryColor }}
-        className="multiple-choice-textarea answer-input"
+        className={styles.answerInput}
       />
       <SubmitButton css={{ height: 'auto' }} disabled={selected.length === 0 && text.length === 0} handleSubmit={handleSubmit} className="multiple-choice-submit-button submit-button" />
     </OptionsContainer>

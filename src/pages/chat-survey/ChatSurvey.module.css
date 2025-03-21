@@ -1,14 +1,15 @@
-.choice-option {
+/* .choiceOption {
   font-size: 14px !important;
   line-height: 18.2px !important;
   padding: 8px !important;
 }
-.answer-input {
+
+.answerInput {
   font-size: 14px !important;
   line-height: 18.2px !important;
 }
 
-.opinion-scale-option {
+.opinionScaleOption {
   font-size: 14px !important;
   line-height: 18.2px !important;
   padding: 4px !important;
@@ -16,25 +17,26 @@
   width: 32px !important;
 }
 
-.yes-or-no-option-container .twigs-button__content > div > p {
+.yesNoOptionContainer :global(.twigs-button__content) > div > p {
   font-size: 14px !important;
   line-height: 18.2px !important;
 }
-.yes-or-no-option-container button {
+
+.yesNoOptionContainer button {
   width: 90px !important;
 }
 
-.yes-or-no-option-container .twigs-button__content > svg {
+.yesNoOptionContainer :global(.twigs-button__content) > svg {
   width: 24px !important;
   height: 24px !important;
 }
 
-.yes-or-no-option-container .twigs-button__content > div > div > p {
+.yesNoOptionContainer :global(.twigs-button__content) > div > div > p {
   font-size: 12px !important;
   line-height: 15.6px !important;
 }
 
-.yes-or-no-option-container .twigs-button__content > div > div {
+.yesNoOptionContainer :global(.twigs-button__content) > div > div {
   height: 20px !important;
   width: 20px !important;
-}
+} */
