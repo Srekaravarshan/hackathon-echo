@@ -6,6 +6,11 @@ import {
 } from "../../apis";
 import { ButtonActions } from "../../components/question-types/constants";
 
+// const welcomeMessageData = {
+//   "greetingHeader": "Hey",
+//   "greetingDescription": "Share",
+//   "welcomeButtonText": "Lets Get Started"
+// }
 const welcomeMessageData = {
   greetingHeader: "Hey Welcome to Paris Travel Corporation",
   greetingDescription:
@@ -86,12 +91,12 @@ const messageQuestion = {
 }
 
 const surveyQuestions = [
-  actionData1,
+  welcomeMessage,
   ratingQuestion,
   actionDataRedirect,
   yesOrNoQuestionData,
   yesOrNoQuestionData2,
-  welcomeMessage,
+  actionData1,
   multipleChoiceQuestion,
   opinionScaleQuestion,
   messageQuestion,

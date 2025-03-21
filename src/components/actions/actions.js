@@ -3,7 +3,10 @@ export const appointmentAction = async () => {
   return {
     actionStatus: 'ACTION_COMPLETED',
     response: {
-      actionSuccessMessage: 'Your appointment is booked successfully',
+      actionSuccessMessage: {
+        actionExecutedMessage: 'Your appointment is booked successfully',
+        actionExecutedMessageType: 'success',
+      },
       hasNextQuestion: true,
       question: 'Can you please share your phone number?',
       type: 'text',
