@@ -1,95 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { makeChatQuery, makeSubmissionEntry, getWelcomeMessage } from "../../apis";
-import { ButtonActions } from "../../components/question-types/constants";
-
-const welcomeMessageData = {
-  "greetingHeader": "Hey Welcome to Paris Travel Corporation",
-  "greetingDescription": "Share your travel story about Paris Travel Corporation.",
-  "welcomeButtonText": "Lets Get Started"
-}
-
-const surveyQuestions = [
-  {    
-    question: welcomeMessageData.greetingHeader,
-    description: welcomeMessageData.greetingDescription,
-    type: 'welcomeMessage',
-    buttons: [
-      {
-        text: welcomeMessageData.welcomeButtonText,
-        action: ButtonActions.NEXT_QUESTION
-      }
-    ]
-  },
-  {
-    question: "Hi, how can I help you today?",
-    type: "text",
-  },
-  {
-    question: "How would you rate your experience with our travel assistance?",
-    type: "opinionScale",
-    scale: {
-      min: 1,
-      max: 10,
-    },
-  },
-  {
-    question: "Provide your aadhar card",
-    type: "fileUpload",
-  },
-  {
-    question: "What is your travel destination?",
-    type: "text",
-  },
-  {
-    question: "Are you going to be traveling alone?",
-    type: "yesOrNo",
-    choices: ["Yes", "No"],
-  },
-  {
-    question: "Do you have any hotel preferences?",
-    type: "multipleChoice",
-    choices: [
-      "Budget hotels",
-      "Boutique hotels",
-      "Luxury hotels",
-      "No preference",
-    ],
-  },
-  {
-    question: "What are your planned travel dates?",
-    type: "text",
-  },
-  {
-    question:
-      "Based on your preferences, here are some travel recommendations. Do you want more details on any of them?",
-    type: "yesOrNo",
-    choices: ["Yes", "No"],
-  },
-  // {
-  //   "question": "Would you like us to book a hotel for you?",
-  //   "type": "multipleChoice",
-  //   "choices": ["Yes", "No"]
-  // },
-  {
-    question: "Please provide your email for booking confirmation.",
-    type: "text",
-  },
-  {
-    question: "Please provide your phone number for booking assistance.",
-    type: "text",
-  },
-  {
-    question: "Thank you for your time!",
-    type: "endMessage",
-    closeSurvey: true,
-  },
-  {
-    "type": "action",
-    "question": "I am booking demo call on coming saturday",
-    "actionType": "appointment",
-    "hasConfirmation": false,
-  }
-];
+import { makeChatQuery, makeSubmissionEntry } from "../../apis";
 
 const initialState = {
   currentQuestion: {
@@ -153,8 +63,7 @@ export const fetchInitialQuestion = createAsyncThunk(
 
 export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
-  async ({ answer, triggerToken }, { getState, dispatch }) => {
-    // const { triggerToken } = useParams();
+  async ({ answer, triggerToken }, { dispatch }) => {
     dispatch(addAnswer(answer));
 
     console.log("📱 ~ triggerToken:", triggerToken)

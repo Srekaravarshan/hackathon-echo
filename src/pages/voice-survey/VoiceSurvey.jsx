@@ -66,13 +66,14 @@ export const WebCallPreview = () => {
           actionColor: accentColor,
           profileImage: profileImage,
         },
+        triggerToken
       })
     );
 
     return () => {
       dispatch(resetSurvey());
     };
-  }, [dispatch]);
+  }, [dispatch, triggerToken]);
 
   return (
     <Flex flexDirection="column" css={{
@@ -383,7 +384,7 @@ const CallingView = () => {
     const baseUrl = "https://api.elevenlabs.io/v1/text-to-speech";
     const headers = {
       "Content-Type": "application/json",
-      "xi-api-key": "sk_a64578aee871354eed017d4097f35652f57bf2f9d8e99390",
+      "xi-api-key": "sk_45aec40cb329dd52563aa0be1b393a76d1ef324ba169fc8b",
     };
 
     const response = await axios.post(
