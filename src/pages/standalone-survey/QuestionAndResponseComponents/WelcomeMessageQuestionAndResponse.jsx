@@ -3,6 +3,7 @@ import WelcomeMessage from "../../../components/question-types/WelcomeMessage";
 import { useSelector } from "react-redux";
 import { Fragment, useState } from "react";
 import Typewriter from "typewriter-effect";
+import TextTypewriter from "../../components/TextTypewriter";
 
 const WelcomeMessageQuestionAndResponse = ({ handleResponse }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
@@ -26,16 +27,22 @@ const WelcomeMessageQuestionAndResponse = ({ handleResponse }) => {
           ...(typing && { opacity: '0.5' })
         }
       }}>
-        <Typewriter
-          key={currentQuestion.question}
-          onInit={(typewriter) => {
-            typewriter.changeDelay(15).typeString(currentQuestion.question).callFunction(() => {
-              if (typeof currentQuestion?.description !== 'string' || !currentQuestion?.description?.length) {
-                setDescriptionAnimationComplete(true);
-              }
-              return setAnimationComplete(currentQuestion.question);
-            }).start();
+        <TextTypewriter
+          text={currentQuestion.question}
+          onAnimationComplete={() => {
+            if (typeof currentQuestion?.description !== 'string' || !currentQuestion?.description?.length) {
+              setDescriptionAnimationComplete(true);
+            }
+            return setAnimationComplete(currentQuestion.question);
           }}
+          // onInit={(typewriter) => {
+          //   typewriter.changeDelay(15).typeString(currentQuestion.question).callFunction(() => {
+          //     if (typeof currentQuestion?.description !== 'string' || !currentQuestion?.description?.length) {
+          //       setDescriptionAnimationComplete(true);
+          //     }
+          //     return setAnimationComplete(currentQuestion.question);
+          //   }).start();
+          // }}
         />
       </Box>
       {typeof currentQuestion?.description === 'string' && animationComplete && currentQuestion?.description?.length && <Box css={{

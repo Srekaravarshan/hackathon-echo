@@ -4,6 +4,7 @@ import { fetchNextQuestion } from "../../store/slices/surveySlice";
 import { ButtonActions } from "../../components/question-types/constants";
 import WelcomeMessageQuestionAndResponse from "./QuestionAndResponseComponents/WelcomeMessageQuestionAndResponse";
 import DefaultQuestionAndResponseComponent from "./QuestionAndResponseComponents/DefaultQuestionAndResponseComponent";
+import ActionQuestionAndResponse from "./QuestionAndResponseComponents/ActionQuestionAndResponse";
 
 const QuestionsAndResponseComponent = () => {
   const dispatch = useDispatch();
@@ -23,9 +24,11 @@ const QuestionsAndResponseComponent = () => {
         switch (currentQuestion.type) {
           case 'welcomeMessage':
             return <WelcomeMessageQuestionAndResponse handleResponse={handleResponse} />;
+          case 'action':
+            return <ActionQuestionAndResponse handleResponse={handleResponse} />;
           default:
             return (
-              <DefaultQuestionAndResponseComponent handleResponse={handleResponse} />
+              <DefaultQuestionAndResponseComponent handleResponse={handleResponse} currentQuestion={currentQuestion} />
             );
         }
       })()}
@@ -34,3 +37,12 @@ const QuestionsAndResponseComponent = () => {
 }
 
 export default QuestionsAndResponseComponent;
+
+
+
+// {
+//   "type": "action",
+//   "question": "I am booking demo call on coming saturday",
+//   "actionType": "appointment",
+//   "hasConfirmation": false,
+// }

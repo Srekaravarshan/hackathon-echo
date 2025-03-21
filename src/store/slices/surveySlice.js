@@ -2,7 +2,24 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { makeChatQuery, makeSubmissionEntry, getWelcomeMessage } from "../../apis";
 import { ButtonActions } from "../../components/question-types/constants";
 
+const welcomeMessageData = {
+  "greetingHeader": "Hey Welcome to Paris Travel Corporation",
+  "greetingDescription": "Share your travel story about Paris Travel Corporation.",
+  "welcomeButtonText": "Lets Get Started"
+}
+
 const surveyQuestions = [
+  {    
+    question: welcomeMessageData.greetingHeader,
+    description: welcomeMessageData.greetingDescription,
+    type: 'welcomeMessage',
+    buttons: [
+      {
+        text: welcomeMessageData.welcomeButtonText,
+        action: ButtonActions.NEXT_QUESTION
+      }
+    ]
+  },
   {
     question: "Hi, how can I help you today?",
     type: "text",
@@ -66,6 +83,12 @@ const surveyQuestions = [
     type: "endMessage",
     closeSurvey: true,
   },
+  {
+    "type": "action",
+    "question": "I am booking demo call on coming saturday",
+    "actionType": "appointment",
+    "hasConfirmation": false,
+  }
 ];
 
 const initialState = {
@@ -88,6 +111,13 @@ const initialState = {
   questionIndex: 0,
   answers: [],
   typing: false,
+  actionData: {
+    actionStatus: 'ACTION_NOT_STARTED',
+    response: {
+      question: '',
+      type: '',
+    }
+  }
 };
 
 export const fetchInitialQuestion = createAsyncThunk(
@@ -99,11 +129,12 @@ export const fetchInitialQuestion = createAsyncThunk(
       // const response = await Axios.post('http://localhost:3000/api/chat/getWelcomeMessage');
       // const welcomeMessageData = response?.data?.welcomeMessageData;
       
-      const welcomeMessageRes = await getWelcomeMessage(1000000449);
+      const welcomeMessageRes = await getWelcomeMessage(1000000452);
       console.log("📱 ~ welcomeMessageRes:", welcomeMessageRes)
       
       
       const welcomeMessageData = welcomeMessageRes?.welcomeMessageData;
+      console.log("📱 ~ welcomeMessageData:", welcomeMessageData)
 
       if (!surveyQuestions.length) {
         throw new Error("No survey questions available");
@@ -138,8 +169,10 @@ export const fetchNextQuestion = createAsyncThunk(
     const currentIndex = state.questionIndex;
     console.log("📱 ~ currentIndex:", currentIndex);
 
-    const conversationId =
-      "state.userId_2abcdfgkiolpkmnmllopkdjpljmnmdoplnbmmnbnnb";
+
+    const localStorageConversationId = localStorage.getItem('conversationId');
+    console.log("📱 ~ localStorageConversationId:", localStorageConversationId)
+    const conversationId = localStorageConversationId;
     const response = await makeChatQuery(
       conversationId,
       `User response -> ${answer}`
@@ -153,16 +186,19 @@ export const fetchNextQuestion = createAsyncThunk(
       closeSurvey: false,
     };
 
-    if (response.jsonRes.actionExecutedMessage) {
-      nextQuestion.question = response.jsonRes.actionExecutedMessage;
-      nextQuestion.type = "message";
+    if (response.jsonRes.actionLoaderMessage && response.jsonRes?.actions.length) {
+      nextQuestion.question = response.jsonRes.actionLoaderMessage;
+      nextQuestion.type = "action";
+      nextQuestion.action = response?.jsonRes?.actions;
+      nextQuestion.actionMeta = response?.actionMeta;
+      nextQuestion.userId = conversationId;
     }
 
-    const kbExecutionMessage = response.jsonRes.kbExecutionMessage;
-    if (kbExecutionMessage) {
-      nextQuestion.question = kbExecutionMessage;
-      nextQuestion.type = "message";
-    }
+    // const kbExecutionMessage = response.jsonRes.kbExecutionMessage;
+    // if (kbExecutionMessage) {
+    //   nextQuestion.question = kbExecutionMessage;
+    //   nextQuestion.type = "message";
+    // }
 
     const conversationCompleted = response.jsonRes?.conversationCompleted;
     if (conversationCompleted) {
@@ -235,6 +271,12 @@ export const surveySlice = createSlice({
     resetSurvey: () => {
       return initialState;
     },
+    updateActionData: (state, action) => {
+      state.actionData = {
+        ...state.actionData,
+        ...action.payload,
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -284,6 +326,7 @@ export const {
   resetSurvey,
   setTyping,
   updateAnswers,
+  updateActionData,
 } = surveySlice.actions;
 
 export default surveySlice.reducer;

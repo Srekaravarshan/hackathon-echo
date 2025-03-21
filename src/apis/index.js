@@ -42,3 +42,16 @@ export const getWelcomeMessage = async (surveyId) => {
     throw error;
   }
 };
+
+export const executeAction = async ({
+  action,
+  actionMeta,
+  userId
+}) => {
+  const response = await axios.post(`${BASE_URL}/api/chat/executeAction`, {
+    action,
+    actionMeta,
+    userId
+  });
+  return response.data;
+}

@@ -11,8 +11,17 @@ import IVRSurvey from './pages/ivr-survey/IVRSurvey.jsx';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { IVRPreview } from './pages/ivr-survey/IVRSurvey';
 import { CloseIcon, SettingsIcon } from '@sparrowengg/twigs-react-icons';
+import { v4 as uuidv4 } from 'uuid';
+
 
 function App() {
+
+  useEffect(() => {
+    const conversationId = uuidv4();
+    console.log("📱 ~ useEffect ~ conversationId:", conversationId)
+    localStorage.setItem('conversationId', conversationId);
+  },[])
+
   return (
     <BrowserRouter>
       <Routes>
