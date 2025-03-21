@@ -85,21 +85,23 @@ const Rating = ({ onAnswer, currentQuestion }) => {
             />
           ))}
         </Flex>
-        <StyledTextareaInput
-          ref={inputRef}
-          placeholder="Type here..." 
-          value={text} 
-          onKeyDown={onKeyDown}
-          onChange={onChange} 
-          style={{ color: theme?.primaryColor }}
-          className='answer-input'
-        />
-        <SubmitButton 
-          className="rating-submit-button submit-button"
-          css={{ height: 'auto' }} 
-          disabled={!selected && text.length === 0} 
-          handleSubmit={handleSubmit} 
-        />
+        <Box>
+          <StyledTextareaInput
+            ref={inputRef}
+            placeholder="Type here..." 
+            value={text} 
+            onKeyDown={onKeyDown}
+            onChange={onChange} 
+            style={{ color: theme?.primaryColor }}
+            className='answer-input'
+          />
+          <SubmitButton 
+            className="rating-submit-button submit-button"
+            css={{ height: 'auto' }} 
+            disabled={!selected && text.length === 0} 
+            handleSubmit={handleSubmit} 
+          />
+        </Box>
       </Flex>
     </OptionsContainer>
   );

@@ -34,6 +34,7 @@ const SubmitButton = ({ disabled, handleSubmit, css = {}, children }) => {
           ...css?.['&:hover, &:focus, &:focus-visible'],
         },
       }}
+      className="submit-button"
     >
       {children ? children : (
         <Fragment>

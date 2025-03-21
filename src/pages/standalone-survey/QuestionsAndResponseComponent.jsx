@@ -12,10 +12,8 @@ const QuestionsAndResponseComponent = ({ surveyType }) => {
   const { triggerToken } = useParams();
 
   const { currentQuestion, answers } = useSelector((state) => state.survey);
-  console.log("🚀 ~ QuestionsAndResponseComponent ~ answers:", answers)
 
   const handleResponse = useCallback(async (answer, options = {}) => {
-    console.log("🚀 ~ handleResponse ~ answer, options:", answer, options, currentQuestion)
     if (!options?.action || options?.action === ButtonActions.NEXT_QUESTION) {
       await dispatch(fetchNextQuestion(answer, triggerToken));
     } else if (options?.action === ButtonActions.REDIRECT_URL) {

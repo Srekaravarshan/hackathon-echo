@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    (function() {
+      // Configuration - modify these values as needed
+      const config = {
+        url: "http://localhost:5173/chat/tt-Ir7dK",
+        profileUrl: "http://localhost:5173/chat-profile/tt-Ir7dK", 
+        buttonColor: "#4285f4"
+      };
+      
+      // Generate a unique ID for this widget instance
+      const widgetId = "embed-widget-" + Math.random().toString(36).substring(2, 8);
+      
+      // Create the widget container
+      const container = document.createElement('div');
+      container.id = widgetId;
+      
+      // Create the styling
+      const style = document.createElement('style');
+      style.textContent = `
+        #${widgetId} .iframe-container {
+          display: none;
+          position: fixed;
+          bottom: 80px;
+          right: 20px;
+          width: 300px;
+          height: 520px;
+          background: white;
+          border-radius: 12px;
+          // box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+          z-index: 1000;
+          overflow: hidden;
+        }
+        
+        #${widgetId} .close-button {
+          position: absolute;
+          top: 13px;
+          right: 10px;
+          cursor: pointer;
+          background: #f0f0f0;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          text-align: center;
+          line-height: 24px;
+          font-family: Arial, sans-serif;
+          z-index: 1001;
+        }
+        
+        #${widgetId} .embed-iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+          overflow: hidden;
+          display: block;
+          line-height: 0;
+          margin: 0;
+          padding: 0;
+          position: relative;
+
+        }
+
+        #${widgetId} .profile-iframe {
+          width: 50px;
+          height: 50px;
+          border: none;
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 999;
+          cursor: pointer;
+          border-radius: 50%;
+          pointer-events: none;
+          // box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        }
+
+        #${widgetId} .profile-container {
+          width: 50px;
+          height: 50px;
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 999;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        }
+
+        #${widgetId} .help-text {
+          position: fixed;
+          bottom: 80px;
+          right: 20px;
+          background: white;
+          padding: 8px 16px;
+          border-radius: 20px;
+          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          z-index: 998;
+          display: block;
+        }
+      `;
+      
+      // Append style to the container
+      container.appendChild(style);
+
+      // Create help text pill
+      const helpText = document.createElement('div');
+      helpText.className = 'help-text';
+      helpText.textContent = 'Hey, do you need help?';
+      container.appendChild(helpText);
+      
+      // Create a container for the profile iframe
+      const profileContainer = document.createElement('div');
+      profileContainer.className = 'profile-container';
+      
+      // Create the profile iframe
+      const profileIframe = document.createElement('iframe');
+      profileIframe.className = 'profile-iframe';
+      profileIframe.src = config.profileUrl;
+      profileContainer.appendChild(profileIframe);
+      container.appendChild(profileContainer);
+      
+      // Create the iframe container
+      const iframeContainer = document.createElement('div');
+      iframeContainer.id = `${widgetId}-container`;
+      iframeContainer.className = 'iframe-container';
+      
+      // Create the close button
+      const closeButton = document.createElement('div');
+      closeButton.className = 'close-button';
+      closeButton.textContent = '×';
+      iframeContainer.appendChild(closeButton);
+      
+      // Create the iframe
+      const iframe = document.createElement('iframe');
+      iframe.className = 'embed-iframe';
+      iframe.src = config.url;
+      iframe.setAttribute('allow', 'microphone; camera');
+      iframeContainer.appendChild(iframe);
+      
+      // Append the iframe container to the widget container
+      container.appendChild(iframeContainer);
+      
+      // Define the toggle function
+      const toggleFunction = function() {
+        const container = document.getElementById(`${widgetId}-container`);
+        const helpText = document.querySelector(`#${widgetId} .help-text`);
+        if (container.style.display === 'block') {
+          container.style.display = 'none';
+          helpText.style.display = 'block';
+        } else {
+          container.style.display = 'block';
+          helpText.style.display = 'none';
+        }
+      };
+      
+      // Add event listeners
+      profileContainer.addEventListener('click', toggleFunction);
+      closeButton.addEventListener('click', toggleFunction);
+      
+      // Append the widget to the document body
+      document.body.appendChild(container);
+    })();
+    </script>
+</body>
+</html>

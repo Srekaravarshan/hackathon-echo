@@ -45,7 +45,7 @@ const VoiceSurvey = () => {
 
 export default VoiceSurvey;
 
-export const WebCallPreview = () => {
+export const WebCallPreview = ({ css }) => {
   const dispatch = useDispatch();
   const { triggerToken } = useParams();
 
@@ -78,7 +78,7 @@ export const WebCallPreview = () => {
   return (
     <Flex flexDirection="column" css={{
       height: '480px', maxHeight: '580px', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px;', backgroundColor: 'white', borderRadius: '$3xl',
-      width: '350px',
+      width: '350px', ...css
     }} justifyContent="center" alignItems="center">
       <Box css={{
         width: '100px',
