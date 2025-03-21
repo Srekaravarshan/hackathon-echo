@@ -75,7 +75,7 @@ const TextInput = ({ onAnswer, additionalMeta }) => {
         onKeyDown={onKeyDown}
         onChange={onChange}
         style={{ color: theme?.primaryColor }}
-        className={styles.answerInput}
+        className='answer-input'
       />
       <SubmitButton
         css={{ height: "auto" }}

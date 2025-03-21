@@ -1,5 +1,144 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { ButtonActions } from '../../components/question-types/constants';
 import { makeChatQuery, makeSubmissionEntry } from "../../apis";
+
+// const welcomeMessageData = {
+//   "greetingHeader": "Hey",
+//   "greetingDescription": "Share",
+//   "welcomeButtonText": "Lets Get Started"
+// }
+const welcomeMessageData = {
+  "greetingHeader": "Hey Welcome to Paris Travel Corporation",
+  "greetingDescription": "Share your travel story about Paris Travel Corporation.",
+  "welcomeButtonText": "Lets Get Started"
+}
+
+const yesOrNoQuestionData = {
+  "question": "Are you going to be traveling alone?",
+  "type": "yesOrNo",
+  "choices": ["Yes", "No"]
+}
+
+const yesOrNoQuestionData2 = {
+  "question": "Do you have any hotel preferences?",
+  "type": "yesOrNo",
+}
+
+const welcomeMessage = {
+  question: welcomeMessageData.greetingHeader,
+  description: welcomeMessageData.greetingDescription,
+  type: 'welcomeMessage',
+  buttons: [
+    {
+      text: welcomeMessageData.welcomeButtonText,
+      action: ButtonActions.NEXT_QUESTION
+    }
+  ]
+}
+
+const actionData1 = {
+  "type": "action",
+  "question": "I am booking demo call on coming saturday",
+  "actionType": "appointment",
+  "hasConfirmation": false,
+}
+const actionDataRedirect = {
+  "type": "action_button_url",
+  "question": "I am booking demo call on coming saturday",
+  buttons: [
+    {
+      text: "Please visit SurveySparrow",
+      action: ButtonActions.REDIRECT_URL,
+      url: "https://www.surveysparrow.com"
+    },
+    {
+      text: "Next",
+      action: ButtonActions.NEXT_QUESTION,
+      variant: "secondary"
+    },
+  ]
+}
+
+const opinionScaleQuestion = {
+  "question": "How would you rate your experience with our travel assistance?",
+  "type": "opinionScale",
+  "scale": {
+    min: 1,
+    max: 10,
+  },
+}
+const ratingQuestion = {
+  "question": "How would you rate your experience with our travel assistance?",
+  "type": "rating",
+  "steps": 5,
+}
+
+const multipleChoiceQuestion = {
+  "question": "What is your budget range for the trip?",
+  "type": "multipleChoice",
+  "choices": ["Budget", "Mid-range", "Luxury"]
+}
+
+const messageQuestion = {
+  "question": "Hello! Welcome to the XYZ Travel Agency. How can I help you today?",
+  "type": "message"
+}
+
+const surveyQuestions = [
+  welcomeMessage,
+  ratingQuestion,
+  actionDataRedirect,
+  yesOrNoQuestionData,
+  yesOrNoQuestionData2,
+  actionData1,
+  multipleChoiceQuestion,
+  opinionScaleQuestion,
+  messageQuestion,
+  // {
+  //   "question": "Provide your aadhar card",
+  //   "type": "fileUpload",
+  // },
+  // {
+  //   "question": "Hey! How can I help you today? sample audio question",
+  //   "type": "audio"
+  // },
+  {
+    "question": "What is your travel destination?",
+    "type": "text"
+  },
+  {
+    "question": "Do you have any hotel preferences?",
+    "type": "multipleChoice",
+    "choices": ["Budget hotels", "Boutique hotels", "Luxury hotels", "No preference"]
+  },
+  {
+    "question": "What are your planned travel dates?",
+    "type": "text"
+  },
+  {
+    "question": "Based on your preferences, here are some travel recommendations. Do you want more details on any of them?",
+    "type": "yesOrNo",
+    "choices": ["Yes", "No"]
+  },
+  // {
+  //   "question": "Would you like us to book a hotel for you?",
+  //   "type": "multipleChoice",
+  //   "choices": ["Yes", "No"]
+  // },
+  {
+    "question": "Please provide your email for booking confirmation.",
+    "type": "text"
+  },
+  {
+    "question": "Please provide your phone number for booking assistance.",
+    "type": "text"
+  },
+  {
+    "question": "Thank you for your time!",
+    "type": "endMessage",
+    closeSurvey: true,
+  }
+];
 
 const initialState = {
   currentQuestion: {
@@ -66,7 +205,15 @@ export const fetchInitialQuestion = createAsyncThunk(
 
 export const fetchNextQuestion = createAsyncThunk(
   'survey/fetchNextQuestion',
-  async ({ answer, triggerToken }, { dispatch }) => {
+  async (answer, triggerToken, { getState, dispatch }) => {
+    console.log("🚀 ~ fetchNextQuestion ~ answer:", answer, getState())
+    const state = getState().survey;
+    
+    if (state.questionIndex >= surveyQuestions.length) {
+      return null;
+    }
+
+    // Save the answer for the current question
     dispatch(addAnswer(answer));
 
     console.log("📱 ~ triggerToken:", triggerToken)
@@ -145,6 +292,10 @@ export const surveySlice = createSlice({
         timestamp: new Date().toISOString(),
       });
     },
+    addChatAnswer: (state, action) => {
+      state.answers.push(action.payload);
+      console.log("🚀 ~ addChatAnswer ~ state.answers:", state.answers)
+    },
     setTyping: (state, action) => {
       console.log("🚀 ~ setTyping ~ action:", action);
       state.typing = action.payload;
@@ -215,6 +366,7 @@ export const {
   setTyping,
   updateAnswers,
   updateActionData,
+  addChatAnswer,
 } = surveySlice.actions;
 
 export default surveySlice.reducer;

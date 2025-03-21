@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Flex } from '@sparrowengg/twigs-react';
+import { Flex, Box } from '@sparrowengg/twigs-react';
 import { useDispatch, useSelector } from 'react-redux';
-import OpinionScaleButton from '../buttons/OpinionScaleButton';
 import { OptionsContainer, StyledTextareaInput } from '../StyledComponents';
 import SubmitButton from '../buttons/SubmitButton';
 import { setTyping } from '../../store/slices/surveySlice';
 
-const OpinionScale = ({ onAnswer, currentQuestion }) => {
+const Rating = ({ onAnswer, currentQuestion }) => {
   const [selected, setSelected] = useState(null);
   const [text, setText] = useState('');
   const inputRef = useRef(null);
@@ -15,7 +14,7 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
   const typing = useSelector(state => state.survey.typing);
   const theme = useSelector((state) => state.survey.theme);
 
-  const { min = 1, max = 5 } = currentQuestion.scale ?? { min: 1, max: 5 };
+  const steps = currentQuestion.steps ?? 5;
 
   const handleSubmit = useCallback(() => {
     if (text.length > 0) {
@@ -42,7 +41,7 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
         return;
       }
       const num = parseInt(e.key);
-      if (!isNaN(num) && num >= min && num <= max) {
+      if (!isNaN(num) && num >= 1 && num <= steps) {
         handleSelect(num);
       }
       if (e.key === 'Enter') {
@@ -74,18 +73,16 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
   }
 
   return (
-    <OptionsContainer className="opinion-scale-question">
-      <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }} className="opinion-scale-question-container">
-        <Flex gap="$4" css={{ flexWrap: 'wrap' }} className='opinion-scale-option-container'>
-          {Array.from({ length: max - min + 1 }, (_, i) => (
-            <OpinionScaleButton
+    <OptionsContainer className="rating-question">
+      <Flex flexDirection="column" gap="$8" css={{ width: '100%', maxWidth: '400px' }} className="rating-question-container">
+        <Flex gap="$6" css={{ flexWrap: 'wrap' }} className='rating-option-container'>
+          {Array.from({ length: steps }, (_, i) => (
+            <RatingButton
               key={i}
-              selected={selected === min + i}
-              onClick={() => handleSelect(min + i)}
-              className='opinion-scale-option'
-            >
-              {min + i}
-            </OpinionScaleButton>
+              selected={selected === i + 1}
+              onClick={() => handleSelect(i + 1)}
+              className='rating-option'
+            />
           ))}
         </Flex>
         <StyledTextareaInput
@@ -98,7 +95,7 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
           className='answer-input'
         />
         <SubmitButton 
-          className="opinion-scale-submit-button submit-button"
+          className="rating-submit-button submit-button"
           css={{ height: 'auto' }} 
           disabled={!selected && text.length === 0} 
           handleSubmit={handleSubmit} 
@@ -108,4 +105,38 @@ const OpinionScale = ({ onAnswer, currentQuestion }) => {
   );
 };
 
-export default OpinionScale;
+export default Rating;
+
+const RatingButton = ({ selected, onClick, className }) => {
+  const theme = useSelector((state) => state.survey.theme);
+
+  return (
+    <Box as="button"
+      onClick={onClick}
+      className={className}
+      css={{
+        '&, &:hover, &:focus, &:active': {
+          backgroundColor: 'transparent',
+          border: 'none'
+        },
+        cursor: 'pointer',
+        color: theme?.primaryColor,
+        '&:hover svg path': {
+          fill: selected ? theme?.primaryColor : `${theme?.primaryColor}33`
+        },
+        '&:active svg path': {
+          fill: theme?.primaryColor
+        },
+        ...(selected && {
+          'svg path': {
+            fill: theme?.primaryColor
+          }
+        })
+      }}
+    >
+      <svg width="48" height="48" viewBox="0 0 44 44">
+        <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21.108 2.09a.955.955 0 011.787 0l4.832 13.7h13.646a.955.955 0 01.62 1.68l-11.402 9.454 4.773 14.337a.955.955 0 01-1.47 1.07L22 33.606l-11.9 8.727a.955.955 0 01-1.464-1.071l4.773-14.337L2.004 17.47a.955.955 0 01.62-1.68h13.649l4.835-13.7z"></path>
+      </svg>
+    </Box>
+  );
+};
