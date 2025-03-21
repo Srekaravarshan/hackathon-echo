@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Flex } from '@sparrowengg/twigs-react';
+import { Flex, Box } from '@sparrowengg/twigs-react';
 import { ResetIcon } from '@sparrowengg/twigs-react-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { PlayIcon, PauseIcon } from '../../assets/icons';
@@ -238,29 +238,31 @@ const Audio = ({ onAnswer }) => {
               <ResetIcon size="24" />
             </Button>
           </Flex>
-          <StyledTextareaInput
-            ref={inputRef}
-            placeholder="Type here..." 
-            value={text} 
-            onKeyDown={onKeyDown}
-            onChange={onChange} 
-            style={{ color: theme?.primaryColor }}
-            className="audio-textarea answer-input"
-          />
-          <SubmitButton 
-            className="audio-submit-button submit-button"
-            handleSubmit={handleSubmit}
-            disabled={!hasRecording && text.length === 0}
-            css={{
-              height: 'auto',
-              '.twigs-button__content': {
-                '& > p': {
-                  maxWidth: 'auto',
-                }
-              },
-              position: 'unset',
-            }}
-          />
+          <Box>
+            <StyledTextareaInput
+              ref={inputRef}
+              placeholder="Type here..." 
+              value={text} 
+              onKeyDown={onKeyDown}
+              onChange={onChange} 
+              style={{ color: theme?.primaryColor }}
+              className="audio-textarea answer-input"
+            />
+            <SubmitButton 
+              className="audio-submit-button submit-button"
+              handleSubmit={handleSubmit}
+              disabled={!hasRecording && text.length === 0}
+              css={{
+                height: 'auto',
+                '.twigs-button__content': {
+                  '& > p': {
+                    maxWidth: 'auto',
+                  }
+                },
+                position: 'unset',
+              }}
+            />
+          </Box>
         </Flex>
       )}
     </OptionsContainer>

@@ -4,7 +4,7 @@ import { ThemeProvider, Tooltip, TooltipProvider, Box, Tabs, TabsList, TabsTrigg
 import Question from './pages/standalone-survey/Question';
 import { fetchInitialQuestion, resetSurvey } from './store/slices/surveySlice';
 import { StandaloneSurveyIcon, ChatSurveyIcon, VoiceSurveyIcon, IVRSurveyIcon, WhatsAppSurveyIcon, PlayIcon, PauseIcon } from './assets/icons';
-import ChatSurvey, { ChatSurveyPreview } from './pages/chat-survey/ChatSurvey';
+import ChatSurvey, { ChatSurveyPreview, ChatProfile } from './pages/chat-survey/ChatSurvey';
 import WhatsAppSurvey from './components/whatsapp/WhatsAppSurvey';
 import VoiceSurvey, { WebCallPreview } from './pages/voice-survey/VoiceSurvey';
 import IVRSurvey from './pages/ivr-survey/IVRSurvey.jsx';
@@ -25,6 +25,7 @@ function App() {
         <Route path="/ivr/:triggerToken" element={<IVRSurvey />} />
         <Route path="/call/:triggerToken" element={<IVRAndWebCall />} />
         <Route path="/whatsapp/:triggerToken" element={<WhatsAppSurvey />} />
+        <Route path="/chat-profile/:triggerToken" element={<ChatProfile />} />
       </Routes>
     </BrowserRouter>
   );
