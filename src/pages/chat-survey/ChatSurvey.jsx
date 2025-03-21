@@ -6,8 +6,13 @@ import { Fragment, useEffect, forwardRef } from 'react';
 import { fetchInitialQuestion, resetSurvey } from '../../store/slices/surveySlice';
 import QuestionAnswerTypes from '../../components/question-answer-types/QuestionAnswerTypes';
 import QuestionsAndResponseComponent from '../standalone-survey/QuestionsAndResponseComponent';
+import { useParams } from 'react-router-dom';
 
 const ChatSurvey = () => {
+
+  const { triggerToken } = useParams();
+  console.log("🚀 ~ ChatSurvey ~ triggerToken:", triggerToken)
+
   const dispatch = useDispatch();
 
   const profileImage = 'https://static.surveysparrow.com/application/production/1742317383073__695b1268fdc427427b32db00e0f87aeb06c23d6b670a1ea147124b54966a__Frame-removebg-preview.png';
@@ -190,6 +195,8 @@ const ChatSurvey = () => {
 }
 export const ChatSurveyPreview = () => {
 
+  const triggerToken = useParams().triggerToken ?? '23';
+
   return (
     <ThemeProvider>
       <Flex flexDirection="column" css={{ height: '100vh', width: '100vw', backgroundColor: '#f2f5f8' }} alignItems="center" justifyContent="center" className="dm-sans">
@@ -200,7 +207,7 @@ export const ChatSurveyPreview = () => {
           paddingBottom: '86px',
         }} alignItems="end" gap="$4" justifyContent="center">
           <Flex flexDirection="column" css={{ height: '100%', maxHeight: '580px', borderRadius: '$3xl', overflow: 'hidden', backgroundColor: 'white', width: '100%' }}>
-            <Box as="iframe" src="http://localhost:5173/chat/23" css={{ height: '100%', width: '100%' }} />
+            <Box as="iframe" src={`http://localhost:5173/chat/${triggerToken}`} css={{ height: '100%', width: '100%' }} />
           </Flex>
           {/* <Box css={{
             width: '50px',
@@ -248,7 +255,7 @@ const Questions = () => {
         })
       }} className='dm-sans'>
         <ChatHistory />
-        <QuestionsAndResponseComponent />
+        <QuestionsAndResponseComponent surveyType="chat"/>
         {/* {(loading || loadingNextQuestion) ? (
           <AIPill>
             <Typewriter
