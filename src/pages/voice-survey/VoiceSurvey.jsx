@@ -5,6 +5,8 @@ import { fetchInitialQuestion, resetSurvey } from '../../store/slices/surveySlic
 import './VoiceSurvey.css';
 import { CloseIcon } from '@sparrowengg/twigs-react-icons';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { makeChatQuery, makeSubmissionEntry, getWelcomeMessage } from "../../apis";
 
 const VoiceSurvey = () => {
   return (
@@ -398,61 +400,63 @@ const CallingView = () => {
   //   }
   // }, [transcript]);
 
-  // const handleAudioStream = async () => {
+  const handleAudioStream = async () => {
 
 
-  //   const welcomeMessage = "Hello, how can I help you today?";
-  //   await startStream(welcomeMessage);
+    const welcomeMessage = "Hello, how can I help you today?";
+    await startStream(welcomeMessage);
 
-  //   const stream = await navigator.mediaDevices
-  //     .getUserMedia({ audio: true, video: false })
-  //     .then(async (stream) => {
-  //       if (!MediaRecorder.isTypeSupported("audio/webm")) {
-  //         return alert("Browser not supported");
-  //       }
+    await navigator.mediaDevices
+      .getUserMedia({ audio: true, video: false })
+      .then(async (stream) => {
+        if (!MediaRecorder.isTypeSupported("audio/webm")) {
+          return alert("Browser not supported");
+        }
 
-  //       var options = { mimeType: "video/webm" };
-  //       mediaRecorder = new MediaRecorder(stream, options);
+        var options = { mimeType: "video/webm" };
+        const mediaRecorder = new MediaRecorder(stream, options);
 
-  //       const socket = new WebSocket(`wss://api.deepgram.com/v1/listen?model=nova-3`, [
-  //         "token",
-  //         "d830852caa0c9a10d0c0559d0303706841ae98e6",
-  //       ]);
+        const socket = new WebSocket(`wss://api.deepgram.com/v1/listen?model=nova-3`, [
+          "token",
+          "d830852caa0c9a10d0c0559d0303706841ae98e6",
+        ]);
 
-  //       socket.onopen = () => {
-  //         mediaRecorder.addEventListener("dataavailable", async (event) => {
-  //           if (event.data.size > 0 && socket.readyState == 1) {
-  //             socket.send(event.data);
-  //           }
-  //         });
-  //       };
+        socket.onopen = () => {
+          mediaRecorder.addEventListener("dataavailable", async (event) => {
+            if (event.data.size > 0 && socket.readyState == 1) {
+              socket.send(event.data);
+            }
+          });
+        };
 
-  //       mediaRecorder.start(1100);
-  //       console.log("started");
+        mediaRecorder.start(1100);
+        console.log("started");
 
-  //       socket.onmessage = async (message) => {
-  //         const received = JSON.parse(message.data);
-  //         console.log("📱 ~ socket.onmessage= ~ received:", received)
-  //         const transcript = received.channel.alternatives[0].transcript;
-  //         if (transcript && received.is_final) {
-  //           console.log("📱 ~ socket.onmessage= ~ transcript:", transcript);
-  //           // currentText = currentText.concat(' ' + transcript);
-  //           // audioText = currentText;
+        socket.onmessage = async (message) => {
+          const received = JSON.parse(message.data);
+          console.log("📱 ~ socket.onmessage= ~ received:", received)
+          const transcript = received.channel.alternatives[0].transcript;
+          if (transcript && received.is_final) {
+            cancelAudio();
+            console.log("📱 ~ socket.onmessage= ~ transcript:", transcript);
+            // currentText = currentText.concat(' ' + transcript);
+            // audioText = currentText;
 
-  //           const response = await makeChatQuery(
-  //             "state.userId_2abcdfgki",
-  //             `User response -> ${transcript}`
-  //           );
-  //           console.log("📱 ~ response:", response.jsonRes.question);
+            const response = await makeChatQuery(
+              "state.userId_2abcdfgki",
+              `User response -> ${transcript}`
+            );
+            console.log("📱 ~ response:", response.jsonRes.question);
 
-  //           await startStream(response.jsonRes.question);
-  //         }
-  //       };
-  //     });
-  // };
+            await startStream(response.jsonRes.question);
+            
+          }
+        };
+      });
+  };
 
   useEffect(() => {
-    // handleAudioStream();
+    handleAudioStream();
   }, []);
 
   useEffect(() => {
