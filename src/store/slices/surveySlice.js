@@ -79,9 +79,9 @@ const messageQuestion = {
 }
 
 const surveyQuestions = [
+  actionData1,
   ratingQuestion,
   actionDataRedirect,
-  actionData1,
   yesOrNoQuestionData,
   yesOrNoQuestionData2,
   welcomeMessage,
@@ -256,6 +256,10 @@ export const surveySlice = createSlice({
         timestamp: new Date().toISOString(),
       });
     },
+    addChatAnswer: (state, action) => {
+      state.answers.push(action.payload);
+      console.log("🚀 ~ addChatAnswer ~ state.answers:", state.answers)
+    },
     setTyping: (state, action) => {
       console.log("🚀 ~ setTyping ~ action:", action)
       state.typing = action.payload;
@@ -323,6 +327,7 @@ export const {
   setTyping,
   updateAnswers,
   updateActionData,
+  addChatAnswer,
 } = surveySlice.actions;
 
 export default surveySlice.reducer; 

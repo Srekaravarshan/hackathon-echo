@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Typewriter from "typewriter-effect";
 import { appointmentAction } from "../../../components/actions/actions";
-import { updateActionData } from "../../../store/slices/surveySlice";
+import { updateActionData, addChatAnswer } from "../../../store/slices/surveySlice";
 import DefaultQuestionAndResponseComponent from "./DefaultQuestionAndResponseComponent";
 import TextTypewriter from "../../components/TextTypewriter";
 
-const ActionQuestionAndResponse = ({ handleResponse }) => {
+const ActionQuestionAndResponse = ({ handleResponse, surveyType }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const { currentQuestion, typing, actionData } = useSelector((state) => state.survey);
 
@@ -20,10 +20,15 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
   }, []);
 
   const performAction = async () => {
+    
     dispatch(updateActionData({
       actionStatus: 'ACTION_STARTED',
     }));
     const { response, actionStatus } = await appointmentAction();
+    console.log("🚀 ~ performAction ~ surveyType:", surveyType, currentQuestion, actionData, response, actionStatus)
+    if (surveyType === 'chat') {
+
+    }
     dispatch(updateActionData({
       actionStatus,
       response: {
@@ -83,7 +88,18 @@ const ActionQuestionAndResponse = ({ handleResponse }) => {
       {actionData.actionStatus === 'ACTION_COMPLETED' && (!actionData.response.actionSuccessMessage || actionSuccessMessage) && actionData.response.question && (
         <DefaultQuestionAndResponseComponent 
           currentQuestion={actionData.response}
-          handleResponse={handleResponse}
+          handleResponse={async (answer, options) => {
+            await handleResponse(answer, options);
+            if (surveyType === 'chat') {
+              dispatch(addChatAnswer({
+                question: actionData.response,
+                // type: actionData.response.type,
+                answer: answer,
+                // options: options,
+              }));
+              // return handleResponse(answer, options);
+            }
+          }}
         />
       )}
     </Box>

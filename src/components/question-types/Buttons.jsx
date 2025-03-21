@@ -21,6 +21,16 @@ const Buttons = ({ currentQuestion, onAnswer }) => {
   return (
     <OptionsContainer className="buttons-options" style={{ flexDirection: 'row', gap: '0.5rem' }}>
       <ResponseButton onClick={() => onAnswer(null)} button={{ text: 'Let&apos;s Go' }} />
+      {/* <StyledTextareaInput
+        ref={inputRef}
+        placeholder="Type here..." 
+        value={text} 
+        onKeyDown={onKeyDown}
+        onChange={onChange} 
+        style={{ color: theme?.primaryColor }}
+        className='answer-input'
+      />
+      <SubmitButton css={{ height: 'auto' }} disabled={!selected && text.length === 0} handleSubmit={handleSubmit} className="single-choice-submit-button submit-button" /> */}
     </OptionsContainer>
   );
 };

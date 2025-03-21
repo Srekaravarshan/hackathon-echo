@@ -5,7 +5,7 @@ import { useState } from "react";
 import Typewriter from "typewriter-effect";
 import TextTypewriter from "../../components/TextTypewriter";
 
-const WelcomeMessageQuestionAndResponse = ({ handleResponse }) => {
+const WelcomeMessageQuestionAndResponse = ({ handleResponse, surveyType }) => {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [descriptionAnimationComplete, setDescriptionAnimationComplete] = useState(false);
   const { currentQuestion, typing } = useSelector((state) => state.survey);

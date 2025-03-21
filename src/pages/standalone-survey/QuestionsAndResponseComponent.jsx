@@ -7,14 +7,16 @@ import DefaultQuestionAndResponseComponent from "./QuestionAndResponseComponents
 import ActionQuestionAndResponse from "./QuestionAndResponseComponents/ActionQuestionAndResponse";
 import { Box } from "@sparrowengg/twigs-react";
 
-const QuestionsAndResponseComponent = () => {
+const QuestionsAndResponseComponent = ({ surveyType }) => {
   const dispatch = useDispatch();
 
-  const { currentQuestion } = useSelector((state) => state.survey);
+  const { currentQuestion, answers } = useSelector((state) => state.survey);
+  console.log("🚀 ~ QuestionsAndResponseComponent ~ answers:", answers)
 
   const handleResponse = useCallback(async (answer, options = {}) => {
+    console.log("🚀 ~ handleResponse ~ answer, options:", answer, options, currentQuestion)
     if (!options?.action || options?.action === ButtonActions.NEXT_QUESTION) {
-      dispatch(fetchNextQuestion(answer));
+      await dispatch(fetchNextQuestion(answer));
     } else if (options?.action === ButtonActions.REDIRECT_URL) {
       window.open(options.url, '_blank');
     } else if (options?.action === ButtonActions.END_SURVEY) {
@@ -27,12 +29,12 @@ const QuestionsAndResponseComponent = () => {
       {(() => {
         switch (currentQuestion.type) {
           case 'welcomeMessage':
-            return <WelcomeMessageQuestionAndResponse handleResponse={handleResponse} />;
+            return <WelcomeMessageQuestionAndResponse handleResponse={handleResponse} surveyType={surveyType} />;
           case 'action':
-            return <ActionQuestionAndResponse handleResponse={handleResponse} />;
+            return <ActionQuestionAndResponse handleResponse={handleResponse} surveyType={surveyType} />;
           default:
             return (
-              <DefaultQuestionAndResponseComponent handleResponse={handleResponse} currentQuestion={currentQuestion} />
+              <DefaultQuestionAndResponseComponent handleResponse={handleResponse} currentQuestion={currentQuestion} surveyType={surveyType} />
             );
         }
       })()}
